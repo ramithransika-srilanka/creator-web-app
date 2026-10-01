@@ -270,12 +270,19 @@
 
   /* ================= Campaign page ================= */
   .cp{display:grid;grid-template-columns:minmax(0,1fr) var(--rail);gap:32px;align-items:start;}
-  .cp-main{display:flex;flex-direction:column;min-width:0;}
-  .cp-hero{position:relative;height:420px;border-radius:28px 28px 0 0;overflow:hidden;background:var(--grey-200);}
+  .cp-main{display:flex;flex-direction:column;gap:16px;min-width:0;}
+  /* Each campaign section sits in its own rounded, centred box */
+  .cp-box{background:#fff;border:1px solid var(--grey-100);border-radius:24px;box-shadow:0 2px 8px rgba(0,0,0,.04);padding:24px;display:flex;flex-direction:column;gap:16px;align-items:center;text-align:center;}
+  .cp-box>h3{font-size:18px;font-weight:600;line-height:24px;color:var(--grey-800);}
+  .cp-box .cp-sub{font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--grey-500);}
+  .cp-box>p{font-size:14px;line-height:20px;color:var(--grey-700);max-width:560px;}
+  .cp-box.cp-headbox{padding:0;overflow:hidden;gap:0;}
+  .cp-dark{background:var(--grey-800);border-radius:24px;}
+  .cp-hero{position:relative;width:100%;height:420px;overflow:hidden;background:var(--grey-200);}
   .cp-hero>img{width:100%;height:100%;object-fit:cover;}
   .cp-headrow{position:absolute;top:16px;left:16px;right:16px;display:flex;align-items:center;justify-content:space-between;}
   .cp-headright{display:flex;gap:12px;align-items:center;}
-  .cp-details{position:relative;margin-top:-72px;display:flex;flex-direction:column;gap:12px;align-items:center;padding:16px 16px 24px;background:var(--grey-50);border-radius:40px 40px 0 0;}
+  .cp-details{position:relative;margin-top:-72px;display:flex;flex-direction:column;gap:12px;align-items:center;width:100%;padding:16px 16px 24px;background:#fff;border-radius:40px 40px 0 0;}
   .cp-logo{width:40px;height:40px;border-radius:100px;border:1px solid var(--grey-50);object-fit:cover;background:#fff;}
   .cp-title{font-size:20px;font-weight:600;line-height:24px;color:var(--grey-800);text-align:center;max-width:520px;}
   .cp-time{display:flex;gap:10px;align-items:center;justify-content:center;font-size:12px;font-weight:500;line-height:12px;color:var(--grey-500);}
@@ -285,8 +292,6 @@
   .cp-avatars img{width:24px;height:24px;border-radius:20px;border:1px solid #f6f6f6;object-fit:cover;margin-left:-8px;background:#ddd;}
   .cp-avatars img:first-child{margin-left:0;}
   .cp-joined .count{font-size:14px;font-weight:600;color:var(--grey-600);}
-  .cp-infotags{padding:24px 10px;display:flex;flex-direction:column;gap:16px;align-items:center;}
-  .cp-infotags h3{font-size:16px;font-weight:600;line-height:20px;color:var(--grey-800);text-align:center;}
   .cp-tags{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:center;}
   .cp-tag{background:var(--grey-200);display:flex;gap:4px;align-items:center;justify-content:center;padding:6px 12px;border-radius:100px;}
   .cp-tag svg{width:20px;height:20px;color:var(--grey-800);}
@@ -318,20 +323,14 @@
   .cp-event-link span{font-size:14px;font-weight:500;line-height:20px;color:var(--blue-300);}
   .cp-event-link .ext{width:16px;height:16px;color:var(--blue-300);}
   .cp-event-link .ext svg{width:16px;height:16px;}
-  .cp-reqs{padding:32px 24px 16px;display:flex;flex-direction:column;gap:12px;}
-  .cp-reqs h3,.cp-createdby>h3{font-size:16px;font-weight:600;line-height:20px;color:#000;}
-  .cp-reqs p{font-size:14px;line-height:20px;color:#000;text-align:justify;max-width:640px;}
-  .cp-reqs .btn-secondary{max-width:320px;}
-  .reqmore{display:grid;grid-template-rows:0fr;transition:grid-template-rows .45s cubic-bezier(.16,1,.3,1);}
-  .reqmore>div{overflow:hidden;}
-  .cp-reqs.open .reqmore{grid-template-rows:1fr;}
-  .reqmore .cp-list{padding:8px 0;max-width:640px;}
-  .reqmore h4{font-size:14px;font-weight:600;line-height:20px;color:#000;margin-top:8px;}
-  .reqmore ul{list-style:none;display:flex;flex-direction:column;gap:4px;padding:8px 0 4px;}
-  .reqmore li{font-size:14px;line-height:20px;color:var(--grey-700);display:flex;gap:8px;}
-  .reqmore li::before{content:"";width:4px;height:4px;border-radius:4px;background:var(--grey-500);margin-top:8px;flex-shrink:0;}
-  .cp-createdby{display:flex;flex-direction:column;gap:16px;padding:32px 24px 10px;}
-  .cp-creatorcard{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;padding:8px 0 16px;}
+  .cp-specs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;width:100%;}
+  .cp-spec{background:var(--grey-50);border:1px solid var(--grey-100);border-radius:14px;padding:12px 16px;display:flex;flex-direction:column;gap:4px;align-items:center;}
+  .cp-spec .k{font-size:12px;line-height:16px;color:var(--grey-500);}
+  .cp-spec .v{font-size:14px;font-weight:600;line-height:20px;color:var(--grey-800);}
+  .cp-restrict{list-style:none;display:flex;flex-direction:column;gap:8px;align-items:flex-start;text-align:left;counter-reset:r;}
+  .cp-restrict li{counter-increment:r;display:flex;gap:10px;align-items:center;font-size:14px;line-height:20px;color:var(--grey-700);}
+  .cp-restrict li::before{content:counter(r);width:20px;height:20px;border-radius:20px;background:var(--grey-100);color:var(--grey-600);font-size:11px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .cp-creatorcard{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;width:100%;text-align:left;}
   .cp-creatorcard .col{display:flex;flex-direction:column;gap:16px;}
   .cp-identity{display:flex;flex-direction:column;gap:16px;align-items:center;padding:16px 32px 4px;}
   .cp-identity .av{width:80px;height:80px;border-radius:100px;object-fit:cover;background:#fff;}
@@ -560,6 +559,8 @@
     .wallet .w-stack,.pf-left,.set-nav{position:static;}
     .cp-creatorcard{grid-template-columns:minmax(0,1fr);}
     .cp-cmetrics,.cp-questions{padding-left:24px;}
+    .cp-box{padding:20px 16px;}
+    .cp-specs{grid-template-columns:minmax(0,1fr);}
     .pf-grid{grid-template-columns:repeat(3,minmax(0,1fr));}
   }
   @media (max-width:767px){
@@ -944,27 +945,25 @@ function viewCampaign(id,statusOverride){
   }
   return `<div class="cp">
     <div class="cp-main">
-      <div class="cp-hero"><img data-a="${c.img}" data-label="${c.abbr}" alt="">
-        <div class="cp-headrow"><a class="iconbtn" data-back>${CPICON.chevL}</a><div class="cp-headright"><a class="iconbtn like-heart">${CPICON.heart}</a><a class="iconbtn" data-act="share">${CPICON.share}</a></div></div>
+      <div class="cp-box cp-headbox">
+        <div class="cp-hero"><img data-a="${c.img}" data-label="${c.abbr}" alt="">
+          <div class="cp-headrow"><a class="iconbtn" data-back>${CPICON.chevL}</a><div class="cp-headright"><a class="iconbtn like-heart">${CPICON.heart}</a><a class="iconbtn" data-act="share">${CPICON.share}</a></div></div>
+        </div>
+        <div class="cp-details">
+          <img class="cp-logo" data-a="${c.logo}" data-label="${c.abbr}" alt="">
+          <p class="cp-title">${c.title}</p>
+          <div class="cp-time"><span>${c.time}</span>${c.right?`<span class="dot"></span><span>${c.right}</span>`:''}</div>
+          <div class="cp-joined"><div class="cp-avatars">${AVSET}</div><span class="count">${c.joinedShort}</span></div>
+        </div>
       </div>
-      <div class="cp-details">
-        <img class="cp-logo" data-a="${c.logo}" data-label="${c.abbr}" alt="">
-        <p class="cp-title">${c.title}</p>
-        <div class="cp-time"><span>${c.time}</span>${c.right?`<span class="dot"></span><span>${c.right}</span>`:''}</div>
-        <div class="cp-joined"><div class="cp-avatars">${AVSET}</div><span class="count">${c.joinedShort}</span></div>
-      </div>
-      <div class="band">
-        <div class="sheet-b cp-infotags"><h3>Best suited for</h3><div class="cp-tags">${tags}</div></div>
-        ${mid}
-        <div class="sheet-t cp-reqs" id="reqs"><h3>Requirements &amp; Resources</h3><p>${c.reqDesc}</p>
-          <div class="reqmore"><div>
-            <div class="cp-list">${SPEC.map((r,i)=>(i?'<div class="div"></div>':'')+`<div class="row"><span class="k">${r[0]}</span><span class="v">${r[1]}</span></div>`).join('')}</div>
-            <h4>Restrictions</h4><ul>${RESTRICT.map(r=>`<li>${r}</li>`).join('')}</ul>
-          </div></div>
-          <div class="btn-secondary" data-act="reqs">Show more</div></div>
-      </div>
-      <div class="cp-createdby"><h3>Campaign created by</h3>
-        <div class="wcard cp-creatorcard">
+      <div class="cp-box"><h3>About this campaign</h3><p>${c.reqDesc}</p>
+        <span class="cp-sub">Best suited for</span><div class="cp-tags">${tags}</div></div>
+      <div class="cp-dark">${mid}</div>
+      <div class="cp-box"><h3>Requirements &amp; resources</h3>
+        <div class="cp-specs">${SPEC.map(r=>`<div class="cp-spec"><span class="k">${r[0]}</span><span class="v">${r[1]}</span></div>`).join('')}</div>
+        <span class="cp-sub">Restrictions</span><ul class="cp-restrict">${RESTRICT.map(r=>`<li>${r}</li>`).join('')}</ul></div>
+      <div class="cp-box"><h3>Campaign created by</h3>
+        <div class="cp-creatorcard">
           <div class="col">
             <div class="cp-identity"><img class="av" data-a="${c.logo}" data-label="${c.abbr}" alt=""><div class="cp-idtext"><p class="name">${c.brand}</p><p class="since">${c.since}</p></div></div>
             <p class="cp-cdesc">${c.brandDesc}</p>
@@ -1240,7 +1239,6 @@ function doAct(a,el){
   if(a==='soon') return toast('This screen is next to build');
   if(a==='share') return toast('Link copied');
   if(a==='clear'){state.cat='All';state.q='';const qi=document.getElementById('q');if(qi)qi.value='';document.querySelectorAll('[data-cat]').forEach(c=>c.classList.toggle('active',c.dataset.cat==='All'));return renderFeed();}
-  if(a==='reqs'){const r=document.getElementById('reqs');r.classList.toggle('open');el.textContent=r.classList.contains('open')?'Show less':'Show more';return;}
   if(a==='upload') return document.getElementById('file').click();
   if(SHEETS[a]) return openOverlay(SHEETS[a]());
 }
