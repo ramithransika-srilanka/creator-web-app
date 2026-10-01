@@ -1,0 +1,1196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UGC Platform — Desktop</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  /* =====================================================================
+     Design tokens — identical to the mobile prototype (from Figma).
+     Desktop only adds layout: widths, columns and the top menu.
+     ===================================================================== */
+  :root{
+    --grey-50:#f6f6f6; --grey-50-90:rgba(246,246,246,.9);
+    --grey-100:#ececec; --grey-100-20:rgba(236,236,236,.2);
+    --grey-200:#d9d9d9; --grey-400:#b3b3b3; --grey-500:#a0a0a0;
+    --grey-600:#717171; --grey-700:#414141; --grey-800:#121212;
+    --blue-100:#d0dafb; --blue-200:#a1b6f7; --blue-300:#7391f3; --blue-500:#1548eb; --blue-600:#123bbd; --blue-700:#0f2d8f;
+    --pink-500:#f433ab;
+    --font:'Inter',-apple-system,system-ui,sans-serif;
+
+    /* status colours used by the mobile campaign pages */
+    --ongoing:#07b11e; --pending:#e8890c; --pending-card:#a32dd2; --liked:#FF6B4A; --badge:#ffd22d; --badge-ongoing:#3be06a; --earn:#2e8b3d;
+
+    /* desktop layout */
+    --gutter:40px; --rail:361px; --page:1280px; --header:72px;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-font-smoothing:antialiased;}
+  body{background:var(--grey-50);color:var(--grey-800);font-family:var(--font);font-size:14px;line-height:20px;min-height:100dvh;}
+  a{color:inherit;text-decoration:none;cursor:pointer;}
+  button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;}
+  img{display:block;}
+  svg{display:block;}
+
+  /* Screen navigation transition — same signature as the mobile app */
+  @keyframes screenIn{from{opacity:0;transform:translateY(22px) scale(.988);filter:blur(6px);}to{opacity:1;transform:none;filter:blur(0);}}
+  .nav-in{animation:screenIn .46s cubic-bezier(.16,1,.3,1) both;}
+  @media(prefers-reduced-motion:reduce){.nav-in{animation:none;}}
+
+  /* ================= App shell: top menu ================= */
+  .topbar{position:sticky;top:0;z-index:20;height:var(--header);display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;gap:16px;padding:0 max(var(--gutter),calc((100% - var(--page)) / 2));
+    background:var(--grey-50-90);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);border-bottom:1px solid var(--grey-200);}
+  .brand{grid-column:1;justify-self:start;display:flex;align-items:center;height:44px;color:var(--grey-800);border-radius:8px;transition:opacity .2s ease,transform .2s cubic-bezier(.16,1,.3,1);}
+  .brand svg{height:28px;width:auto;aspect-ratio:269/184;}
+  .brand:hover{opacity:.8;}
+  .brand:active{transform:scale(.96);}
+  .tnav{grid-column:2;display:flex;align-items:center;gap:8px;}
+  .tnav a{width:64px;height:44px;border-radius:100px;display:flex;align-items:center;justify-content:center;color:var(--grey-500);transition:background .25s ease,color .25s ease,transform .2s cubic-bezier(.16,1,.3,1);}
+  .tnav a svg{height:22px;width:auto;max-width:26px;}
+  .tnav a:hover{background:var(--grey-100);color:var(--grey-700);}
+  .tnav a.active{color:var(--grey-800);}
+  .tnav a:active{transform:scale(.94);}
+  .top-right{grid-column:3;justify-self:end;display:flex;align-items:center;gap:12px;}
+  .wallet-pill{display:flex;gap:8px;align-items:center;height:44px;background:var(--blue-500);padding:4px 16px 4px 4px;border-radius:100px;cursor:pointer;transition:background .25s ease,transform .2s cubic-bezier(.16,1,.3,1);}
+  .wallet-pill:hover{background:var(--blue-600);}
+  .wallet-pill:active{transform:scale(.97);}
+  .wallet-pill img{width:36px;height:36px;border-radius:100px;border:1.5px solid var(--grey-50);object-fit:cover;}
+  .wallet-pill span{font-size:18px;font-weight:600;line-height:24px;letter-spacing:-.01em;color:var(--grey-50);font-variant-numeric:tabular-nums;}
+  .hicon{width:44px;height:44px;border-radius:100px;display:flex;align-items:center;justify-content:center;color:var(--grey-800);position:relative;background:#fff;border:1px solid var(--grey-200);transition:background .25s ease,border-color .25s ease,transform .2s cubic-bezier(.16,1,.3,1);}
+  .hicon:hover{background:var(--grey-100);}
+  .hicon:active{transform:scale(.94);}
+  .hicon.on{background:var(--grey-800);border-color:var(--grey-800);color:var(--grey-50);}
+  .hicon svg{width:22px;height:22px;}
+  .hicon .dot{position:absolute;top:10px;right:11px;width:8px;height:8px;border-radius:100px;background:var(--pink-500);border:1.5px solid #fff;}
+  .top-av{display:block;width:44px;height:44px;border-radius:100px;object-fit:cover;border:1px solid var(--grey-200);transition:transform .2s cubic-bezier(.16,1,.3,1);}
+  .top-av:active{transform:scale(.94);}
+
+  .content{width:100%;max-width:calc(var(--page) + var(--gutter) * 2);margin:0 auto;padding:24px var(--gutter) 80px;}
+  .phone-note{display:none;}
+
+  /* ================= Shared (mobile components) ================= */
+  .page-title{font-size:28px;font-weight:600;line-height:38px;color:#000;padding:4px 0 16px;}
+  .h20{font-size:20px;font-weight:600;line-height:24px;color:var(--grey-800);}
+  .h16{font-size:16px;font-weight:600;line-height:20px;color:#000;}
+  .sub{font-size:14px;line-height:20px;color:var(--grey-600);}
+
+  .tags{display:flex;gap:12px;flex-wrap:wrap;}
+  .tag{flex-shrink:0;padding:8px 12px;border-radius:100px;background:var(--grey-100);font-size:12px;font-weight:500;line-height:12px;color:var(--grey-800);white-space:nowrap;cursor:pointer;transition:background .25s ease,color .25s ease;}
+  .tag.active{background:var(--blue-200);}
+  .tag.pop{animation:mwTagPop .36s cubic-bezier(.34,1.56,.64,1);}
+  @keyframes mwTagPop{0%{transform:scale(.82);}55%{transform:scale(1.1);}100%{transform:scale(1);}}
+
+  .sechead{display:flex;align-items:center;justify-content:space-between;padding:0 16px;}
+  .seeall{font-size:12px;font-weight:500;line-height:12px;color:var(--blue-600);cursor:pointer;}
+
+  /* Buttons */
+  .btn-primary{background:var(--blue-500);padding:12px 20px;border-radius:100px;display:flex;align-items:center;justify-content:center;box-shadow:2px 2px 6px rgba(0,0,0,.08);cursor:pointer;width:100%;font-size:14px;font-weight:500;line-height:20px;color:var(--grey-50);}
+  .btn-secondary{background:var(--grey-200);border:2px solid var(--grey-200);padding:12px 20px;border-radius:12px;display:flex;align-items:center;justify-content:center;box-shadow:2px 2px 6px rgba(0,0,0,.08);cursor:pointer;width:100%;font-size:14px;font-weight:500;line-height:20px;color:var(--grey-800);}
+  .btn-dark{background:var(--grey-800);border:2px solid var(--grey-800);padding:12px 20px;border-radius:12px;display:flex;align-items:center;justify-content:center;box-shadow:2px 2px 6px rgba(0,0,0,.08);cursor:pointer;font-size:14px;font-weight:500;line-height:20px;color:var(--grey-50);}
+  .btn-questions{background:var(--blue-100);border:2px solid var(--blue-100);padding:12px 0;border-radius:12px;display:flex;align-items:center;justify-content:center;box-shadow:2px 2px 6px rgba(0,0,0,.08);cursor:pointer;width:100%;font-size:14px;font-weight:500;line-height:20px;color:var(--blue-700);}
+  .view-btn,.mw-join{background:var(--grey-50);padding:12px 20px;border-radius:100px;font-size:14px;font-weight:500;line-height:20px;color:var(--grey-800);box-shadow:2px 2px 12px rgba(0,0,0,.08);cursor:pointer;white-space:nowrap;flex-shrink:0;}
+  .btn-primary[disabled]{opacity:.6;pointer-events:none;}
+  .iconbtn{display:flex;align-items:center;padding:4px;border-radius:20px;background:rgba(246,246,246,.5);cursor:pointer;color:#121212;-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);}
+  .iconbtn svg{width:24px;height:24px;}
+
+  /* Heart like interaction */
+  .like-heart{cursor:pointer;display:flex;}
+  .like-heart svg{transition:transform .2s ease;}
+  .like-heart.liked path{fill:var(--liked);}
+  .like-heart.liked svg{animation:heartpop .3s ease;}
+  @keyframes heartpop{0%{transform:scale(1);}40%{transform:scale(1.3);}100%{transform:scale(1);}}
+
+  .logos{display:flex;}
+  .logos img{width:20px;height:20px;border-radius:20px;object-fit:cover;margin-left:-8px;border:1.5px solid var(--grey-50);background:#fff;}
+  .logos img:first-child{margin-left:0;}
+  .chip-right{display:flex;gap:4px;align-items:center;}
+  .chip-right img{width:20px;height:20px;border-radius:100px;object-fit:cover;background:#fff;}
+
+  .progress{height:6px;border-radius:100px;background:#ddd;overflow:hidden;}
+  .progress .fill{height:6px;background:var(--blue-500);border-radius:20px;}
+
+  /* Key / value list (cp-list) */
+  .cp-list{padding:16px;border-radius:12px;display:flex;flex-direction:column;gap:8px;width:100%;}
+  .cp-list .row{display:flex;align-items:center;justify-content:space-between;gap:16px;font-size:14px;line-height:20px;}
+  .cp-list .row .k{font-weight:500;color:var(--grey-600);}
+  .cp-list .row .v{font-weight:600;color:var(--grey-800);text-align:right;}
+  .cp-list .div{height:1px;background:var(--grey-200);margin:4px 0;}
+  .cp-list .social{display:flex;gap:8px;align-items:center;}
+  .cp-list .social svg{width:16px;height:16px;color:var(--grey-800);}
+
+  /* White card (creator card) */
+  .wcard{background:#fff;border-radius:20px;filter:drop-shadow(2px 4px 2px rgba(0,0,0,.12));}
+
+  /* Dark band with rounded grey sheets — the app's signature */
+  .band{background:var(--grey-800);display:flex;flex-direction:column;}
+  .band.pill{border-radius:100px;}
+  .sheet-b{background:var(--grey-50);border-radius:0 0 28px 28px;}
+  .sheet-t{background:var(--grey-50);border-radius:28px 28px 0 0;}
+
+  /* Placeholder / empty state (.ph from mobile) */
+  .ph{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:64px 32px;gap:12px;grid-column:1/-1;}
+  .ph .tag2{background:var(--blue-100);color:var(--blue-700);font-size:12px;font-weight:600;padding:6px 12px;border-radius:100px;}
+  .ph h2{font-size:24px;font-weight:600;color:var(--grey-800);line-height:32px;}
+  .ph p{font-size:14px;line-height:20px;color:var(--grey-600);max-width:280px;}
+
+  /* Skeleton while the feed loads */
+  .sk{background:var(--grey-100);border-radius:12px;position:relative;overflow:hidden;}
+  .sk::after{content:"";position:absolute;inset:0;transform:translateX(-100%);background:linear-gradient(90deg,transparent,rgba(255,255,255,.7),transparent);animation:shimmer 1.3s infinite;}
+  @keyframes shimmer{to{transform:translateX(100%);}}
+  .sk-card{display:flex;flex-direction:column;gap:8px;padding:12px;}
+  .sk-card .l1{margin-top:20px;}
+  .sk-card .img{height:240px;border-radius:20px;}
+  .sk-card .l1{height:20px;width:80%;margin:16px 16px 0;}
+  .sk-card .l2{height:12px;width:40%;margin:0 16px;}
+  .sk-card .l3{height:6px;margin:4px 16px 16px;border-radius:100px;}
+
+  /* Staggered reveal on My work tag switch (mwRise from mobile) */
+  @keyframes mwRise{0%{opacity:0;transform:perspective(900px) rotateX(-22deg) translateY(46px) scale(.94);filter:blur(7px);}55%{opacity:1;filter:blur(0);}100%{opacity:1;transform:perspective(900px) rotateX(0deg) translateY(0) scale(1);filter:blur(0);}}
+  .mw-stagger{animation:mwRise .58s cubic-bezier(.2,.8,.24,1.12) both;transform-origin:center bottom;backface-visibility:hidden;}
+  @keyframes mwPopIn{0%{opacity:0;transform:scale(.3);}60%{opacity:1;transform:scale(1.12);}100%{opacity:1;transform:scale(1);}}
+  .mw-logo72.mw-stagger{animation:mwPopIn .5s cubic-bezier(.34,1.56,.64,1) both;transform-origin:center;}
+
+  /* ================= Campaign card (home feed) ================= */
+  .cardwrap{padding:12px;}
+  .card-img{position:relative;height:240px;border-radius:20px;overflow:hidden;box-shadow:0 2px 2px rgba(0,0,0,.16);cursor:pointer;background:var(--grey-200);}
+  .card-img>.photo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
+  .card-logobar{position:relative;display:flex;align-items:center;justify-content:space-between;padding:16px;}
+  .card-logobar .logo{width:36px;height:36px;border-radius:100px;border:1px solid var(--grey-50);object-fit:cover;background:#fff;}
+  .heart{width:24px;height:24px;color:#fff;}
+  .heart path{fill:rgba(18,18,18,.6);}
+  .overlaybar{position:absolute;bottom:0;left:0;right:0;height:64px;display:flex;align-items:center;justify-content:space-between;padding:0 18px 0 22px;}
+  .overlaybar::before{content:"";position:absolute;inset:0;background:rgba(0,0,0,.4);border-radius:20px;z-index:0;-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);}
+  .overlaybar>*{position:relative;z-index:1;}
+  .details{display:flex;gap:6px;align-items:center;}
+  .details svg{width:14px;height:14px;color:#fff;}
+  .price-chip{background:var(--grey-100-20);padding:4px 8px;border-radius:20px;font-size:12px;font-weight:500;color:#fff;line-height:12px;}
+  .pending-card{background:var(--pending-card);border-radius:20px;width:100%;display:flex;flex-direction:column;overflow:hidden;}
+  .pending-card .heart path{fill:var(--liked);stroke:#fff;}
+  .pending-earned{text-align:center;padding:6px 0;font-size:14px;font-weight:500;line-height:16px;color:var(--grey-50);}
+  .card-content{display:flex;flex-direction:column;gap:8px;padding:16px;}
+  .card-content .ctitle{font-size:16px;font-weight:600;line-height:20px;color:#000;cursor:pointer;}
+  .card-time{display:flex;gap:10px;align-items:center;font-size:12px;font-weight:500;line-height:12px;color:var(--grey-600);}
+  .card-time .dot{width:2px;height:2px;border-radius:2px;background:var(--grey-600);}
+  .progress-group{display:flex;flex-direction:column;gap:4px;}
+  .card-foot{display:flex;align-items:center;justify-content:space-between;font-size:14px;line-height:normal;}
+  .card-foot .joined{display:flex;gap:4px;align-items:center;font-weight:500;color:var(--grey-800);}
+  .card-foot .joined svg{width:14px;height:14px;color:#131927;}
+  .card-foot .money{display:flex;gap:4px;align-items:center;white-space:nowrap;color:var(--grey-800);font-weight:500;}
+  .card-foot .money b{font-weight:600;color:var(--grey-800);}
+
+  /* ================= Home: Campaigns ================= */
+  .home{padding-top:16px;}
+  .home-title{font-size:40px;font-weight:600;line-height:48px;letter-spacing:-.025em;color:#000;}
+  /* Search reveals under the heading (toggled from the header search icon) */
+  .home-search{display:grid;grid-template-rows:0fr;transition:grid-template-rows .45s cubic-bezier(.16,1,.3,1),margin-top .45s cubic-bezier(.16,1,.3,1);}
+  .home-search>div{overflow:hidden;min-height:0;}
+  .home-search .search{opacity:0;transform:translateY(-8px);transition:opacity .3s ease,transform .45s cubic-bezier(.16,1,.3,1);}
+  .home-search.open{grid-template-rows:1fr;margin-top:16px;}
+  .home-search.open .search{opacity:1;transform:none;}
+  .search{display:flex;align-items:center;gap:12px;height:48px;margin:1px;padding:0 20px;border:1px solid var(--grey-400);border-radius:100px;background:#fff;transition:border-color .2s ease;}
+  .search:focus-within{border-color:var(--blue-300);}
+  .search svg{width:22px;height:22px;color:var(--grey-800);flex-shrink:0;}
+  .search input{flex:1;min-width:0;width:100%;border:0;outline:0;background:none;font:500 14px var(--font);color:var(--grey-800);}
+  .search input::placeholder{color:var(--grey-600);}
+  .search input::-webkit-search-cancel-button{display:none;}
+  .search kbd{font:500 12px/12px var(--font);color:var(--grey-500);padding:4px 8px;border-radius:8px;background:var(--grey-100);}
+  .home .tags{margin-top:24px;gap:8px;}
+  .tag:active{transform:scale(.96);}
+
+  .feedgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;margin-top:32px;}
+  .feedgrid>.cardwrap,.feedgrid>.sk-card{background:#fff;border:1px solid var(--grey-200);border-radius:32px;}
+  .feedgrid>.cardwrap{transition:transform .45s cubic-bezier(.16,1,.3,1),box-shadow .45s cubic-bezier(.16,1,.3,1);animation:cardIn .6s cubic-bezier(.16,1,.3,1) both;animation-delay:calc(var(--i,0) * 60ms);}
+  .feedgrid>.cardwrap:hover{transform:translateY(-2px);box-shadow:0 20px 40px -24px rgba(18,18,18,.22);}
+  .feedgrid .view-btn{transition:transform .2s cubic-bezier(.16,1,.3,1);}
+  .feedgrid .view-btn:active{transform:scale(.96);}
+  @keyframes cardIn{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:none;}}
+  @media(prefers-reduced-motion:reduce){.feedgrid>.cardwrap{animation:none;}}
+
+  /* ================= Wallet stack ================= */
+  .w-stack{background:var(--grey-800);display:flex;flex-direction:column;align-items:center;}
+  .w-today{background:var(--grey-50);width:100%;display:flex;gap:12px;align-items:center;justify-content:center;padding:8px 24px;border-bottom-left-radius:20px;border-bottom-right-radius:20px;}
+  .w-today-txt{display:flex;gap:4px;align-items:center;font-size:14px;color:#000;}
+  .w-today-txt b{font-weight:600;}
+  .w-big{padding:40px 0;text-align:center;color:#fff;}
+  .w-big .a{font-size:40px;font-weight:600;line-height:48px;}
+  .w-big .s{font-size:14px;font-weight:500;line-height:20px;margin-top:4px;}
+  .w-actions{background:var(--grey-50);width:100%;display:flex;gap:12px;padding:24px 16px 16px;border-top-left-radius:20px;border-top-right-radius:20px;}
+  .w-actions .btn-secondary{flex:1;width:auto;}
+  .w-recent{display:flex;flex-direction:column;gap:16px;}
+  .w-daybar{display:flex;align-items:center;justify-content:space-between;padding:0 16px;}
+  .w-daybar .day{font-size:14px;font-weight:600;line-height:16px;color:var(--grey-500);}
+  .w-daybar svg{width:24px;height:24px;}
+  .w-txn{display:flex;flex-direction:column;gap:12px;}
+  .w-txn .item{display:flex;gap:12px;align-items:flex-start;padding:0 16px;}
+  .w-txn .logo{width:32px;height:32px;border-radius:20px;object-fit:cover;flex-shrink:0;background:#fff;}
+  .w-txn .c{flex:1;display:flex;flex-direction:column;gap:8px;}
+  .w-txn .desc{font-size:14px;line-height:20px;color:var(--grey-800);}
+  .w-txn .desc b{font-weight:600;}
+  .w-txn .time{display:flex;gap:8px;align-items:center;}
+  .w-txn .time .ago{font-size:12px;line-height:16px;color:var(--grey-600);}
+  .w-txn .time svg{width:16px;height:16px;color:var(--earn);}
+  .w-divider{height:1px;background:var(--grey-100);margin:4px 12px;}
+  .wallet{display:grid;grid-template-columns:var(--rail) minmax(0,1fr);gap:48px;align-items:start;}
+  .wallet .w-stack{position:sticky;top:88px;}
+  .wallet .w-recent{max-width:640px;}
+
+  /* ================= My work ================= */
+  .mw-logos{display:flex;gap:16px;align-items:center;flex-wrap:wrap;padding:4px 16px 0;}
+  .mw-logo72{width:72px;height:72px;border-radius:100px;border:1px solid var(--grey-200);overflow:hidden;flex-shrink:0;cursor:pointer;background:#fff;}
+  .mw-logo72 img{width:100%;height:100%;object-fit:cover;}
+  .mw-sheet{padding:16px;display:flex;flex-direction:column;gap:24px;}
+  .mw-sec{display:flex;flex-direction:column;gap:24px;padding:32px 16px 0;}
+  .mw-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:8px;}
+  .mw-card{position:relative;height:160px;border-radius:20px;overflow:hidden;width:100%;cursor:pointer;}
+  .mw-card .bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
+  .mw-card-ov{position:absolute;inset:0;border-radius:20px;background:rgba(18,18,18,.6);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);padding:16px;display:flex;flex-direction:column;justify-content:space-between;align-items:center;gap:10px;}
+  .mw-card-top{display:flex;align-items:flex-start;justify-content:space-between;width:100%;}
+  .mw-card-top .logo{width:36px;height:36px;border-radius:100px;object-fit:cover;background:#fff;}
+  .mw-card-right{display:flex;flex-direction:column;align-items:flex-end;gap:2px;}
+  .mw-card-right .badge{font-size:14px;font-weight:400;line-height:16px;color:var(--badge);}
+  .mw-card-right .badge.ongoing{color:var(--badge-ongoing);}
+  .mw-heart{display:flex;color:#fff;}
+  .mw-heart svg{width:24px;height:24px;}
+  .mw-card-bot{display:flex;align-items:flex-end;justify-content:space-between;width:100%;}
+  .mw-bud{display:flex;flex:1;flex-direction:column;gap:4px;color:var(--grey-50);}
+  .mw-bud .lbl{font-size:14px;font-weight:500;line-height:20px;}
+  .mw-bud .amt{font-size:24px;font-weight:600;line-height:32px;}
+  .mw-chip{grid-column:1/-1;display:flex;align-items:center;justify-content:center;background:var(--grey-200);border-radius:100px;padding:8px 16px;cursor:pointer;gap:10px;}
+  .mw-chip.dark{background:transparent;padding:8px 20px;justify-content:space-between;}
+  .mw-chip .chip-lbl{font-size:14px;font-weight:500;line-height:20px;color:var(--grey-800);white-space:nowrap;}
+  .mw-chip.dark .chip-lbl{color:var(--grey-50);}
+  .mw-chip .chip-more{font-size:14px;font-weight:600;line-height:20px;padding:4px 8px;color:var(--grey-800);}
+  .mw-chip.dark .chip-more{color:var(--grey-50);}
+  .mw-pending{padding:8px 16px;}
+  .mw-tags{display:flex;gap:8px;flex-wrap:wrap;}
+  .pagehead{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:24px;}
+  .pagehead .page-title{padding-bottom:0;}
+
+  /* ================= Campaign page ================= */
+  .cp{display:grid;grid-template-columns:minmax(0,1fr) var(--rail);gap:32px;align-items:start;}
+  .cp-main{display:flex;flex-direction:column;min-width:0;}
+  .cp-hero{position:relative;height:420px;border-radius:28px 28px 0 0;overflow:hidden;background:var(--grey-200);}
+  .cp-hero>img{width:100%;height:100%;object-fit:cover;}
+  .cp-headrow{position:absolute;top:16px;left:16px;right:16px;display:flex;align-items:center;justify-content:space-between;}
+  .cp-headright{display:flex;gap:12px;align-items:center;}
+  .cp-details{position:relative;margin-top:-72px;display:flex;flex-direction:column;gap:12px;align-items:center;padding:16px 16px 24px;background:var(--grey-50);border-radius:40px 40px 0 0;}
+  .cp-logo{width:40px;height:40px;border-radius:100px;border:1px solid var(--grey-50);object-fit:cover;background:#fff;}
+  .cp-title{font-size:20px;font-weight:600;line-height:24px;color:var(--grey-800);text-align:center;max-width:520px;}
+  .cp-time{display:flex;gap:10px;align-items:center;justify-content:center;font-size:12px;font-weight:500;line-height:12px;color:var(--grey-500);}
+  .cp-time .dot{width:4px;height:4px;border-radius:4px;background:currentColor;}
+  .cp-joined{display:flex;gap:8px;align-items:center;background:var(--grey-200);padding:4px 12px 4px 4px;border-radius:20px;}
+  .cp-avatars{display:flex;}
+  .cp-avatars img{width:24px;height:24px;border-radius:20px;border:1px solid #f6f6f6;object-fit:cover;margin-left:-8px;background:#ddd;}
+  .cp-avatars img:first-child{margin-left:0;}
+  .cp-joined .count{font-size:14px;font-weight:600;color:var(--grey-600);}
+  .cp-infotags{padding:24px 10px;display:flex;flex-direction:column;gap:16px;align-items:center;}
+  .cp-infotags h3{font-size:16px;font-weight:600;line-height:20px;color:var(--grey-800);text-align:center;}
+  .cp-tags{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:center;}
+  .cp-tag{background:var(--grey-200);display:flex;gap:4px;align-items:center;justify-content:center;padding:6px 12px;border-radius:100px;}
+  .cp-tag svg{width:20px;height:20px;color:var(--grey-800);}
+  .cp-tag span{font-size:12px;font-weight:500;line-height:12px;color:var(--grey-800);}
+  .cp-budget{display:flex;align-items:center;justify-content:center;padding:24px 0;}
+  .cp-budget .inner{padding:8px 0;display:flex;flex-direction:column;align-items:center;text-align:center;}
+  .cp-budget .l{display:flex;gap:8px;align-items:center;justify-content:center;font-size:20px;font-weight:600;line-height:25px;}
+  .cp-light{color:var(--grey-50);}
+  .cp-mut{color:var(--grey-500);}
+  .cp-white{color:#fff;}
+  .cp-coin{width:16px;height:16px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#ffd76a,#e0952b);display:inline-block;}
+  .cp-mini{width:54px;height:16px;background:var(--blue-200);border-radius:20px;position:relative;overflow:hidden;display:inline-block;}
+  .cp-mini .track{position:absolute;left:9px;top:6px;width:36px;height:4px;background:var(--grey-50);border-radius:20px;}
+  .cp-mini .fill{position:absolute;left:9px;top:6px;height:4px;background:var(--blue-500);border-radius:20px;}
+  .cp-creators-mini{display:flex;}
+  .cp-creators-mini img{width:16px;height:16px;border-radius:20px;object-fit:cover;margin-left:-4px;background:#ddd;}
+  .cp-creators-mini img:first-child{margin-left:0;}
+  .cp-event{display:flex;justify-content:center;padding:16px 24px;}
+  .cp-event-card{display:flex;flex-direction:column;gap:12px;align-items:center;padding:16px 20px;}
+  .cp-event-info{display:flex;flex-direction:column;align-items:center;}
+  .cp-event-info .line{font-size:20px;font-weight:600;line-height:24px;color:var(--grey-50);text-align:center;}
+  .cp-event-info .mut{color:var(--grey-500);}
+  .cp-event-row{display:flex;gap:8px;align-items:center;justify-content:center;}
+  .cp-event-ic{width:24px;height:24px;flex-shrink:0;color:var(--grey-50);}
+  .cp-event-ic svg{width:24px;height:24px;}
+  .cp-event-cta{display:flex;flex-direction:column;align-items:center;}
+  .cp-event-cta .lbl{font-size:14px;font-weight:500;line-height:20px;color:var(--grey-500);}
+  .cp-event-link{display:flex;gap:4px;align-items:center;cursor:pointer;}
+  .cp-event-link span{font-size:14px;font-weight:500;line-height:20px;color:var(--blue-300);}
+  .cp-event-link .ext{width:16px;height:16px;color:var(--blue-300);}
+  .cp-event-link .ext svg{width:16px;height:16px;}
+  .cp-reqs{padding:32px 24px 16px;display:flex;flex-direction:column;gap:12px;}
+  .cp-reqs h3,.cp-createdby>h3{font-size:16px;font-weight:600;line-height:20px;color:#000;}
+  .cp-reqs p{font-size:14px;line-height:20px;color:#000;text-align:justify;max-width:640px;}
+  .cp-reqs .btn-secondary{max-width:320px;}
+  .reqmore{display:grid;grid-template-rows:0fr;transition:grid-template-rows .45s cubic-bezier(.16,1,.3,1);}
+  .reqmore>div{overflow:hidden;}
+  .cp-reqs.open .reqmore{grid-template-rows:1fr;}
+  .reqmore .cp-list{padding:8px 0;max-width:640px;}
+  .reqmore h4{font-size:14px;font-weight:600;line-height:20px;color:#000;margin-top:8px;}
+  .reqmore ul{list-style:none;display:flex;flex-direction:column;gap:4px;padding:8px 0 4px;}
+  .reqmore li{font-size:14px;line-height:20px;color:var(--grey-700);display:flex;gap:8px;}
+  .reqmore li::before{content:"";width:4px;height:4px;border-radius:4px;background:var(--grey-500);margin-top:8px;flex-shrink:0;}
+  .cp-createdby{display:flex;flex-direction:column;gap:16px;padding:32px 24px 10px;}
+  .cp-creatorcard{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;padding:8px 0 16px;}
+  .cp-creatorcard .col{display:flex;flex-direction:column;gap:16px;}
+  .cp-identity{display:flex;flex-direction:column;gap:16px;align-items:center;padding:16px 32px 4px;}
+  .cp-identity .av{width:80px;height:80px;border-radius:100px;object-fit:cover;background:#fff;}
+  .cp-idtext{display:flex;flex-direction:column;gap:8px;align-items:center;}
+  .cp-identity .name{font-size:20px;font-weight:600;line-height:20px;color:var(--grey-800);}
+  .cp-identity .since{font-size:12px;line-height:16px;color:var(--grey-600);}
+  .cp-cdesc{padding:0 24px;font-size:14px;line-height:20px;color:#000;text-align:center;}
+  .cp-stats{display:flex;align-items:center;justify-content:center;padding:16px 24px;}
+  .cp-stat{display:flex;flex-direction:column;align-items:center;flex:1;}
+  .cp-stat .big{font-size:20px;font-weight:600;color:var(--grey-800);}
+  .cp-stat .lbl{font-size:14px;font-weight:500;line-height:20px;color:var(--grey-600);}
+  .cp-stat-div{width:1px;height:39px;background:var(--grey-200);}
+  .cp-cmetrics{display:flex;flex-direction:column;gap:8px;padding:24px 24px 8px 8px;}
+  .cp-cmetrics .row{display:flex;align-items:center;justify-content:space-between;font-size:14px;line-height:20px;}
+  .cp-cmetrics .row .k{font-weight:400;color:var(--grey-600);}
+  .cp-cmetrics .row .v{font-weight:600;color:var(--grey-800);}
+  .cp-cmetrics .div{height:1px;background:var(--grey-100);margin:4px 0;}
+  .handles{display:flex;gap:16px;align-items:center;justify-content:center;flex-wrap:wrap;}
+  .handle{display:flex;flex-direction:column;gap:4px;align-items:center;padding:8px;position:relative;flex-shrink:0;}
+  .handle .pf{width:64px;height:64px;border-radius:100px;object-fit:cover;background:#fff;}
+  .handle .badge{position:absolute;left:52px;top:0;background:#fff;padding:6px;border-radius:20px;display:flex;filter:drop-shadow(0 2px 1px rgba(0,0,0,.25));color:#121212;}
+  .handle .badge svg{width:12px;height:12px;}
+  .handle .fc{font-size:14px;font-weight:500;line-height:20px;color:#121212;}
+  .cp-questions{padding:8px 24px 0 8px;}
+
+  .cp-side{position:sticky;top:88px;display:flex;flex-direction:column;gap:16px;}
+  .cp-side .wcard{padding:8px 0 16px;display:flex;flex-direction:column;}
+  .cp-side .progress-group{padding:8px 16px 16px;}
+  .cp-side .cta{padding:0 16px;}
+  /* status card (Ongoing / Pending approval / Completed) */
+  .sbo-green{background:var(--ongoing);border-radius:20px;width:100%;display:flex;flex-direction:column;}
+  .sbo-green.pending{background:var(--pending);}
+  .sbo-green.completed{background:var(--blue-500);}
+  .sbo-green-label{text-align:center;padding:4px 0;font-size:12px;font-weight:500;color:#fff;}
+  .sbo-green-box{background:#fff;border-radius:20px;padding:16px;display:flex;flex-direction:column;gap:10px;align-items:center;box-shadow:4px 4px 6px rgba(0,0,0,.12);}
+  .sbo-earn{display:flex;flex-direction:column;align-items:center;color:var(--blue-500);}
+  .sbo-earn .lbl{font-size:16px;font-weight:500;line-height:20px;}
+  .sbo-earn .amt{font-size:28px;font-weight:600;line-height:38px;}
+  .sbo-thumbs{display:grid;grid-template-columns:1fr 1fr;gap:8px;width:100%;}
+  .sbo-thumb{position:relative;height:180px;border-radius:20px;overflow:hidden;}
+  .sbo-thumb img{width:100%;height:100%;object-fit:cover;}
+  .sbo-thumb .badge{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:48px;height:48px;border-radius:100px;background:var(--grey-50);display:flex;align-items:center;justify-content:center;filter:drop-shadow(2px 4px 4px rgba(0,0,0,.4));color:#121212;}
+  .sbo-thumb .badge svg{width:24px;height:24px;}
+  .sbo-earndetails{width:100%;padding:4px 0 0;display:flex;flex-direction:column;gap:8px;}
+  .sbo-earndetails .row{display:flex;justify-content:space-between;align-items:center;font-size:14px;line-height:16px;}
+  .sbo-earndetails .k{color:var(--grey-800);font-weight:400;}
+  .sbo-earndetails .v{font-weight:600;color:var(--grey-800);}
+  .sbo-earndetails .blue{color:var(--blue-500);}
+  .sbo-earndetails .ed-div{height:1px;background:var(--grey-100);}
+  .sbo-earndetails .btn-secondary{margin-top:12px;}
+
+  /* ================= Profile ================= */
+  .profile{display:grid;grid-template-columns:var(--rail) minmax(0,1fr);gap:48px;align-items:start;}
+  .pf-left{display:flex;flex-direction:column;gap:12px;position:sticky;top:88px;}
+  .pf-handle{display:flex;gap:4px;align-items:center;justify-content:center;padding:4px 0 8px;}
+  .pf-handle span{font-size:16px;font-weight:600;color:#000;}
+  .pf-handle svg{width:24px;height:24px;color:#121212;}
+  .pf-identity{padding:8px 0 16px;display:flex;flex-direction:column;gap:8px;align-items:center;}
+  .pf-av{width:92px;height:92px;border-radius:100px;object-fit:cover;border:3px solid #fff;box-shadow:0 0 0 1px var(--grey-200);}
+  .pf-idtext{display:flex;gap:4px;align-items:center;}
+  .pf-idtext .name{font-size:24px;font-weight:600;line-height:32px;color:var(--grey-800);}
+  .pf-idtext .shield svg{width:24px;height:24px;color:#1548eb;}
+  .pf-lifetime{display:flex;flex-direction:column;gap:4px;align-items:center;padding:16px 0;color:var(--grey-50);}
+  .pf-lifetime .lbl{font-size:14px;font-weight:500;line-height:20px;}
+  .pf-lifetime .amt{font-size:28px;font-weight:600;line-height:38px;}
+  .pf-metrics{padding:16px 48px;display:flex;align-items:center;justify-content:center;}
+  .pf-stat{display:flex;flex-direction:column;align-items:center;flex:1;}
+  .pf-stat .big{font-size:20px;font-weight:600;line-height:24px;color:var(--grey-800);}
+  .pf-stat .lbl{font-size:14px;font-weight:600;line-height:16px;color:var(--grey-600);}
+  .pf-stat-div{width:1px;height:39px;background:var(--grey-200);}
+  .pf-campaigns{display:flex;flex-direction:column;gap:8px;}
+  .pf-crow{background:var(--grey-100);border:1px solid var(--grey-200);display:flex;align-items:center;justify-content:space-between;padding:4px 4px 4px 16px;border-radius:20px;overflow:hidden;cursor:pointer;}
+  .pf-crow>span{font-size:14px;font-weight:500;line-height:20px;color:var(--grey-800);}
+  .pf-cright{display:flex;gap:4px;align-items:center;}
+  .pf-cright img{width:20px;height:20px;border-radius:100px;object-fit:cover;background:#fff;}
+  .pf-more{font-size:14px;font-weight:600;line-height:20px;color:var(--grey-600);padding:4px 8px;}
+  .pf-divider{height:1px;background:var(--grey-200);margin:0 12px;}
+  .pf-links{display:flex;flex-direction:column;gap:4px;padding:4px 0 8px;font-size:14px;font-weight:500;}
+  .pf-links a{display:flex;align-items:center;gap:12px;padding:14px 12px;border-radius:16px;color:#121212;}
+  .pf-links a:hover{background:var(--grey-100);}
+  .pf-links a .ic{width:20px;height:20px;color:var(--grey-700);flex-shrink:0;display:flex;}
+  .pf-links a .ic svg{width:20px;height:20px;}
+  .pf-links a .lbl{flex:1;}
+  .pf-links a .chev{width:20px;height:20px;color:var(--grey-500);display:flex;}
+  .pf-links a .chev svg{width:20px;height:20px;}
+  .pf-links a.logout,.pf-links a.logout .ic{color:var(--pink-500);}
+  .pf-right{display:flex;flex-direction:column;gap:24px;min-width:0;padding-top:4px;}
+  .pf-sec{display:flex;flex-direction:column;gap:12px;}
+  .pf-sectitle{font-size:16px;font-weight:600;line-height:20px;color:#000;}
+  .pf-smhandles{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+  .addhandle{display:flex;flex-direction:column;gap:4px;align-items:center;padding:8px;flex-shrink:0;cursor:pointer;}
+  .addhandle .circle{width:64px;height:64px;border-radius:100px;background:#fff;border:1px dashed var(--grey-500);display:flex;align-items:center;justify-content:center;color:var(--grey-500);}
+  .addhandle.solid .circle{border:1px solid var(--grey-200);}
+  .addhandle .circle svg{width:20px;height:20px;}
+  .addhandle span{font-size:14px;font-weight:500;color:#121212;}
+  .vline{width:1px;height:72px;background:var(--grey-200);flex-shrink:0;}
+  .pf-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;}
+  .pf-grid img{width:100%;aspect-ratio:115/174;object-fit:cover;border-radius:12px;background:#ddd;}
+
+  /* ================= Settings ================= */
+  .settings{display:grid;grid-template-columns:220px minmax(0,560px);gap:48px;align-items:start;}
+  .set-nav{position:sticky;top:88px;}
+  .set-block{position:relative;display:flex;flex-direction:column;gap:4px;padding:16px 0;scroll-margin-top:88px;}
+  .set-block+.set-block::before{content:"";position:absolute;top:0;left:12px;right:12px;height:1px;background:var(--grey-200);}
+  .set-blocktitle{padding:0 16px;font-size:16px;font-weight:600;line-height:20px;color:#000;}
+  .set-row{display:flex;align-items:center;gap:12px;padding:12px 16px;border-radius:16px;cursor:pointer;}
+  .set-row:hover{background:var(--grey-100);}
+  .set-ic{width:22px;height:22px;color:var(--grey-700);flex-shrink:0;display:flex;}
+  .set-ic svg{width:22px;height:22px;}
+  .set-av{width:36px;height:36px;border-radius:100px;object-fit:cover;flex-shrink:0;margin:-4px 0;background:#fff;}
+  .set-txt{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px;}
+  .set-lbl{font-size:14px;font-weight:500;line-height:18px;color:var(--grey-800);}
+  .set-row>.set-lbl{flex:1;}
+  .set-sub{font-size:13px;font-weight:400;line-height:16px;color:var(--grey-600);}
+  .set-val{font-size:14px;font-weight:500;color:var(--grey-600);flex-shrink:0;}
+  .set-chev{width:20px;height:20px;color:var(--grey-500);flex-shrink:0;display:flex;}
+  .set-chev svg{width:20px;height:20px;}
+  .set-row.danger .set-lbl,.set-row.danger .set-ic{color:var(--pink-500);}
+  .tg{width:44px;height:26px;border-radius:100px;background:var(--grey-400);position:relative;flex-shrink:0;cursor:pointer;transition:background .22s ease;}
+  .tg::after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:100px;background:#fff;transition:transform .22s cubic-bezier(.16,1,.3,1);box-shadow:0 1px 2px rgba(0,0,0,.25);}
+  .tg.on{background:var(--blue-500);}
+  .tg.on::after{transform:translateX(18px);}
+  .set-version{font-size:12px;color:var(--grey-500);padding:24px 16px 0;}
+
+  /* ================= Submit content ================= */
+  .backbar{display:inline-flex;align-items:center;gap:8px;padding:8px 0;margin-bottom:8px;cursor:pointer;}
+  .backbar svg{width:24px;height:24px;color:var(--grey-800);}
+  .backbar span{font-size:14px;font-weight:600;color:var(--grey-800);}
+  .submit{display:grid;grid-template-columns:minmax(0,1fr) var(--rail);gap:48px;align-items:start;}
+  .sc-content{display:flex;flex-direction:column;gap:32px;max-width:640px;}
+  .sc-titlecard{display:flex;flex-direction:column;gap:12px;}
+  .sc-h1{font-size:24px;font-weight:600;line-height:32px;color:#121212;}
+  .sc-desc,.sc-sub{font-size:14px;line-height:20px;color:#717171;}
+  .sc-section{display:flex;flex-direction:column;gap:12px;}
+  .sc-h2{font-size:16px;font-weight:600;line-height:20px;color:#121212;}
+  .sc-handles{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+  .sc-dropzone{background:#fff;border:1px solid var(--grey-200);border-radius:12px;padding:64px 0;display:flex;flex-direction:column;gap:12px;align-items:center;cursor:pointer;transition:border-color .2s ease;}
+  .sc-dropzone:hover,.sc-dropzone.over{border-color:var(--blue-300);}
+  .sc-uploadicon{width:48px;height:48px;border-radius:100px;background:#ececec;display:flex;align-items:center;justify-content:center;color:#717171;}
+  .sc-uploadicon svg{width:20px;height:20px;}
+  .sc-dropzone.has .sc-uploadicon{background:var(--blue-100);color:var(--blue-500);}
+  .sc-droptext{display:flex;flex-direction:column;gap:2px;align-items:center;}
+  .sc-droptext .t1{font-size:14px;font-weight:500;color:#121212;}
+  .sc-droptext .t2{font-size:14px;line-height:20px;color:#717171;text-align:center;}
+  .sc-inputs{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+  .sc-inputgroup{display:flex;flex-direction:column;}
+  .sc-inputgroup .lbl{font-size:14px;font-weight:500;color:#717171;padding:8px 16px;}
+  .sc-input{border:1px solid var(--grey-200);border-radius:8px;background:#fff;height:80px;padding:8px 16px;font:400 14px/20px var(--font);color:var(--grey-800);resize:none;outline:none;}
+  .sc-input:focus{border-color:var(--blue-300);}
+  .sc-input::placeholder{color:#b3b3b3;}
+  .sc-inputgroup .err{display:none;font-size:12px;line-height:16px;color:var(--pink-500);padding:6px 16px 0;}
+  .sc-inputgroup.bad .sc-input{border-color:var(--pink-500);}
+  .sc-inputgroup.bad .err{display:block;}
+  .sc-terms{display:flex;gap:12px;align-items:flex-start;cursor:pointer;}
+  .sc-check{color:var(--grey-400);display:flex;flex-shrink:0;}
+  .sc-terms.on .sc-check{color:#1548eb;}
+  .sc-terms.bad .sc-check{color:var(--pink-500);}
+  .sc-check svg{width:24px;height:24px;}
+  .sc-terms p{font-size:14px;font-weight:500;line-height:20px;color:#717171;flex:1;}
+  .sc-terms .link{color:#1548eb;}
+  .sc-foot{display:flex;flex-direction:column;gap:8px;}
+  .sc-foot .msg{font-size:12px;line-height:16px;color:var(--pink-500);text-align:center;min-height:16px;}
+  .sc-summary{position:sticky;top:88px;display:flex;flex-direction:column;}
+  .sc-summary .card-img{height:200px;cursor:default;}
+
+  /* ================= Notifications popover ================= */
+  .pop{position:fixed;top:calc(var(--header) + 8px);right:var(--gutter);width:400px;max-height:min(560px,calc(100dvh - 88px));z-index:40;display:flex;flex-direction:column;
+    background:var(--grey-50);border-radius:28px;box-shadow:0 16px 40px rgba(0,0,0,.18);border:1px solid var(--grey-200);
+    opacity:0;transform:translateY(-8px);pointer-events:none;transition:opacity .25s ease,transform .35s cubic-bezier(.16,1,.3,1);}
+  .pop.open{opacity:1;transform:none;pointer-events:auto;}
+  .nt-title{padding:24px 24px 0;font-size:20px;font-weight:600;line-height:24px;color:var(--grey-800);}
+  .nt-list{display:flex;flex-direction:column;gap:16px;padding:20px 16px 24px;overflow-y:auto;}
+  .nt-item{display:flex;gap:12px;align-items:flex-start;}
+  .nt-logo{width:32px;height:32px;border-radius:20px;object-fit:cover;flex-shrink:0;background:var(--grey-100);}
+  .nt-body{flex:1;min-width:0;display:flex;flex-direction:column;gap:8px;padding-bottom:16px;border-bottom:1px solid var(--grey-200);}
+  .nt-item:last-child .nt-body{border-bottom:none;padding-bottom:0;}
+  .nt-text{font-size:14px;line-height:20px;color:var(--grey-800);font-weight:600;}
+  .nt-text .med{font-weight:500;}
+  .nt-time{font-size:12px;font-weight:500;line-height:12px;color:var(--grey-600);}
+
+  /* ================= Overlays (mobile sheets, centred on desktop) ================= */
+  .overlay{position:fixed;inset:0;z-index:50;display:none;align-items:center;justify-content:center;padding:24px;}
+  .overlay.open{display:flex;}
+  .ov-scrim{position:absolute;inset:0;background:rgba(0,0,0,.4);animation:scrimIn .4s ease both;}
+  @keyframes scrimIn{from{opacity:0;}to{opacity:1;}}
+  @keyframes sheetIn{from{opacity:0;transform:translateY(40px);}to{opacity:1;transform:none;}}
+  .cf-sheet,.ov-sheet{position:relative;width:100%;max-width:420px;background:#fff;border-radius:28px;display:flex;flex-direction:column;align-items:center;animation:sheetIn .5s cubic-bezier(.16,1,.3,1) both;}
+  .cf-sheet{padding:28px 28px 32px;gap:20px;}
+  .cf-ic{width:56px;height:56px;border-radius:100px;display:flex;align-items:center;justify-content:center;}
+  .cf-ic.warn{background:rgba(244,51,171,.12);color:var(--pink-500);}
+  .cf-ic.neutral{background:var(--grey-100);color:var(--grey-700);}
+  .cf-ic svg{width:28px;height:28px;}
+  .cf-text{display:flex;flex-direction:column;gap:8px;align-items:center;text-align:center;}
+  .cf-text h3{font-size:18px;font-weight:600;line-height:24px;color:var(--grey-800);}
+  .cf-text p{font-size:14px;line-height:20px;color:var(--grey-600);}
+  .cf-actions{display:flex;flex-direction:column;gap:10px;width:100%;}
+  .cf-btn{border-radius:100px;padding:14px 20px;text-align:center;font-size:14px;font-weight:600;cursor:pointer;}
+  .cf-btn.danger{background:var(--pink-500);color:#fff;box-shadow:2px 2px 6px rgba(0,0,0,.08);}
+  .cf-btn.dark{background:var(--grey-800);color:var(--grey-50);box-shadow:2px 2px 6px rgba(0,0,0,.08);}
+  .cf-btn.ghost{background:var(--grey-100);color:var(--grey-800);}
+  .ov-sheet{padding:48px;gap:28px;}
+  .ov-graphic{width:135px;height:135px;border-radius:35px;background:var(--pending-card);box-shadow:2px 4px 12px rgba(0,0,0,.3);position:relative;overflow:hidden;flex-shrink:0;}
+  .ov-graphic .thumb{position:absolute;width:58px;height:74px;border-radius:8px;object-fit:cover;box-shadow:2px 4px 8px rgba(0,0,0,.3);}
+  .ov-graphic .t1{left:14px;top:10px;transform:rotate(-3deg);}
+  .ov-graphic .t2{right:12px;top:18px;transform:rotate(4deg);}
+  .ov-graphic .glow{position:absolute;bottom:0;left:0;right:0;height:90px;background:radial-gradient(ellipse at 50% 120%,rgba(255,255,255,.45),transparent 65%);}
+  .ov-graphic .label{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);text-align:center;color:#fff;font-size:12px;font-weight:500;line-height:1.15;}
+  .ov-text{display:flex;flex-direction:column;gap:32px;align-items:center;width:100%;padding:10px 0;}
+  .ov-title{font-size:20px;font-weight:600;line-height:24px;color:var(--grey-800);text-align:center;}
+  .ov-title .purple{color:var(--pending-card);}
+  .ov-primary{background:var(--grey-800);color:var(--grey-50);border-radius:100px;padding:12px 20px;width:100%;text-align:center;font-size:14px;font-weight:500;cursor:pointer;box-shadow:2px 2px 6px rgba(0,0,0,.08);}
+
+  .toast{position:fixed;left:50%;bottom:32px;z-index:60;transform:translate(-50%,16px);opacity:0;pointer-events:none;background:var(--grey-800);color:var(--grey-50);
+    padding:12px 20px;border-radius:100px;font-size:14px;font-weight:500;box-shadow:2px 2px 12px rgba(0,0,0,.16);transition:opacity .25s ease,transform .35s cubic-bezier(.16,1,.3,1);}
+  .toast.show{opacity:1;transform:translate(-50%,0);}
+
+  /* ================= Responsive ================= */
+  @media (max-width:1279px){
+    .cp,.submit{grid-template-columns:minmax(0,1fr);}
+    .cp-side,.sc-summary{position:static;}
+    .feedgrid{grid-template-columns:repeat(2,minmax(0,1fr));}
+  }
+  @media (max-width:1023px){
+    :root{--gutter:24px;}
+    .wallet,.profile,.settings{grid-template-columns:minmax(0,1fr);}
+    .wallet .w-stack,.pf-left,.set-nav{position:static;}
+    .cp-creatorcard{grid-template-columns:minmax(0,1fr);}
+    .cp-cmetrics,.cp-questions{padding-left:24px;}
+    .pf-grid{grid-template-columns:repeat(3,minmax(0,1fr));}
+  }
+  @media (max-width:767px){
+    :root{--gutter:16px;}
+    .topbar{grid-template-columns:auto auto minmax(0,1fr);gap:8px;}
+    .brand svg{height:22px;}
+    .tnav{gap:0;}
+    .tnav a{width:44px;}
+    .top-right{gap:8px;}
+    .top-av,.wallet-pill span{display:none;}
+    .wallet-pill{padding:4px;}
+    .phone-note{display:flex;gap:12px;align-items:center;margin:16px var(--gutter) 0;padding:12px 16px;border-radius:20px;background:var(--grey-800);color:var(--grey-50);font-size:14px;line-height:20px;}
+    .phone-note a{margin-left:auto;font-weight:600;color:var(--blue-200);white-space:nowrap;}
+    .home-title{font-size:32px;line-height:40px;}
+    .feedgrid{grid-template-columns:minmax(0,1fr);gap:16px;margin-top:24px;}
+    .mw-list{grid-template-columns:minmax(0,1fr);}
+    .cp-hero{height:320px;}
+    .sc-inputs{grid-template-columns:minmax(0,1fr);}
+    .pop{left:var(--gutter);width:auto;}
+  }
+</style>
+</head>
+<body>
+<div class="phone-note">On a phone? The mobile app is built for this screen. <a href="prototype%20(1).html">Open mobile</a></div>
+<header class="topbar" id="topbar">
+  <a class="brand" href="#/explore" aria-label="UGC Platform home"><svg viewBox="0 0 269 184" fill="none" aria-hidden="true"><path d="M121.556 4.06404C141.556 -7.48297 166.556 6.9505 166.556 30.0445C166.556 31.0921 165.899 32.0212 164.936 32.4319C152.062 37.9179 143.037 50.6867 143.037 65.564V116.564C143.037 131.086 151.636 143.598 164.02 149.29C165.519 149.979 166.556 151.435 166.556 153.085C166.555 176.178 141.556 190.612 121.556 179.065L15 117.545C-5 105.998 -5 77.1306 15 65.5836L121.556 4.06404Z" fill="currentColor"/><path d="M227.969 0.278931C250.418 0.27893 268.617 18.478 268.617 40.9274V140.409C268.617 162.858 250.418 181.056 227.969 181.056C210.666 181.056 195.891 170.245 190.025 155.01C189.233 152.955 190.505 150.769 192.546 149.942C205.734 144.6 215.037 131.669 215.037 116.564V65.5641C215.037 50.3684 205.621 37.3734 192.306 32.0911C190.279 31.2867 188.994 29.1414 189.737 27.0903C195.397 11.453 210.378 0.278951 227.969 0.278931Z" fill="currentColor"/></svg></a>
+  <nav class="tnav" id="tnav" aria-label="Main"></nav>
+  <div class="top-right">
+    <a class="wallet-pill" href="#/wallet" aria-label="Wallet balance"><img data-a="avatar" alt=""><span>Rs. 12,688</span></a>
+    <button class="hicon" id="search-btn" data-search aria-label="Search" aria-expanded="false"></button>
+    <button class="hicon" data-pop="notifs" aria-label="Notifications"><span id="bell-ic"></span><i class="dot"></i></button>
+    <a href="#/profile" aria-label="Profile"><img class="top-av" data-a="pfAvatar" data-label="R" alt=""></a>
+  </div>
+</header>
+<main class="content" id="view"></main>
+
+<div class="pop" id="pop-notifs"><div class="nt-title">Notifications</div><div class="nt-list" id="nt-list"></div></div>
+<div class="overlay" id="overlay"><div class="ov-scrim" data-close></div><div id="overlay-sheet"></div></div>
+<div class="toast" id="toast"></div>
+<input type="file" id="file" accept="image/jpeg,image/png,video/mp4" hidden>
+
+<script>
+/* ===== Design assets injected from the mobile prototype by desktop/build.js ===== */
+/*@ASSETS@*/
+
+/*@ICON@*/
+
+/*@CPICON@*/
+
+/*@MICON@*/
+
+/* The mobile prototype references kfcLogo without defining it; give it a simple brand badge. */
+A.kfcLogo=A.kfcLogo||'data:image/svg+xml;base64,'+btoa(`<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><rect width='120' height='120' fill='#e4002b'/><text x='50%' y='53%' font-family='Inter,Arial,sans-serif' font-size='36' font-weight='600' fill='#fff' text-anchor='middle' dominant-baseline='middle'>KFC</text></svg>`);
+
+function fallback(img){
+  const label=(img.dataset.label||"?").slice(0,2).toUpperCase();
+  const c=['#1548eb','#f433ab','#717171','#121212'][label.charCodeAt(0)%4];
+  const svg=`<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><rect width='64' height='64' fill='${c}'/><text x='50%' y='54%' font-family='Inter,sans-serif' font-size='26' font-weight='600' fill='white' text-anchor='middle' dominant-baseline='middle'>${label}</text></svg>`;
+  img.src='data:image/svg+xml;base64,'+btoa(svg);
+}
+function bindAssets(root){
+  root.querySelectorAll('img[data-a]').forEach(img=>{
+    if(img.dataset.bound) return; img.dataset.bound=1;
+    img.onerror=()=>{img.onerror=null;fallback(img);};
+    if(A[img.dataset.a]) img.src=A[img.dataset.a]; else fallback(img);
+  });
+}
+const AVSET='<img data-a="av1" data-label="C" alt=""><img data-a="av2" data-label="C" alt=""><img data-a="av3" data-label="C" alt=""><img data-a="av4" data-label="C" alt="">';
+const PLAT={insta:CPICON.insta,tiktok:CPICON.tiktok,linkedin:CPICON.linkedin};
+const MWHEART=`<svg viewBox="0 0 24 24" fill="none"><path d="M12 7.69431C10 2.99988 3 3.49988 3 9.49991C3 15.4999 12 20.5001 12 20.5001C12 20.5001 21 15.4999 21 9.49991C21 3.49988 14 2.99988 12 7.69431Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+
+/* ================= Data (from the mobile prototype) ================= */
+const SPEC=[['Format','Vertical 9:16'],['Duration','30–45 seconds'],['Quality','Min 1080p'],['Language','English, Sinhala'],['Captions','Required']];
+const RESTRICT=['No AI generated content','Face must be visible in the content','No competitor brands in the frame','Caption must tag the brand handle','Use only licensed or original audio'];
+
+const C={
+  uber:{img:'card1',logo:'logo1',abbr:'Ub',cat:'Mobility',
+    title:'Uber Moto UGC campaign in Colombo Book festival',time:'5 hrs ago',right:'10 d left',progress:40,joined:'412 joined',joinedShort:'400+',
+    money:'<span>Rs. 284,536 /</span><b>Rs. 1,000,000</b>',spent:'Rs. 284,536',available:'Rs. 715,464',budget:'Rs. 1,000,000',budgetN:1000000,
+    list:[['Base price per content','Rs. 6488'],['Max earning per content','Rs. 100,000'],['Performance pricing','Rs. 2000 / 1K views'],['Total budget','Rs. 1,000,000']],
+    tags:[['Females','people'],['25-35 age','age'],['Colombo','pin'],['Selfie','camera'],['Reels','video']],
+    reqDesc:'Show your audience how Uber Moto can make everyday city travel quicker, easier, and more convenient.',
+    brand:'Uber Sri Lanka',since:'Since Mar 2026',brandDesc:'Create creative content when you ride Uber Moto across Colombo and share your journey.',
+    totalPaid:'Rs. 2.6 M',campaigns:'48',metrics:[['Content approval rate','96 %'],['Approval time','1 d'],['Responds within','2 hrs']],
+    handles:[['10K','insta'],['2.5K','tiktok'],['546','linkedin']]},
+  eats:{img:'card2',logo:'logo2',abbr:'UE',cat:'Food',
+    title:'UberEats UGC campaign in Colombo Book festival',time:'5 hrs ago',right:'10 d left',progress:70,joined:'412 joined',joinedShort:'300+',
+    money:'<span>Rs. 284,536 /</span><b>Rs. 500,000</b>',spent:'Rs. 350,000',available:'Rs. 150,000',budget:'Rs. 500,000',budgetN:500000,
+    list:[['Base price per content','Rs. 5200'],['Max earning per content','Rs. 80,000'],['Performance pricing','Rs. 1500 / 1K views'],['Total budget','Rs. 500,000']],
+    tags:[['Foodies','people'],['20-30 age','age'],['Colombo','pin'],['Reels','video'],['Story','camera']],
+    reqDesc:'Show how UberEats brings your favourite Colombo restaurants to your door in minutes.',
+    brand:'Uber Eats LK',since:'Since Jan 2026',brandDesc:'Create tasty content while ordering your favourite meals on Uber Eats.',
+    totalPaid:'Rs. 1.8 M',campaigns:'32',metrics:[['Content approval rate','94 %'],['Approval time','1 d'],['Responds within','3 hrs']],
+    handles:[['8K','insta'],['1.9K','tiktok'],['420','linkedin']]},
+  hiru:{img:'card3',logo:'logo3',abbr:'Hi',cat:'Entertainment',
+    title:'Hiru TV, Akon Musical event & DJ in Colombo',time:'Happening on July 4',right:null,progress:100,joined:null,joinedShort:'500+',
+    money:'<span>Total budget:</span><b>Rs. 500,000</b>',spent:'Rs. 320,000',available:'Rs. 180,000',budget:'Rs. 500,000',budgetN:500000,
+    list:[['Base price per content','Rs. 8000'],['Max earning per content','Rs. 150,000'],['Performance pricing','Rs. 2500 / 1K views'],['Total budget','Rs. 500,000']],
+    tags:[['All ages','people'],['Colombo','pin'],['Music','video'],['Reels','video'],['Story','camera']],
+    reqDesc:'Capture the energy of Akon live in Colombo — the countdown, the venue, and the crowd.',
+    brand:'Hiru TV',since:'Since Jan 2026',brandDesc:'Sri Lanka’s leading entertainment network bringing world-class events to Colombo.',
+    totalPaid:'Rs. 5.2 M',campaigns:'120',metrics:[['Content approval rate','98 %'],['Approval time','2 d'],['Responds within','1 hr']],
+    handles:[['50K','insta'],['20K','tiktok'],['15K','linkedin']],
+    event:{date:'July 4',time:'6 pm onwards',location:'Port City, Colombo',ticket:'PickMe Events'}},
+  starbucks:{img:'sbHero',logo:'starbucks',abbr:'St',cat:'Food',status:'ongoing',
+    title:'Starbucks Christmas Mocha campaign',time:'5 hrs ago',right:'10 d left',progress:57,joined:'400+ joined',joinedShort:'400+',
+    money:'<span>Rs. 92,872 /</span><b>Rs. 500,000</b>',spent:'Rs. 38,588',available:'Rs. 1,236,568',budget:'Rs. 500,000',budgetN:500000,
+    list:[['Base price per content','Rs. 6488'],['Max earning per content','Rs. 100,000'],['Performance pricing','Rs. 2000 / 1K views'],['Total budget','Rs. 500,000']],
+    tags:[['All genders','people'],['18-35 age','age'],['Colombo','pin'],['Selfie','camera'],['Reels','video']],
+    reqDesc:'Create creative content when you are using Uber Eats Food Delivery service with Uber Eats logo being clearly visible and a shot at the Uber Eats UI from your phone.',
+    brand:'Starbucks Sri Lanka',since:'Since Mar 2026',brandDesc:'Create creative content when you are using Uber Eats Food Delivery service with Uber.',
+    totalPaid:'Rs. 2.6 M',campaigns:'48',metrics:[['Content approval rate','96 %'],['Approval time','1 d'],['Responds within','2 hrs']],
+    handles:[['10K','insta'],['2.5K','tiktok'],['546','linkedin']]},
+  burgerking:{img:'burgerPhoto',logo:'burgerking',abbr:'BK',cat:'Food',
+    title:'Burger King Whopper Wednesday creator drop',time:'1 d ago',right:'1 d left',progress:38,joined:'184 joined',joinedShort:'180+',
+    money:'<span>Rs. 751,428 /</span><b>Rs. 2,000,000</b>',spent:'Rs. 751,428',available:'Rs. 1,248,572',budget:'Rs. 2,000,000',budgetN:2000000,
+    list:[['Base price per content','Rs. 7250'],['Max earning per content','Rs. 120,000'],['Performance pricing','Rs. 1800 / 1K views'],['Total budget','Rs. 2,000,000']],
+    tags:[['Foodies','people'],['18-30 age','age'],['Colombo','pin'],['Reels','video']],
+    reqDesc:'Film your first bite of the Whopper on a Wednesday and tell your audience what makes it worth the queue.',
+    brand:'Burger King LK',since:'Since Jun 2026',brandDesc:'Flame-grilled burgers across 23 outlets island-wide.',
+    totalPaid:'Rs. 940 K',campaigns:'11',metrics:[['Content approval rate','91 %'],['Approval time','2 d'],['Responds within','5 hrs']],
+    handles:[['22K','insta'],['6.1K','tiktok'],['1.2K','linkedin']]},
+  dominos:{img:'grid3',logo:'dominos',abbr:'Do',cat:'Food',status:'pending',
+    title:'Domino’s Polos Pizza product launch',time:'10 d ago',right:'Ending Today',progress:57,joined:'412 joined',joinedShort:'400+',
+    money:'<span>Rs. 284,536 /</span><b>Rs. 500,000</b>',spent:'Rs. 284,536',available:'Rs. 215,464',budget:'Rs. 500,000',budgetN:500000,
+    list:[['Base price per content','Rs. 6488'],['Max earning per content','Rs. 100,000'],['Performance pricing','Rs. 2000 / 1K views'],['Total budget','Rs. 1,500,000']],
+    tags:[['Foodies','people'],['20-35 age','age'],['Colombo','pin'],['Reels','video']],
+    reqDesc:'Unbox the new Polos Pizza with friends and capture the first reactions on camera.',
+    brand:'Domino’s Pizza LK',since:'Since Feb 2026',brandDesc:'Hot pizza delivered in 30 minutes across Colombo and suburbs.',
+    totalPaid:'Rs. 1.4 M',campaigns:'27',metrics:[['Content approval rate','93 %'],['Approval time','1 d'],['Responds within','4 hrs']],
+    handles:[['31K','insta'],['9.4K','tiktok'],['870','linkedin']]},
+  kfc:{img:'grid2',logo:'kfcLogo',abbr:'KF',cat:'Food',
+    title:'KFC Hot & Crispy first-bite challenge',time:'1 d ago',right:'3 d left',progress:42,joined:'260 joined',joinedShort:'260',
+    money:'<span>Rs. 120,000 /</span><b>Rs. 280,000</b>',spent:'Rs. 120,000',available:'Rs. 160,000',budget:'Rs. 280,000',budgetN:280000,
+    list:[['Base price per content','Rs. 4400'],['Max earning per content','Rs. 60,000'],['Performance pricing','Rs. 1200 / 1K views'],['Total budget','Rs. 280,000']],
+    tags:[['Spice lovers','people'],['18-30 age','age'],['Island-wide','pin'],['Reels','video']],
+    reqDesc:'Film your honest first bite of the new Hot & Crispy bucket — the crunch, the heat, the reaction.',
+    brand:'KFC Sri Lanka',since:'Since Apr 2026',brandDesc:'Finger lickin’ good chicken from 38 restaurants across the island.',
+    totalPaid:'Rs. 610 K',campaigns:'9',metrics:[['Content approval rate','97 %'],['Approval time','1 d'],['Responds within','6 hrs']],
+    handles:[['14K','insta'],['3.3K','tiktok'],['2.1K','linkedin']]},
+  shakira:{img:'grid6',logo:'logo3',abbr:'Hi',cat:'Entertainment',
+    title:'Shakira Live Musical event at City of Dreams',time:'Happening on July 4',right:null,progress:100,joined:null,joinedShort:'600+',
+    money:'<span>Total budget:</span><b>Rs. 2,000,000</b>',spent:'Rs. 610,000',available:'Rs. 1,390,000',budget:'Rs. 2,000,000',budgetN:2000000,
+    list:[['Base price per content','Rs. 9500'],['Max earning per content','Rs. 200,000'],['Performance pricing','Rs. 3000 / 1K views'],['Total budget','Rs. 2,000,000']],
+    tags:[['All ages','people'],['Colombo','pin'],['Music','video'],['Reels','video']],
+    reqDesc:'Take your audience inside City of Dreams for Shakira’s first show in Sri Lanka.',
+    brand:'Hiru TV',since:'Since Jan 2026',brandDesc:'Sri Lanka’s leading entertainment network bringing world-class events to Colombo.',
+    totalPaid:'Rs. 5.2 M',campaigns:'120',metrics:[['Content approval rate','98 %'],['Approval time','2 d'],['Responds within','1 hr']],
+    handles:[['50K','insta'],['20K','tiktok'],['15K','linkedin']],
+    event:{date:'July 4',time:'7 pm onwards',location:'City of Dreams, Colombo',ticket:'PickMe Events'}},
+};
+const EXPLORE=['uber','eats','hiru','starbucks','burgerking','dominos'];
+/* Status boxes exactly as the mobile Ongoing / Pending / Completed campaign pages */
+const STATUS={
+  ongoing:{cls:'',label:'Ongoing',earnLbl:'Total earnings',amt:'Rs. 92,872',content:['sbContent1','sbContent2'],
+    rows:[['Total views','652k views',0],['Base payout','Rs. 6,488',1],['Performance pay','Rs.86,488',1]],btn:'View Analytics'},
+  pending:{cls:'pending',label:'Pending approval',earnLbl:'Expected earnings',amt:'Rs. 58,400',content:['sbContent1','sbContent2'],
+    rows:[['Content submitted','2 posts',0],['Base payout','Rs. 6,488',1],['Est. performance pay','Rs. 51,912',1]],btn:'Track submission'},
+  completed:{cls:'completed',label:'Completed',earnLbl:'Total earnings',amt:'Rs. 74,872',content:['sbContent1','sbContent2'],
+    rows:[['Total views','652k views',0],['Base payout','Rs. 6,488',1],['Performance pay','Rs.66,488',1]],btn:'View Analytics'},
+};
+const COMPLETED=[{id:'uber',ended:'Ended on July 1',earned:'Rs. 92,872'},{id:'eats',ended:'Ended on June 28',earned:'Rs. 48,500'},{id:'hiru',ended:'Ended on June 20',earned:'Rs. 125,000'}];
+const ONGOING=[{id:'starbucks',earned:'Rs. 92,872'},{id:'kfc',earned:'Rs. 18,240'},{id:'eats',earned:'Rs. 31,905'}];
+const PENDING=['dominos','uber','kfc','eats'];
+
+const notifications=[
+  {logo:'pickmeLogo',type:'txn',amount:'3,568',brand:'PickMe',detail:'PickMe bike campaign in Colombo',time:'5 hrs ago'},
+  {logo:'logo1',type:'approved',brand:'PickMe',time:'5 hrs ago'},
+  {logo:'uberLogo',type:'reply',brand:'PickMe',time:'5 hrs ago'},
+  {logo:'legoLogo',type:'approved',brand:'PickMe',time:'5 hrs ago'},
+  {logo:'dominos',type:'txn',amount:'3,568',brand:'PickMe',detail:'PickMe bike campaign in Colombo',time:'5 hrs ago'},
+  {logo:'pepsi',type:'reply',brand:'PickMe',time:'5 hrs ago'},
+  {logo:'card1',type:'txn',amount:'3,568',brand:'PickMe',detail:'PickMe bike campaign in Colombo',time:'5 hrs ago'},
+  {logo:'avatar',type:'txn',amount:'3,568',brand:'PickMe',detail:'PickMe bike campaign in Colombo',time:'5 hrs ago'},
+  {logo:'logo2',type:'approved',brand:'PickMe',time:'5 hrs ago'},
+  {logo:'pickmeLogo',type:'approved',brand:'PickMe',time:'5 hrs ago'},
+];
+const TX=[['Today',[['pickmeLogo','PickMe','Pi'],['uberLogo','Uber','Ub'],['legoLogo','LEGO','Le'],['legoLogo','LEGO','Le'],['pickmeLogo','PickMe','Pi']]],
+          ['Yesterday',[['starbucks','Starbucks','St'],['dominos','Domino’s','Do'],['pickmeLogo','PickMe','Pi']]]];
+
+const state={cat:'All',q:'',searchOpen:false,loaded:false,mw:'all',upload:null};
+
+/* ================= Templates ================= */
+const timeHTML=c=>`<div class="card-time"><span>${c.time}</span>${c.right?`<span class="dot"></span><span>${c.right}</span>`:''}</div>`;
+
+function cardHTML(id,opt={}){
+  const c=C[id], pending=opt.pending||c.status==='pending', go=opt.go||`#/campaign/${id}`;
+  return `<div class="cardwrap">${pending?'<div class="pending-card">':''}<div class="card-img" data-go="${go}">
+      <img class="photo" data-a="${c.img}" data-label="${c.abbr}" alt="">
+      <div class="card-logobar"><img class="logo" data-a="${c.logo}" data-label="${c.abbr}" alt="">${ICON.heart}</div>
+      <div class="overlaybar"><div class="details">${ICON.tiktok}${ICON.insta}<span class="price-chip">${c.list[2][1].replace(/Rs\. (\d+) \/ 1K views/,'Rs.$1/1K')}</span></div><div class="view-btn">View</div></div>
+    </div>${pending?'<div class="pending-earned">Pending for approval</div></div>':''}
+    <div class="card-content">
+      <div class="ctitle" data-go="${go}">${c.title}</div>${timeHTML(c)}
+      <div class="progress-group"><div class="progress"><div class="fill" style="width:${c.progress}%"></div></div>
+        <div class="card-foot">${c.joined?`<div class="joined">${ICON.user}<span>${c.joined}</span></div>`:'<span></span>'}<div class="money">${c.money}</div></div></div>
+    </div></div>`;
+}
+
+function mwCardHTML(id,badge,lbl,amt,cta,go,opt={}){
+  const c=C[id];
+  return `<div class="mw-card" data-go="${go}"><img class="bg" data-a="${opt.img||c.img}" alt="">
+    <div class="mw-card-ov">
+      <div class="mw-card-top"><img class="logo" data-a="${c.logo}" data-label="${c.abbr}" alt=""><div class="mw-card-right"><span class="badge ${opt.ongoing?'ongoing':''}">${badge}</span><span class="mw-heart like-heart ${opt.liked?'liked':''}">${MWHEART}</span></div></div>
+      <div class="mw-card-bot"><div class="mw-bud"><span class="lbl">${lbl}</span><span class="amt">${amt}</span></div><div class="mw-join">${cta}</div></div>
+    </div></div>`;
+}
+const chip=(lbl,logos,go,more)=>`<a class="mw-chip" ${go?`href="${go}"`:''}><span class="chip-lbl">${lbl}</span><div class="chip-right">${logos.map(l=>`<img data-a="${l}" alt="">`).join('')}${more?`<span class="chip-more">${more}</span>`:''}</div></a>`;
+
+function walletStack(){
+  return `<div class="w-stack">
+    <div class="w-today"><div class="w-today-txt">Today total is <b>Rs. 8,488</b></div><div class="logos"><img data-a="legoLogo" alt=""><img data-a="uberLogo" alt=""><img data-a="pickmeLogo" alt=""></div></div>
+    <div class="w-big"><div class="a">Rs. 12,688</div><div class="s">Available balance</div></div>
+    <div class="w-actions"><a class="btn-dark" data-act="transfer">Transfer</a><a class="btn-secondary" data-act="soon">Manage bank details</a></div>
+  </div>`;
+}
+
+/* ---------- Explore ---------- */
+function viewExplore(){
+  const cats=['All','Price','Mobility','Food','Entertainment','Lifestyle'];
+  return `<div class="home">
+    <h1 class="home-title">Campaigns</h1>
+    <div class="home-search${state.searchOpen?' open':''}" id="home-search"><div>
+      <label class="search">${MICON.search}<input id="q" type="search" placeholder="Search" value="${esc(state.q)}" autocomplete="off" aria-label="Search campaigns and brands"${state.searchOpen?'':' tabindex="-1"'}><kbd>Esc</kbd></label>
+    </div></div>
+    <div class="tags">${cats.map(c=>`<div class="tag${state.cat===c?' active':''}" data-cat="${c}">${c}</div>`).join('')}</div>
+    <div class="feedgrid" id="feed"></div>
+  </div>`;
+}
+function renderFeed(){
+  const f=document.getElementById('feed'); if(!f) return;
+  if(!state.loaded){
+    f.innerHTML=Array.from({length:6},()=>`<div class="sk-card"><div class="sk img"></div><div class="sk l1"></div><div class="sk l2"></div><div class="sk l3"></div></div>`).join('');
+    setTimeout(()=>{state.loaded=true;renderFeed();},600);return;
+  }
+  const q=state.q.trim().toLowerCase();
+  let ids=EXPLORE.filter(id=>{const c=C[id];
+    if(!['All','Price'].includes(state.cat)&&c.cat!==state.cat) return false;
+    return !q||(c.title+' '+c.brand).toLowerCase().includes(q);});
+  if(state.cat==='Price') ids=[...ids].sort((a,b)=>C[b].budgetN-C[a].budgetN);
+  f.innerHTML=ids.length?ids.map((id,i)=>cardHTML(id).replace('class="cardwrap"',`class="cardwrap" style="--i:${i}"`)).join('')
+    :`<div class="ph"><div class="tag2">No campaigns</div><h2>Nothing matches “${esc(state.q||state.cat)}”</h2><p>Try another brand name or clear the search to see every open campaign.</p><div class="tag" data-act="clear">Clear filters</div></div>`;
+  bindAssets(f);
+}
+const esc=s=>String(s).replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
+
+/* ---------- Campaign page ---------- */
+function viewCampaign(id,statusOverride){
+  const c=C[id]; if(!c) return viewExplore();
+  const status=statusOverride||c.status||'open';
+  const listRows=c.list.map(r=>`<div class="div"></div><div class="row"><span class="k">${r[0]}</span><span class="v">${r[1]}</span></div>`).join('');
+  const list=`<div class="cp-list"><div class="row"><span class="k">Target platforms</span><span class="social">${CPICON.insta}${CPICON.tiktok}</span></div>${listRows}</div>`;
+  const tags=c.tags.map(t=>`<div class="cp-tag">${CPICON[t[1]]}<span>${t[0]}</span></div>`).join('');
+  const metrics=c.metrics.map((m,i)=>(i?'<div class="div"></div>':'')+`<div class="row"><span class="k">${m[0]}</span><span class="v">${m[1]}</span></div>`).join('');
+  const handles=c.handles.map(h=>`<div class="handle"><img class="pf" data-a="${c.logo}" data-label="${c.abbr}" alt=""><div class="badge">${PLAT[h[1]]}</div><span class="fc">${h[0]}</span></div>`).join('');
+  const num=v=>+String(v).replace(/[^0-9]/g,'');
+  const pct=num(c.spent)/(num(c.spent)+num(c.available));
+  const mid=c.event
+    ? `<div class="cp-event"><div class="cp-event-card">
+        <div class="cp-event-info">
+          <div class="cp-event-row"><span class="line"><span class="mut">Happening on </span>${c.event.date}</span><span class="cp-event-ic">${CPICON.calendar}</span></div>
+          <span class="line">${c.event.time} <span class="mut">at</span></span>
+          <div class="cp-event-row"><span class="cp-event-ic">${CPICON.pin}</span><span class="line">${c.event.location}</span></div>
+        </div>
+        <div class="cp-event-cta"><span class="lbl">Buy tickets from</span><a class="cp-event-link" data-act="soon"><span>${c.event.ticket}</span><span class="ext">${CPICON.extlink}</span></a></div>
+      </div></div>`
+    : `<div class="cp-budget"><div class="inner">
+        <div class="l"><span class="cp-light">${c.available}</span><span class="cp-mini"><span class="track"></span><span class="fill" style="width:${(36*pct).toFixed(1)}px"></span></span><span class="cp-mut">is</span></div>
+        <div class="l"><span class="cp-mut">available to spend.</span></div>
+        <div class="l"><span class="cp-white">${c.spent}</span><span class="cp-coin"></span><span class="cp-light">was spent <span class="cp-mut">on</span></span></div>
+        <div class="l"><span class="cp-mut">creators</span><span class="cp-creators-mini">${AVSET}</span><span class="cp-mut">up to now.</span></div>
+      </div></div>`;
+  let side;
+  if(status==='open'){
+    side=`<div class="wcard">${list}
+      <div class="progress-group"><div class="progress"><div class="fill" style="width:${c.progress}%"></div></div>
+        <div class="card-foot">${c.joined?`<div class="joined">${ICON.user}<span>${c.joined}</span></div>`:'<span></span>'}<div class="money">${c.money}</div></div></div>
+      <div class="cta"><a class="btn-primary" href="#/submit/${id}">Join Campaign</a></div></div>`;
+  } else {
+    const s=STATUS[status];
+    side=`<div class="sbo-green ${s.cls}"><div class="sbo-green-label">${s.label}</div><div class="sbo-green-box">
+        <div class="sbo-earn"><span class="lbl">${s.earnLbl}</span><span class="amt">${s.amt}</span></div>
+        <div class="sbo-thumbs">${s.content.map((im,i)=>`<div class="sbo-thumb"><img data-a="${im}" alt=""><div class="badge">${i?CPICON.tiktok:CPICON.insta}</div></div>`).join('')}</div>
+        <div class="sbo-earndetails">${s.rows.map((r,i)=>(i?'<div class="ed-div"></div>':'')+`<div class="row"><span class="k ${r[2]?'blue':''}">${r[0]}</span><span class="v ${r[2]?'blue':''}">${r[1]}</span></div>`).join('')}
+          <div class="btn-secondary" data-act="soon">${s.btn}</div></div>
+      </div></div>
+      <div class="wcard">${list}</div>`;
+  }
+  return `<div class="cp">
+    <div class="cp-main">
+      <div class="cp-hero"><img data-a="${c.img}" data-label="${c.abbr}" alt="">
+        <div class="cp-headrow"><a class="iconbtn" data-back>${CPICON.chevL}</a><div class="cp-headright"><a class="iconbtn like-heart">${CPICON.heart}</a><a class="iconbtn" data-act="share">${CPICON.share}</a></div></div>
+      </div>
+      <div class="cp-details">
+        <img class="cp-logo" data-a="${c.logo}" data-label="${c.abbr}" alt="">
+        <p class="cp-title">${c.title}</p>
+        <div class="cp-time"><span>${c.time}</span>${c.right?`<span class="dot"></span><span>${c.right}</span>`:''}</div>
+        <div class="cp-joined"><div class="cp-avatars">${AVSET}</div><span class="count">${c.joinedShort}</span></div>
+      </div>
+      <div class="band">
+        <div class="sheet-b cp-infotags"><h3>Best suited for</h3><div class="cp-tags">${tags}</div></div>
+        ${mid}
+        <div class="sheet-t cp-reqs" id="reqs"><h3>Requirements &amp; Resources</h3><p>${c.reqDesc}</p>
+          <div class="reqmore"><div>
+            <div class="cp-list">${SPEC.map((r,i)=>(i?'<div class="div"></div>':'')+`<div class="row"><span class="k">${r[0]}</span><span class="v">${r[1]}</span></div>`).join('')}</div>
+            <h4>Restrictions</h4><ul>${RESTRICT.map(r=>`<li>${r}</li>`).join('')}</ul>
+          </div></div>
+          <div class="btn-secondary" data-act="reqs">Show more</div></div>
+      </div>
+      <div class="cp-createdby"><h3>Campaign created by</h3>
+        <div class="wcard cp-creatorcard">
+          <div class="col">
+            <div class="cp-identity"><img class="av" data-a="${c.logo}" data-label="${c.abbr}" alt=""><div class="cp-idtext"><p class="name">${c.brand}</p><p class="since">${c.since}</p></div></div>
+            <p class="cp-cdesc">${c.brandDesc}</p>
+            <div class="cp-stats"><div class="cp-stat"><span class="big">${c.totalPaid}</span><span class="lbl">Total paid</span></div><div class="cp-stat-div"></div><div class="cp-stat"><span class="big">${c.campaigns}</span><span class="lbl">Campaigns</span></div></div>
+          </div>
+          <div class="col">
+            <div class="cp-cmetrics">${metrics}</div>
+            <div class="handles">${handles}</div>
+            <div class="cp-questions"><div class="btn-questions" data-act="soon">Any questions?</div></div>
+          </div>
+        </div></div>
+    </div>
+    <aside class="cp-side">${side}</aside>
+  </div>`;
+}
+
+/* ---------- My work ---------- */
+function viewMyWork(filter){
+  const f=filter||'all'; state.mw=f;
+  const tabs=[['all','All'],['ongoing','Ongoing'],['saved','Saved'],['completed','Completed']];
+  const head=(t,go)=>`<div class="sechead"><span class="h20">${t}</span>${go?`<a class="seeall" href="${go}">See all</a>`:''}</div>`;
+  const today=`<div class="mw-list">
+      ${mwCardHTML('eats','Today Event','Total budget','Rs. 1,000,000','Join now','#/campaign/eats',{img:'grid4'})}
+      ${mwCardHTML('hiru','Happening July 4','Total budget','Rs. 500,000','Join now','#/campaign/hiru')}
+      ${chip('Ending today',['pepsi','dominos'],'#/explore')}</div>`;
+  const week=`<section class="mw-sec">${head('Coming up this week')}<div class="mw-list">
+      ${mwCardHTML('burgerking','1d left','Remaining budget','Rs. 1,248,572','Join now','#/campaign/burgerking')}
+      ${mwCardHTML('shakira','Thursday','Total budget','Rs. 1,000,000','Join now','#/campaign/shakira',{img:'grid6'})}
+      ${chip('Ending this week',['pepsi','dominos'],'#/explore')}</div></section>`;
+  const completed=`<section class="mw-sec">${head('Completed campaigns','#/mywork/completed')}<div class="mw-list">
+      ${COMPLETED.map(o=>mwCardHTML(o.id,o.ended,'You earned',o.earned,'View',`#/campaign/${o.id}/completed`,{liked:1})).join('')}</div></section>`;
+  const ongoingLogos=`<div class="mw-logos">${[['starbucks','starbucks'],['pepsi','starbucks'],['logo2','eats'],['kfcLogo','kfc']].map(l=>`<a class="mw-logo72" href="#/campaign/${l[1]}/ongoing"><img data-a="${l[0]}" alt=""></a>`).join('')}</div>`;
+  const ongoingList=`<div class="mw-list">${ONGOING.map(o=>mwCardHTML(o.id,'Ongoing','You earned',o.earned,'View',`#/campaign/${o.id}/ongoing`,{ongoing:1,liked:1})).join('')}</div>`;
+  const pendingChip=`<div class="mw-pending">${chip('Pending approvals',['dominos','legoLogo','logo2'],'#/mywork/pending','+4').replace('mw-chip','mw-chip dark')}</div>`;
+  let body;
+  if(f==='pending'){
+    body=`<div class="feedgrid">${PENDING.map(id=>cardHTML(id,{pending:1,go:`#/campaign/${id}/pending`})).join('')}</div>`;
+  } else if(f==='all') body=`
+    <div class="band">
+      <div class="sheet-b mw-sheet">${head('Ongoing','#/mywork/ongoing')}${ongoingLogos}</div>
+      ${pendingChip}
+      <div class="sheet-t mw-sheet">${head('Ending Today','#/explore')}${today}</div>
+    </div>${week}${completed}`;
+  else if(f==='ongoing') body=`<div class="mw-sheet" style="padding:0">${head('Ongoing')}${ongoingList}</div>`;
+  else if(f==='saved') body=`<div class="mw-sheet" style="padding:0">${head('Ending Today','#/explore')}${today}</div>${week}`;
+  else body=completed.replace('class="mw-sec"','class="mw-sec" style="padding-top:0"');
+  const title=f==='pending'?'Pending approvals':'My work';
+  return `<div class="pagehead"><div class="page-title">${title}</div>
+    ${f==='pending'?'':`<div class="mw-tags">${tabs.map(t=>`<a class="tag${f===t[0]?' active':''}" href="#/mywork/${t[0]}" data-tab="${t[0]}">${t[1]}</a>`).join('')}</div>`}</div>
+    <div id="mw-body">${body}</div>`;
+}
+
+/* ---------- Wallet ---------- */
+function viewWallet(){
+  return `<div class="page-title">My wallet</div>
+  <div class="wallet">${walletStack()}
+    <div class="w-recent">
+      <h2 class="h20" style="padding:0 16px">Recent Transactions</h2>
+      ${TX.map(([day,rows],d)=>`<div class="w-daybar"><span class="day">${day}</span>${d?'':MICON.calendar}</div>
+        <div class="w-txn-list">${rows.map(t=>`<div class="w-txn"><div class="item"><img class="logo" data-a="${t[0]}" data-label="${t[2]}" alt="">
+          <div class="c"><div class="desc"><b>+ Rs. 3,568</b> from <b>${t[1]}</b>, PickMe bike campaign in Colombo</div><div class="time"><span class="ago">${d?'Yesterday':'5 hrs ago'}</span>${ICON.arrowdown}</div></div>
+          </div><div class="w-divider"></div></div>`).join('')}</div>`).join('')}
+    </div>
+  </div>`;
+}
+
+/* ---------- Profile ---------- */
+function viewProfile(){
+  const crow=(lbl,logos,more,go)=>`<a class="pf-crow" href="${go}"><span>${lbl}</span><div class="pf-cright">${logos.map(l=>`<img data-a="${l}" data-label="X" alt="">`).join('')}<span class="pf-more">${more}</span></div></a>`;
+  return `<div class="profile">
+    <div class="pf-left">
+      <div class="pf-handle"><span>ramith_h</span>${MICON.handleChev}</div>
+      <div class="band">
+        <div class="sheet-b pf-identity"><img class="pf-av" data-a="pfAvatar" data-label="R" alt=""><div class="pf-idtext"><span class="name">Ramith</span><span class="shield">${MICON.shield}</span></div></div>
+        <div class="pf-lifetime"><span class="lbl">Lifetime earnings</span><span class="amt">Rs. 568,472</span></div>
+        <div class="sheet-t pf-metrics"><div class="pf-stat"><span class="big">4.6 M</span><span class="lbl">Views</span></div><div class="pf-stat-div"></div><div class="pf-stat"><span class="big">48</span><span class="lbl">Campaigns</span></div></div>
+      </div>
+      <div class="pf-campaigns">
+        ${crow('Ongoing campaigns',['pickmeLogo','legoLogo','pepsi'],'+4','#/mywork/ongoing')}
+        ${crow('Pending approvals',['dominos','legoLogo','kfcLogo'],'+4','#/mywork/pending')}
+        ${crow('Completed campaigns',['kfcLogo','facebook','uberLogo'],'+45','#/mywork/completed')}
+      </div>
+      <div class="pf-divider"></div>
+      <div class="pf-links">
+        <a href="#/settings"><span class="ic">${MICON.settings}</span><span class="lbl">Account settings</span><span class="chev">${ICON.chevron}</span></a>
+        <a href="https://ugc.example.com/privacy-policy" target="_blank" rel="noopener"><span class="ic">${MICON.privacy}</span><span class="lbl">Privacy policy</span><span class="chev">${CPICON.extlink}</span></a>
+        <a class="logout" data-act="logout"><span class="ic">${MICON.logout}</span><span class="lbl">Log out</span></a>
+      </div>
+    </div>
+    <div class="pf-right">
+      <div class="pf-sec"><div class="pf-sectitle">Social media handles</div>
+        <div class="pf-smhandles"><div class="addhandle" data-act="soon"><div class="circle">${MICON.plus}</div><span>Add</span></div><div class="vline"></div>
+          ${[['av1','insta'],['av2','tiktok'],['av3','insta'],['av4','tiktok']].map(h=>`<div class="handle"><img class="pf" data-a="${h[0]}" data-label="U" alt=""><div class="badge">${PLAT[h[1]]}</div><span class="fc">10K</span></div>`).join('')}</div></div>
+      <div class="pf-divider" style="margin:0"></div>
+      <div class="pf-sec"><div class="pf-sectitle">Recently added content</div>
+        <div class="pf-grid">${['grid1','grid2','grid3','grid4','grid5','grid6','sbContent1','sbContent2'].map(g=>`<img data-a="${g}" data-label="C" alt="">`).join('')}</div></div>
+    </div>
+  </div>`;
+}
+
+/* ---------- Settings ---------- */
+function viewSettings(){
+  const row=(ic,lbl,val,attr)=>`<a class="set-row" ${attr||'data-act="soon"'}><span class="set-ic">${ic}</span><span class="set-lbl">${lbl}</span>${val?`<span class="set-val">${val}</span>`:''}<span class="set-chev">${MICON.rowChev}</span></a>`;
+  const tg=(ic,lbl,on)=>`<div class="set-row" data-tg><span class="set-ic">${ic}</span><span class="set-lbl">${lbl}</span><div class="tg${on?' on':''}"></div></div>`;
+  const blocks=[
+    ['account','Account',`<a class="set-row" data-act="soon"><img class="set-av" data-a="pfAvatar" data-label="R" alt=""><div class="set-txt"><span class="set-lbl">Ramith</span><span class="set-sub">@ramith_h</span></div><span class="set-chev">${MICON.rowChev}</span></a>`
+      +row(MICON.email,'Email','ramith…@gmail.com')+row(MICON.phone,'Phone number','+94 77 •••• 214')+row(MICON.password,'Password')],
+    ['payments','Payments &amp; payouts',row(MICON.bank,'Payout &amp; bank details','','href="#/wallet"')+row(MICON.tax,'Tax information')],
+    ['notifications','Notifications',tg(MICON.push,'Push notifications',1)+tg(MICON.emailUpdates,'Email updates',0)+tg(MICON.alerts,'Campaign &amp; payout alerts',1)],
+    ['preferences','Preferences',row(MICON.language,'Language','English')+row(MICON.blocked,'Blocked accounts')],
+    ['privacy','Privacy &amp; security',row(MICON.twofa,'Two-factor authentication')+row(MICON.policy,'Privacy policy')+row(MICON.terms,'Terms of service')],
+    ['support','Support',row(MICON.help,'Help center')+row(MICON.contact,'Contact support')+row(MICON.about,'About')],
+    ['actions','',`<a class="set-row" data-act="logout"><span class="set-ic">${MICON.logoutRow}</span><span class="set-lbl">Log out</span></a><a class="set-row danger" data-act="delete"><span class="set-ic">${MICON.delete}</span><span class="set-lbl">Delete account</span></a>`],
+  ];
+  return `<div class="page-title">Account settings</div>
+  <div class="settings">
+    <nav class="set-nav pf-links">${blocks.filter(b=>b[1]).map(b=>`<a data-scroll="set-${b[0]}"><span class="lbl">${b[1]}</span></a>`).join('')}</nav>
+    <div>${blocks.map(b=>`<div class="set-block" id="set-${b[0]}">${b[1]?`<div class="set-blocktitle">${b[1]}</div>`:''}<div class="set-group">${b[2]}</div></div>`).join('')}
+      <div class="set-version">Version 1.0.0</div></div>
+  </div>`;
+}
+
+/* ---------- Submit content ---------- */
+function viewSubmit(id){
+  const c=C[id]||C.uber; state.upload=null;
+  return `<a class="backbar" data-back>${MICON.back}<span>Back</span></a>
+  <div class="submit">
+    <form class="sc-content" id="sform" novalidate>
+      <div class="sc-titlecard"><div class="sc-h1">Submit Content</div><p class="sc-desc">Share your profile’s link and the original image or video below. Once approved, you’ll start earning rewards based on the views your content generates.</p></div>
+      <div class="sc-section"><div class="sc-h2">Social media profiles</div><div class="sc-sub">Select the profiles you will post this content on, or add a new one</div>
+        <div class="sc-handles"><div class="addhandle solid" data-act="soon"><div class="circle">${MICON.plus}</div><span>Add</span></div><div class="vline"></div>
+          <div class="handle"><img class="pf" data-a="av1" alt=""><div class="badge">${CPICON.insta}</div><span class="fc">@ramith_h</span></div>
+          <div class="handle"><img class="pf" data-a="av2" alt=""><div class="badge">${CPICON.tiktok}</div><span class="fc">@ramith_c</span></div></div></div>
+      <div class="sc-section"><div class="sc-h2">Upload your content</div>
+        <div class="sc-dropzone" id="drop" data-act="upload"><div class="sc-uploadicon">${MICON.upload}</div>
+          <div class="sc-droptext"><span class="t1" id="drop-t">Click to upload</span><span class="t2" id="drop-s">Add the image or video you created<br>JPEG, PNG or MP4, up to 100 MB</span></div></div>
+        <div class="sc-inputs">
+          <div class="sc-inputgroup" id="g-ig"><span class="lbl">Instagram</span><textarea class="sc-input" id="ig" placeholder="Paste your post link here"></textarea><span class="err">Paste a link to your Instagram post</span></div>
+          <div class="sc-inputgroup" id="g-tt"><span class="lbl">TikTok</span><textarea class="sc-input" id="tt" placeholder="Paste your post link here"></textarea><span class="err">Paste a link to your TikTok video</span></div>
+        </div></div>
+      <div class="sc-terms" id="terms" data-check><span class="sc-check">${MICON.check}</span><p>I agree to the <span class="link">Terms &amp; Conditions</span> and confirm this content follows the campaign requirements.</p></div>
+      <div class="sc-foot"><span class="msg" id="form-msg"></span><button class="btn-primary" type="submit" id="sbtn">Submit for Approval</button></div>
+    </form>
+    <aside class="sc-summary wcard">
+      <div class="cardwrap" style="padding:12px 12px 0"><div class="card-img"><img class="photo" data-a="${c.img}" data-label="${c.abbr}" alt=""><div class="card-logobar"><img class="logo" data-a="${c.logo}" data-label="${c.abbr}" alt=""></div></div></div>
+      <div class="card-content" style="padding-bottom:0"><div class="ctitle">${c.title}</div>${timeHTML(c)}</div>
+      <div class="cp-list">${c.list.map((r,i)=>(i?'<div class="div"></div>':'')+`<div class="row"><span class="k">${r[0]}</span><span class="v">${r[1]}</span></div>`).join('')}</div>
+    </aside>
+  </div>`;
+}
+
+/* ================= Top menu ================= */
+function renderTopNav(){
+  const items=[['explore','#/explore',ICON.explore,'Campaigns'],['mywork','#/mywork',ICON.work,'My work'],['wallet','#/wallet',ICON.wallet,'Wallet']];
+  document.getElementById('tnav').innerHTML=items.map(i=>`<a href="${i[1]}" data-root="${i[0]}" aria-label="${i[3]}" title="${i[3]}">${i[2]}</a>`).join('');
+  document.getElementById('search-btn').innerHTML=MICON.search;
+  document.getElementById('bell-ic').innerHTML=MICON.bell;
+}
+
+/* Search lives under the Campaigns heading; the header icon opens and closes it */
+function setSearch(open){
+  state.searchOpen=open;
+  const btn=document.getElementById('search-btn');
+  btn.classList.toggle('on',open);btn.setAttribute('aria-expanded',open);
+  const wrap=document.getElementById('home-search'); if(!wrap) return;
+  wrap.classList.toggle('open',open);
+  const input=document.getElementById('q');
+  input.tabIndex=open?0:-1;
+  if(open) input.focus({preventScroll:true});
+  else if(state.q){state.q='';input.value='';renderFeed();}
+}
+function toggleSearch(){
+  if(!document.getElementById('home-search')){state.searchOpen=true;location.hash='#/explore';return;}
+  setSearch(!state.searchOpen);
+}
+
+/* ================= Router ================= */
+const view=document.getElementById('view');
+const hist=[];
+let prev={root:null,a:null};
+function route(){
+  const h=location.hash.replace(/^#\/?/,'')||'explore';
+  const [root,a,b]=h.split('/');
+  const known=['campaign','mywork','wallet','profile','settings','submit'];
+  const r=known.includes(root)?root:'explore';
+  const tabSwitch=r==='mywork'&&prev.root==='mywork'&&(a||'all')!==(prev.a||'all');
+  let html,title='Campaigns';
+  if(r==='campaign'){html=viewCampaign(a,b);title=(C[a]||{}).title||'Campaign';}
+  else if(r==='mywork'){html=viewMyWork(a);title='My work';}
+  else if(r==='wallet'){html=viewWallet();title='My wallet';}
+  else if(r==='profile'){html=viewProfile();title='My profile';}
+  else if(r==='settings'){html=viewSettings();title='Account settings';}
+  else if(r==='submit'){html=viewSubmit(a);title='Submit content';}
+  else html=viewExplore();
+  view.innerHTML=html;
+  bindAssets(view);
+  if(tabSwitch) staggerMyWork();
+  else {view.classList.remove('nav-in');void view.offsetWidth;view.classList.add('nav-in');window.scrollTo({top:0,behavior:'instant'});}
+  renderFeed();
+  if(r==='explore'&&state.searchOpen) setSearch(true); else document.getElementById('search-btn').classList.remove('on');
+  if(r!=='explore') state.searchOpen=false;
+  document.title=title+' — UGC Platform';
+  const navRoot=r==='campaign'?(b||(C[a]&&C[a].status)?'mywork':'explore'):r==='submit'?'explore':r;
+  document.querySelectorAll('#tnav a').forEach(n=>n.classList.toggle('active',n.dataset.root===navRoot));
+  if(hist[hist.length-1]!==location.hash) hist.push(location.hash);
+  prev={root:r,a};
+  closePop();closeOverlay();
+}
+window.addEventListener('hashchange',route);
+
+/* My work tag switch: tag pop + staggered 3D reveal, as on mobile */
+function staggerMyWork(){
+  const t=view.querySelector('.mw-tags .tag.active'); if(t) t.classList.add('pop');
+  [...view.querySelectorAll('.sechead,.mw-logo72,.mw-card,.mw-chip,.cardwrap')].forEach((el,i)=>{
+    el.style.animationDelay=Math.min(i*55,440)+'ms'; el.classList.add('mw-stagger');
+    el.addEventListener('animationend',()=>{el.classList.remove('mw-stagger');el.style.animationDelay='';},{once:true});
+  });
+}
+
+/* ================= Overlays ================= */
+const overlay=document.getElementById('overlay'),sheet=document.getElementById('overlay-sheet');
+function openOverlay(html){sheet.innerHTML=html;bindAssets(sheet);overlay.classList.add('open');}
+function closeOverlay(){overlay.classList.remove('open');}
+const SHEETS={
+  logout:()=>`<div class="cf-sheet"><div class="cf-ic neutral">${MICON.sheetLogout}</div><div class="cf-text"><h3>Log out?</h3><p>You'll need to sign back in to access your campaigns and wallet.</p></div>
+    <div class="cf-actions"><div class="cf-btn dark" data-close data-go="#/explore">Log out</div><div class="cf-btn ghost" data-close>Cancel</div></div></div>`,
+  delete:()=>`<div class="cf-sheet"><div class="cf-ic warn">${MICON.sheetWarn}</div><div class="cf-text"><h3>Delete account permanently?</h3><p>This can't be undone. Your profile, content and campaign history will be removed for good.</p></div>
+    <div class="cf-actions"><div class="cf-btn danger" data-close data-go="#/explore">Delete permanently</div><div class="cf-btn ghost" data-close>Cancel</div></div></div>`,
+  transfer:()=>`<div class="cf-sheet"><div class="cf-ic neutral">${MICON.bank}</div><div class="cf-text"><h3>Transfer Rs. 12,688?</h3><p>Your available balance will be sent to the bank account on your profile.</p></div>
+    <div class="cf-actions"><div class="cf-btn dark" data-close data-toast="Transfer started">Transfer</div><div class="cf-btn ghost" data-close>Cancel</div></div></div>`,
+  submitted:()=>`<div class="ov-sheet"><div class="ov-graphic"><img class="thumb t1" data-a="grid2" data-label="C" alt=""><img class="thumb t2" data-a="grid1" data-label="C" alt=""><div class="glow"></div><div class="label">On the<br>Table</div></div>
+    <div class="ov-text"><div class="ov-title">Superb machan,<br>Your content was <span class="purple">submitted for approval</span></div><div class="ov-primary" data-close data-go="#/explore">Got it</div></div></div>`,
+};
+
+/* ================= Interactions ================= */
+const toastEl=document.getElementById('toast');let toastT;
+function toast(m){toastEl.textContent=m;toastEl.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>toastEl.classList.remove('show'),2200);}
+const pop=document.getElementById('pop-notifs');
+function closePop(){pop.classList.remove('open');}
+function renderNotifs(){
+  const text=n=>n.type==='approved'?`<b>${n.brand} campaign</b><span class="med"> got approved</span>`
+    :n.type==='reply'?`<span class="med">Check out the </span><b>reply from ${n.brand}</b>`
+    :`<b>+ Rs. ${n.amount}</b><span class="med"> from </span><b>${n.brand}</b><span class="med">, ${n.detail}</span>`;
+  const l=document.getElementById('nt-list');
+  l.innerHTML=notifications.map(n=>`<div class="nt-item"><img class="nt-logo" data-a="${n.logo}" alt=""><div class="nt-body"><p class="nt-text">${text(n)}</p><span class="nt-time">${n.time}</span></div></div>`).join('');
+  bindAssets(l);
+}
+
+document.addEventListener('click',e=>{
+  const t=e.target;
+  const heart=t.closest('.like-heart');
+  if(heart){e.preventDefault();e.stopPropagation();heart.classList.toggle('liked');return;}
+  if(t.closest('[data-search]')){e.preventDefault();toggleSearch();return;}
+  if(t.closest('[data-pop]')){e.preventDefault();pop.classList.toggle('open');return;}
+  if(pop.classList.contains('open')&&!t.closest('#pop-notifs')) closePop();
+  const cl=t.closest('[data-close]');
+  if(cl){closeOverlay();if(cl.dataset.toast)toast(cl.dataset.toast);if(cl.dataset.go)location.hash=cl.dataset.go;return;}
+  const cat=t.closest('[data-cat]');
+  if(cat){state.cat=cat.dataset.cat;document.querySelectorAll('[data-cat]').forEach(c=>c.classList.toggle('active',c===cat));renderFeed();return;}
+  const tg=t.closest('[data-tg]');
+  if(tg){tg.querySelector('.tg').classList.toggle('on');return;}
+  const chk=t.closest('[data-check]');
+  if(chk){chk.classList.toggle('on');chk.classList.remove('bad');return;}
+  const sc=t.closest('[data-scroll]');
+  if(sc){document.getElementById(sc.dataset.scroll).scrollIntoView({behavior:'smooth',block:'start'});return;}
+  if(t.closest('[data-back]')){e.preventDefault();if(hist.length>1){hist.pop();location.hash=hist.pop();}else location.hash='#/explore';return;}
+  const act=t.closest('[data-act]');
+  if(act){e.preventDefault();return doAct(act.dataset.act,act);}
+  const go=t.closest('[data-go]');
+  if(go&&!t.closest('a[href]')){location.hash=go.dataset.go;}
+});
+function doAct(a,el){
+  if(a==='soon') return toast('This screen is next to build');
+  if(a==='share') return toast('Link copied');
+  if(a==='clear'){state.cat='All';state.q='';const qi=document.getElementById('q');if(qi)qi.value='';document.querySelectorAll('[data-cat]').forEach(c=>c.classList.toggle('active',c.dataset.cat==='All'));return renderFeed();}
+  if(a==='reqs'){const r=document.getElementById('reqs');r.classList.toggle('open');el.textContent=r.classList.contains('open')?'Show less':'Show more';return;}
+  if(a==='upload') return document.getElementById('file').click();
+  if(SHEETS[a]) return openOverlay(SHEETS[a]());
+}
+
+/* Upload */
+function setUpload(name,size){
+  state.upload=name;const d=document.getElementById('drop');if(!d) return;
+  d.classList.add('has');document.getElementById('drop-t').textContent=name;
+  document.getElementById('drop-s').textContent=(size/1048576).toFixed(1)+' MB · click to replace';
+}
+document.getElementById('file').addEventListener('change',e=>{const f=e.target.files[0];if(f)setUpload(f.name,f.size);e.target.value='';});
+document.addEventListener('dragover',e=>{const d=e.target.closest&&e.target.closest('#drop');if(d){e.preventDefault();d.classList.add('over');}});
+document.addEventListener('dragleave',e=>{const d=e.target.closest&&e.target.closest('#drop');if(d)d.classList.remove('over');});
+document.addEventListener('drop',e=>{const d=e.target.closest&&e.target.closest('#drop');if(d){e.preventDefault();d.classList.remove('over');const f=e.dataTransfer.files[0];if(f)setUpload(f.name,f.size);}});
+
+/* Submit validation: at least one valid post link + terms accepted */
+document.addEventListener('submit',e=>{
+  if(e.target.id!=='sform') return; e.preventDefault();
+  const ig=document.getElementById('ig').value.trim(),tt=document.getElementById('tt').value.trim();
+  const okIg=/^https?:\/\/(www\.)?instagram\.com\/\S+/i.test(ig), okTt=/^https?:\/\/(www\.|vm\.)?tiktok\.com\/\S+/i.test(tt);
+  const igBad=ig?!okIg:!okTt, ttBad=!!tt&&!okTt;
+  document.getElementById('g-ig').classList.toggle('bad',igBad);
+  document.getElementById('g-tt').classList.toggle('bad',ttBad);
+  const terms=document.getElementById('terms'),tOk=terms.classList.contains('on');terms.classList.toggle('bad',!tOk);
+  const msg=document.getElementById('form-msg');
+  if(igBad||ttBad||!tOk){msg.textContent=!(igBad||ttBad)?'Please accept the Terms & Conditions':'Add a valid post link to continue';return;}
+  msg.textContent='';
+  const btn=document.getElementById('sbtn');btn.disabled=true;btn.textContent='Submitting…';
+  setTimeout(()=>{btn.disabled=false;btn.textContent='Submit for Approval';openOverlay(SHEETS.submitted());},900);
+});
+document.addEventListener('input',e=>{const g=e.target.closest('.sc-inputgroup');if(g)g.classList.remove('bad');});
+
+/* Search filters the campaign feed */
+document.addEventListener('input',e=>{if(e.target.id==='q'){state.q=e.target.value;renderFeed();}});
+document.addEventListener('keydown',e=>{
+  if(e.key==='/'&&!['INPUT','TEXTAREA'].includes(document.activeElement.tagName)){e.preventDefault();if(state.searchOpen&&document.getElementById('q'))document.getElementById('q').focus();else toggleSearch();}
+  if(e.key==='Escape'){if(state.searchOpen&&document.activeElement.id==='q'){setSearch(false);document.getElementById('search-btn').focus();}closePop();closeOverlay();}
+});
+
+/* ===== Init ===== */
+renderTopNav();
+bindAssets(document.body);
+renderNotifs();
+route();
+</script>
+</body>
+</html>
