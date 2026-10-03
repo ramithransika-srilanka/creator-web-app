@@ -502,7 +502,7 @@
   .backbar svg{width:24px;height:24px;color:var(--grey-800);}
   .backbar span{font-size:14px;font-weight:600;color:var(--grey-800);}
   .submit{display:grid;grid-template-columns:minmax(0,1fr) var(--rail);gap:48px;align-items:start;}
-  .sc-content{display:flex;flex-direction:column;gap:32px;max-width:640px;}
+  .sc-content{display:flex;flex-direction:column;gap:32px;min-width:0;}
   .sc-titlecard{display:flex;flex-direction:column;gap:12px;}
   .sc-h1{font-size:24px;font-weight:600;line-height:32px;color:#121212;}
   .sc-desc,.sc-sub{font-size:14px;line-height:20px;color:#717171;}
@@ -517,15 +517,17 @@
   .sc-droptext{display:flex;flex-direction:column;gap:2px;align-items:center;}
   .sc-droptext .t1{font-size:14px;font-weight:500;color:#121212;}
   .sc-droptext .t2{font-size:14px;line-height:20px;color:#717171;text-align:center;}
-  .sc-inputs{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
-  .sc-inputgroup{display:flex;flex-direction:column;}
-  .sc-inputgroup .lbl{font-size:14px;font-weight:500;color:#717171;padding:8px 16px;}
-  .sc-input{border:1px solid var(--grey-200);border-radius:8px;background:#fff;height:80px;padding:8px 16px;font:400 14px/20px var(--font);color:var(--grey-800);resize:none;outline:none;}
-  .sc-input:focus{border-color:var(--blue-300);}
-  .sc-input::placeholder{color:#b3b3b3;}
-  .sc-inputgroup .err{display:none;font-size:12px;line-height:16px;color:var(--pink-500);padding:6px 16px 0;}
-  .sc-inputgroup.bad .sc-input{border-color:var(--pink-500);}
-  .sc-inputgroup.bad .err{display:block;}
+  .sc-links{display:flex;flex-direction:column;gap:16px;margin-top:4px;}
+  .sc-linkgroup{display:flex;flex-direction:column;gap:8px;}
+  .sc-linkgroup .lbl{font-size:14px;font-weight:600;line-height:20px;color:var(--grey-800);}
+  .sc-link{display:flex;align-items:center;gap:12px;height:52px;padding:0 16px;border:1px solid var(--grey-200);border-radius:12px;background:#fff;color:var(--grey-700);transition:border-color .2s ease,box-shadow .2s ease;}
+  .sc-link>svg{width:18px;height:18px;flex-shrink:0;}
+  .sc-link:focus-within{border-color:var(--blue-300);box-shadow:0 0 0 3px var(--blue-100);}
+  .sc-linkinput{flex:1;min-width:0;border:0;outline:none;background:none;font:400 14px/20px var(--font);color:var(--grey-800);}
+  .sc-linkinput::placeholder{color:var(--grey-500);}
+  .sc-linkgroup .err{display:none;font-size:12px;line-height:16px;color:var(--pink-500);}
+  .sc-linkgroup.bad .sc-link,#g-links.none .sc-link{border-color:var(--pink-500);}
+  .sc-linkgroup.bad .err{display:block;}
   .sc-terms{display:flex;gap:12px;align-items:flex-start;cursor:pointer;}
   .sc-check{color:var(--grey-400);display:flex;flex-shrink:0;}
   .sc-terms.on .sc-check{color:#1548eb;}
@@ -535,7 +537,15 @@
   .sc-terms .link{color:#1548eb;}
   .sc-foot{display:flex;flex-direction:column;gap:8px;}
   .sc-foot .msg{font-size:12px;line-height:16px;color:var(--pink-500);text-align:center;min-height:16px;}
-  .sc-summary{position:sticky;top:calc(var(--header) + 16px);display:flex;flex-direction:column;}
+  .sc-side{position:sticky;top:calc(var(--header) + 16px);display:flex;flex-direction:column;gap:16px;}
+  .sc-summary{display:flex;flex-direction:column;}
+  .sc-brand{font-size:12px;font-weight:500;line-height:16px;color:var(--grey-600);}
+  .sc-budget{padding:0 16px 16px;}
+  .sc-before{padding:20px;display:flex;flex-direction:column;gap:12px;}
+  .sc-before h3{font-size:12px;font-weight:600;line-height:16px;letter-spacing:.06em;text-transform:uppercase;color:var(--grey-600);}
+  .sc-before ul{list-style:none;display:flex;flex-direction:column;gap:10px;}
+  .sc-before li{display:flex;gap:10px;align-items:flex-start;font-size:14px;line-height:20px;color:var(--grey-800);}
+  .sc-before li svg{width:20px;height:20px;flex-shrink:0;color:var(--ongoing);}
   .sc-summary .card-img{height:200px;cursor:default;}
 
   /* ================= Notifications popover ================= */
@@ -592,7 +602,7 @@
   /* ================= Responsive ================= */
   @media (max-width:1279px){
     .cp,.submit{grid-template-columns:minmax(0,1fr);}
-    .cp-side,.sc-summary{position:static;}
+    .cp-side,.sc-side{position:static;}
     .feedgrid{grid-template-columns:repeat(2,minmax(0,1fr));}
   }
   @media (max-width:1023px){
@@ -619,7 +629,6 @@
     .mw-list{grid-template-columns:minmax(0,1fr);}
     .cp-hero{height:320px;}
     .cp-spec{grid-template-columns:repeat(2,minmax(0,1fr));}
-    .sc-inputs{grid-template-columns:minmax(0,1fr);}
     .pop{left:var(--gutter);width:auto;}
   }
 </style>
@@ -673,6 +682,7 @@ const AVSET='<img data-a="av1" data-label="C" alt=""><img data-a="av2" data-labe
 const PLAT={insta:CPICON.insta,tiktok:CPICON.tiktok,linkedin:CPICON.linkedin,
   youtube:`<svg viewBox="0 0 24 24" fill="currentColor"><path d="M21.6 7.2a2.5 2.5 0 00-1.8-1.8C18.2 5 12 5 12 5s-6.2 0-7.8.4a2.5 2.5 0 00-1.8 1.8C2 8.8 2 12 2 12s0 3.2.4 4.8a2.5 2.5 0 001.8 1.8C5.8 19 12 19 12 19s6.2 0 7.8-.4a2.5 2.5 0 001.8-1.8c.4-1.6.4-4.8.4-4.8s0-3.2-.4-4.8zM10 15V9l5.2 3L10 15z"/></svg>`,
   facebook:`<svg viewBox="0 0 24 24" fill="currentColor"><path d="M13.5 21v-7.5H16l.4-3h-2.9V8.6c0-.9.3-1.5 1.5-1.5h1.5V4.4c-.3 0-1.2-.1-2.2-.1-2.2 0-3.7 1.3-3.7 3.8v2.4H8.1v3h2.5V21h2.9z"/></svg>`};
+const CHECKC=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8.5 12.5l2.5 2.5 4.5-5"/></svg>`;
 const PLATNAME={tiktok:'TikTok',insta:'Instagram',youtube:'YouTube',facebook:'Facebook',linkedin:'LinkedIn'};
 const MWHEART=`<svg viewBox="0 0 24 24" fill="none"><path d="M12 7.69431C10 2.99988 3 3.49988 3 9.49991C3 15.4999 12 20.5001 12 20.5001C12 20.5001 21 15.4999 21 9.49991C21 3.49988 14 2.99988 12 7.69431Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
 
@@ -1073,28 +1083,36 @@ function viewSettings(){
 /* ---------- Submit content ---------- */
 function viewSubmit(id){
   const c=C[id]||C.uber; state.upload=null;
-  return `<a class="backbar" data-back>${MICON.back}<span>Back</span></a>
+  const num=v=>+String(v).replace(/[^0-9]/g,''), pct=num(c.spent)/(num(c.spent)+num(c.available));
+  const links=c.platforms.map(p=>`<div class="sc-linkgroup" id="g-${p}"><label class="lbl" for="l-${p}">${PLATNAME[p]}</label>
+      <div class="sc-link">${PLAT[p]}<input class="sc-linkinput" id="l-${p}" data-plat="${p}" type="url" inputmode="url" autocomplete="off" placeholder="Paste your ${PLATNAME[p]} post link"></div>
+      <span class="err">That doesn’t look like a ${PLATNAME[p]} post link</span></div>`).join('');
+  const before=['Post must be public and live on the platform.','Link must come from the account you connected.',`${c.visibility}.`,'Captions are required.'];
+  return `<a class="backbar" href="#/campaign/${id}">${MICON.back}<span>Back to campaign</span></a>
   <div class="submit">
     <form class="sc-content" id="sform" novalidate>
-      <div class="sc-titlecard"><div class="sc-h1">Submit Content</div><p class="sc-desc">Share your profile’s link and the original image or video below. Once approved, you’ll start earning rewards based on the views your content generates.</p></div>
+      <div class="sc-titlecard"><div class="sc-h1">Submit content</div><p class="sc-desc">Already posted this? Paste the link for each platform so the brand can review it. Once approved, every link is tracked and you earn from the total reach across them.</p></div>
+      <div class="sc-section" id="g-links"><div class="sc-h2">Social media links</div><div class="sc-sub">Paste a link to your post. At least one is required.</div>
+        <div class="sc-links">${links}</div></div>
       <div class="sc-section"><div class="sc-h2">Social media profiles</div><div class="sc-sub">Select the profiles you will post this content on, or add a new one</div>
         <div class="sc-handles"><div class="addhandle solid" data-act="soon"><div class="circle">${MICON.plus}</div><span>Add</span></div><div class="vline"></div>
           <div class="handle"><img class="pf" data-a="av1" alt=""><div class="badge">${CPICON.insta}</div><span class="fc">@ramith_h</span></div>
           <div class="handle"><img class="pf" data-a="av2" alt=""><div class="badge">${CPICON.tiktok}</div><span class="fc">@ramith_c</span></div></div></div>
-      <div class="sc-section"><div class="sc-h2">Upload your content</div>
+      <div class="sc-section"><div class="sc-h2">Upload your content</div><div class="sc-sub">Optional — add the original image or video so the brand can review it in full quality.</div>
         <div class="sc-dropzone" id="drop" data-act="upload"><div class="sc-uploadicon">${MICON.upload}</div>
           <div class="sc-droptext"><span class="t1" id="drop-t">Click to upload</span><span class="t2" id="drop-s">Add the image or video you created<br>JPEG, PNG or MP4, up to 100 MB</span></div></div>
-        <div class="sc-inputs">
-          <div class="sc-inputgroup" id="g-ig"><span class="lbl">Instagram</span><textarea class="sc-input" id="ig" placeholder="Paste your post link here"></textarea><span class="err">Paste a link to your Instagram post</span></div>
-          <div class="sc-inputgroup" id="g-tt"><span class="lbl">TikTok</span><textarea class="sc-input" id="tt" placeholder="Paste your post link here"></textarea><span class="err">Paste a link to your TikTok video</span></div>
-        </div></div>
+      </div>
       <div class="sc-terms" id="terms" data-check><span class="sc-check">${MICON.check}</span><p>I agree to the <span class="link">Terms &amp; Conditions</span> and confirm this content follows the campaign requirements.</p></div>
-      <div class="sc-foot"><span class="msg" id="form-msg"></span><button class="btn-primary" type="submit" id="sbtn">Submit for Approval</button></div>
+      <div class="sc-foot"><span class="msg" id="form-msg"></span><button class="btn-primary" type="submit" id="sbtn">Submit for approval</button></div>
     </form>
-    <aside class="sc-summary wcard">
-      <div class="cardwrap" style="padding:12px 12px 0"><div class="card-img"><img class="photo" data-a="${c.img}" data-label="${c.abbr}" alt=""><div class="card-logobar"><img class="logo" data-a="${c.logo}" data-label="${c.abbr}" alt=""></div></div></div>
-      <div class="card-content" style="padding-bottom:0"><div class="ctitle">${c.title}</div>${timeHTML(c)}</div>
-      <div class="cp-list">${c.list.map((r,i)=>(i?'<div class="div"></div>':'')+`<div class="row"><span class="k">${r[0]}</span><span class="v">${r[1]}</span></div>`).join('')}</div>
+    <aside class="sc-side">
+      <div class="sc-summary wcard">
+        <div class="cardwrap" style="padding:12px 12px 0"><div class="card-img"><img class="photo" data-a="${c.img}" data-label="${c.abbr}" alt=""><div class="card-logobar"><img class="logo" data-a="${c.logo}" data-label="${c.abbr}" alt=""></div></div></div>
+        <div class="card-content" style="padding-bottom:0"><span class="sc-brand">${c.brand}</span><div class="ctitle">${c.title}</div>${timeHTML(c)}</div>
+        <div class="cp-list">${c.list.map((r,i)=>(i?'<div class="div"></div>':'')+`<div class="row"><span class="k">${r[0]}</span><span class="v">${r[1]}</span></div>`).join('')}</div>
+        <div class="sc-budget"><div class="progress"><div class="fill" style="width:${(pct*100).toFixed(1)}%"></div></div><p class="cp-budgetline">${c.available} still available · ${c.spent} spent</p></div>
+      </div>
+      <div class="sc-before wcard"><h3>Before you submit</h3><ul>${before.map(t=>`<li>${CHECKC}<span>${t}</span></li>`).join('')}</ul></div>
     </aside>
   </div>`;
 }
@@ -1242,19 +1260,20 @@ document.addEventListener('drop',e=>{const d=e.target.closest&&e.target.closest(
 /* Submit validation: at least one valid post link + terms accepted */
 document.addEventListener('submit',e=>{
   if(e.target.id!=='sform') return; e.preventDefault();
-  const ig=document.getElementById('ig').value.trim(),tt=document.getElementById('tt').value.trim();
-  const okIg=/^https?:\/\/(www\.)?instagram\.com\/\S+/i.test(ig), okTt=/^https?:\/\/(www\.|vm\.)?tiktok\.com\/\S+/i.test(tt);
-  const igBad=ig?!okIg:!okTt, ttBad=!!tt&&!okTt;
-  document.getElementById('g-ig').classList.toggle('bad',igBad);
-  document.getElementById('g-tt').classList.toggle('bad',ttBad);
+  const inputs=[...document.querySelectorAll('.sc-linkinput')];
+  let filled=0,anyBad=false;
+  inputs.forEach(i=>{const v=i.value.trim(),bad=!!v&&!LINKRE[i.dataset.plat].test(v);if(v)filled++;anyBad=anyBad||bad;document.getElementById('g-'+i.dataset.plat).classList.toggle('bad',bad);});
+  const none=!filled; document.getElementById('g-links').classList.toggle('none',none);
   const terms=document.getElementById('terms'),tOk=terms.classList.contains('on');terms.classList.toggle('bad',!tOk);
   const msg=document.getElementById('form-msg');
-  if(igBad||ttBad||!tOk){msg.textContent=!(igBad||ttBad)?'Please accept the Terms & Conditions':'Add a valid post link to continue';return;}
+  if(none||anyBad||!tOk){msg.textContent=none?'Add at least one post link to continue':anyBad?'Fix the highlighted link to continue':'Please accept the Terms & Conditions';return;}
   msg.textContent='';
   const btn=document.getElementById('sbtn');btn.disabled=true;btn.textContent='Submitting…';
-  setTimeout(()=>{btn.disabled=false;btn.textContent='Submit for Approval';openOverlay(SHEETS.submitted());},900);
+  setTimeout(()=>{btn.disabled=false;btn.textContent='Submit for approval';openOverlay(SHEETS.submitted());},900);
 });
-document.addEventListener('input',e=>{const g=e.target.closest('.sc-inputgroup');if(g)g.classList.remove('bad');});
+const LINKRE={tiktok:/^https?:\/\/(www\.|vm\.|m\.)?tiktok\.com\/\S+/i,insta:/^https?:\/\/(www\.)?instagram\.com\/\S+/i,
+  youtube:/^https?:\/\/((www\.|m\.)?youtube\.com|youtu\.be)\/\S+/i,facebook:/^https?:\/\/((www\.|m\.|web\.)?facebook\.com|fb\.watch)\/\S+/i,linkedin:/^https?:\/\/(www\.)?linkedin\.com\/\S+/i};
+document.addEventListener('input',e=>{const g=e.target.closest('.sc-linkgroup');if(g){g.classList.remove('bad');document.getElementById('g-links').classList.remove('none');}});
 
 /* Search filters the campaign feed */
 document.addEventListener('input',e=>{if(e.target.id==='q'){state.q=e.target.value;renderFeed();}});
