@@ -115,7 +115,7 @@
   .cp-list{padding:16px;border-radius:12px;display:flex;flex-direction:column;gap:8px;width:100%;}
   .cp-list .row{display:flex;align-items:center;justify-content:space-between;gap:16px;font-size:14px;line-height:20px;}
   .cp-list .row .k{font-weight:500;color:var(--grey-600);}
-  .cp-list .row .v{font-weight:600;color:var(--grey-800);text-align:right;}
+  .cp-list .row .v{font-weight:600;color:var(--grey-800);text-align:right;white-space:nowrap;}
   .cp-list .div{height:1px;background:var(--grey-200);margin:4px 0;}
   .cp-list .social{display:flex;gap:8px;align-items:center;}
   .cp-list .social svg{width:16px;height:16px;color:var(--grey-800);}
@@ -372,6 +372,28 @@
   .cp-questions{padding:8px 24px 0 8px;}
 
   .cp-side{position:sticky;top:88px;display:flex;flex-direction:column;gap:16px;}
+  /* Similar campaigns — left column, desktop landscape only */
+  .cp-similar{display:none;}
+  @media (min-width:1280px) and (orientation:landscape){
+    body.wide{--page:1680px;}
+    .cp{--side:300px;grid-template-columns:var(--side) minmax(0,1fr) var(--side);gap:28px;}
+    .cp-similar{display:flex;flex-direction:column;gap:12px;position:sticky;top:88px;max-height:calc(100dvh - 104px);overflow-y:auto;scrollbar-width:none;}
+    .cp-similar::-webkit-scrollbar{display:none;}
+  }
+  @media (min-width:1600px) and (orientation:landscape){.cp{--side:var(--rail);gap:32px;}}
+  .cp-similar h3{font-size:16px;font-weight:600;line-height:20px;color:var(--grey-800);padding:4px 4px 4px;}
+  .sim-card{display:flex;flex-direction:column;background:#fff;border-radius:20px;overflow:hidden;border:1px solid var(--grey-200);flex-shrink:0;transition:transform .25s cubic-bezier(.16,1,.3,1),box-shadow .25s ease;}
+  .sim-card:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(0,0,0,.08);}
+  .sim-card:active{transform:scale(.98);}
+  .sim-img{position:relative;height:132px;background:var(--grey-200);}
+  .sim-img>img:first-child{width:100%;height:100%;object-fit:cover;}
+  .sim-logo{position:absolute;left:12px;bottom:12px;width:32px;height:32px;border-radius:100px;border:1px solid var(--grey-50);object-fit:cover;background:#fff;}
+  .sim-body{padding:12px 14px 14px;display:flex;flex-direction:column;gap:8px;}
+  .sim-title{font-size:14px;font-weight:600;line-height:18px;color:var(--grey-800);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+  .sim-meta{display:flex;justify-content:space-between;gap:8px;font-size:12px;font-weight:500;line-height:16px;color:var(--grey-600);}
+  .sim-earn{color:var(--blue-500);font-weight:600;white-space:nowrap;}
+  .sim-all{flex-shrink:0;text-align:center;padding:12px;border-radius:100px;background:var(--grey-100);font-size:14px;font-weight:500;color:var(--grey-800);transition:background .25s ease;}
+  .sim-all:hover{background:var(--grey-200);}
   .cp-side .wcard{padding:8px 0 16px;display:flex;flex-direction:column;}
   .cp-side .progress-group{padding:8px 16px 16px;}
   .cp-side .cta{padding:0 16px;}
@@ -977,7 +999,16 @@ function viewCampaign(id,statusOverride){
       </div></div>
       <div class="wcard">${list}</div>`;
   }
+  const others=Object.keys(C).filter(k=>k!==id);
+  const similar=[...others.filter(k=>C[k].cat===c.cat),...others.filter(k=>C[k].cat!==c.cat)].slice(0,5);
+  const simHTML=`<aside class="cp-similar" aria-label="Similar campaigns"><h3>Similar campaigns</h3>
+      ${similar.map(k=>{const s=C[k];return `<a class="sim-card" href="#/campaign/${k}">
+        <div class="sim-img"><img data-a="${s.img}" data-label="${s.abbr}" alt=""><img class="sim-logo" data-a="${s.logo}" data-label="${s.abbr}" alt=""></div>
+        <div class="sim-body"><p class="sim-title">${s.title}</p>
+          <div class="sim-meta"><span>${s.right||s.time}</span><span class="sim-earn">Up to ${s.list[1][1]}</span></div></div></a>`;}).join('')}
+      <a class="sim-all" href="#/explore">See all campaigns</a></aside>`;
   return `<div class="cp">
+    ${simHTML}
     <div class="cp-main">
       <div class="cp-hero"><img data-a="${c.img}" data-label="${c.abbr}" alt="">
         <div class="cp-headrow"><a class="iconbtn" data-back>${CPICON.chevL}</a><div class="cp-headright"><a class="iconbtn like-heart">${CPICON.heart}</a><a class="iconbtn" data-act="share">${CPICON.share}</a></div></div>
@@ -1201,6 +1232,7 @@ function route(){
   else if(r==='submit'){html=viewSubmit(a);title='Submit content';}
   else html=viewExplore();
   view.innerHTML=html;
+  document.body.classList.toggle('wide',r==='campaign');
   bindAssets(view);
   if(tabSwitch) staggerMyWork();
   else {view.classList.remove('nav-in');void view.offsetWidth;view.classList.add('nav-in');window.scrollTo({top:0,behavior:'instant'});}
