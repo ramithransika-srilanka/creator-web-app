@@ -185,8 +185,9 @@
   .card-foot .money b{font-weight:600;color:var(--grey-800);}
 
   /* ================= Home: Campaigns ================= */
-  .home{padding-top:16px;}
-  .home-title{font-size:40px;font-weight:600;line-height:48px;letter-spacing:-.025em;color:#000;}
+  /* Vertical rhythm: 32px from the header, 16px between heading / search / tags, 32px to the grid */
+  .home{padding-top:8px;}
+  .home-title{font-size:32px;font-weight:600;line-height:40px;letter-spacing:-.02em;color:#000;}
   /* Search reveals under the heading (toggled from the header search icon) */
   .home-search{display:grid;grid-template-rows:0fr;transition:grid-template-rows .45s cubic-bezier(.16,1,.3,1),margin-top .45s cubic-bezier(.16,1,.3,1);}
   .home-search>div{overflow:hidden;min-height:0;}
@@ -200,7 +201,7 @@
   .search input::placeholder{color:var(--grey-600);}
   .search input::-webkit-search-cancel-button{display:none;}
   .search kbd{font:500 12px/12px var(--font);color:var(--grey-500);padding:4px 8px;border-radius:8px;background:var(--grey-100);}
-  .home .tags{margin-top:24px;gap:8px;}
+  .home .tags{margin-top:16px;gap:8px;}
   .tag:active{transform:scale(.96);}
 
   .feedgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;margin-top:32px;}
@@ -278,10 +279,10 @@
   .cp-top,.cp-main{border-left:1px solid var(--grey-200);border-right:1px solid var(--grey-200);padding-left:24px;padding-right:24px;}
   .cp-main{padding-bottom:80px;}
   .cp-main{display:flex;flex-direction:column;min-width:0;}
-  .cp-hero{position:relative;height:300px;border-radius:20px;overflow:hidden;background:var(--grey-200);}
-  .cp-brandpill{position:absolute;left:16px;bottom:16px;display:flex;gap:8px;align-items:center;padding:4px 14px 4px 4px;border-radius:100px;background:rgba(18,18,18,.55);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);font-size:14px;font-weight:600;line-height:20px;color:#fff;}
-  .cp-brandpill img{width:28px;height:28px;border-radius:100px;object-fit:cover;background:#fff;}
-  .cp-hero>img{width:100%;height:100%;object-fit:cover;object-position:center 30%;}
+  .cp-hero{position:relative;height:300px;border-radius:20px 20px 0 0;background:var(--grey-200);}
+  .cp-brandpill{position:absolute;z-index:1;left:20px;bottom:-36px;width:72px;height:72px;border-radius:100px;border:4px solid #fff;overflow:hidden;background:#fff;}
+  .cp-brandpill img{width:100%;height:100%;object-fit:cover;display:block;}
+  .cp-hero>img{width:100%;height:100%;object-fit:cover;object-position:center 30%;border-radius:inherit;}
   /* Top bar above the main image: back link on the left, like + share on the right */
   .cp-top{grid-row:1;grid-column:1;align-self:stretch;display:flex;align-items:center;justify-content:space-between;gap:16px;padding-top:24px;padding-bottom:16px;}
   .cp>:not(.cp-top){grid-row:2;}
@@ -294,7 +295,7 @@
   .cp-round svg{width:20px;height:20px;}
   .cp-round:hover{background:var(--grey-100);border-color:var(--grey-400);}
   .cp-round:active{transform:scale(.94);}
-  .cp-details{display:flex;flex-direction:column;gap:12px;padding:20px 0 24px;}
+  .cp-details{display:flex;flex-direction:column;gap:12px;padding:52px 0 24px;}
   .cp-title{font-size:30px;font-weight:600;line-height:36px;letter-spacing:-.02em;color:var(--grey-800);}
   .cp-details>.cp-list{margin-top:12px;padding:8px 0 0;border-radius:0;}
   .cp-joined{display:flex;gap:8px;align-items:center;}
@@ -644,7 +645,6 @@
     .wallet-pill{padding:4px;}
     .phone-note{display:flex;gap:12px;align-items:center;margin:16px var(--gutter) 0;padding:12px 16px;border-radius:20px;background:var(--grey-800);color:var(--grey-50);font-size:14px;line-height:20px;}
     .phone-note a{margin-left:auto;font-weight:600;color:var(--blue-200);white-space:nowrap;}
-    .home-title{font-size:32px;line-height:40px;}
     .feedgrid{grid-template-columns:minmax(0,1fr);gap:16px;margin-top:24px;}
     .mw-list{grid-template-columns:minmax(0,1fr);}
     .cp-hero{height:240px;}
@@ -942,7 +942,7 @@ function viewCampaign(id,statusOverride){
     ${simHTML}
     <div class="cp-main">
       <div class="cp-hero"><img data-a="${c.img}" data-label="${c.abbr}" alt="">
-        <div class="cp-brandpill"><img data-a="${c.logo}" data-label="${c.abbr}" alt=""><span>${c.brand}</span></div>
+        <div class="cp-brandpill"><img data-a="${c.logo}" data-label="${c.abbr}" alt="${c.brand}"></div>
       </div>
       <div class="cp-details">
         <h1 class="cp-title">${c.title}</h1>
