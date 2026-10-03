@@ -115,7 +115,7 @@
   .cp-list{padding:16px;border-radius:12px;display:flex;flex-direction:column;gap:8px;width:100%;}
   .cp-list .row{display:flex;align-items:center;justify-content:space-between;gap:16px;font-size:14px;line-height:20px;}
   .cp-list .row .k{font-weight:500;color:var(--grey-600);}
-  .cp-list .row .v{font-weight:600;color:var(--grey-800);text-align:right;}
+  .cp-list .row .v{font-weight:600;color:var(--grey-800);text-align:right;white-space:nowrap;}
   .cp-list .div{height:1px;background:var(--grey-200);margin:4px 0;}
   .cp-list .social{display:flex;gap:8px;align-items:center;}
   .cp-list .social svg{width:16px;height:16px;color:var(--grey-800);}
@@ -320,16 +320,30 @@
   .cp-event-link .ext svg{width:16px;height:16px;}
   .cp-reqs{padding:32px 24px 16px;display:flex;flex-direction:column;gap:12px;}
   .cp-reqs h3,.cp-createdby>h3{font-size:16px;font-weight:600;line-height:20px;color:#000;}
-  .cp-reqs p{font-size:14px;line-height:20px;color:#000;text-align:justify;max-width:640px;}
-  .cp-reqs .btn-secondary{max-width:320px;}
-  .reqmore{display:grid;grid-template-rows:0fr;transition:grid-template-rows .45s cubic-bezier(.16,1,.3,1);}
-  .reqmore>div{overflow:hidden;}
-  .cp-reqs.open .reqmore{grid-template-rows:1fr;}
-  .reqmore .cp-list{padding:8px 0;max-width:640px;}
-  .reqmore h4{font-size:14px;font-weight:600;line-height:20px;color:#000;margin-top:8px;}
-  .reqmore ul{list-style:none;display:flex;flex-direction:column;gap:4px;padding:8px 0 4px;}
-  .reqmore li{font-size:14px;line-height:20px;color:var(--grey-700);display:flex;gap:8px;}
-  .reqmore li::before{content:"";width:4px;height:4px;border-radius:4px;background:var(--grey-500);margin-top:8px;flex-shrink:0;}
+  .cp-reqs{gap:32px;}
+  .cp-sec{display:flex;flex-direction:column;gap:12px;}
+  .cp-reqs p{font-size:14px;line-height:20px;color:#000;max-width:640px;}
+  .cp-reqs h4{font-size:12px;font-weight:600;line-height:16px;letter-spacing:.06em;text-transform:uppercase;color:var(--grey-600);margin-top:12px;}
+  .cp-spec{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;}
+  .cp-spectile{background:var(--grey-100);border:1px solid var(--grey-200);border-radius:12px;padding:12px 16px;display:flex;flex-direction:column;gap:4px;}
+  .cp-spectile .k{font-size:12px;line-height:16px;color:var(--grey-600);}
+  .cp-spectile .v{font-size:14px;font-weight:600;line-height:20px;color:var(--grey-800);}
+  .cp-plats{display:flex;flex-wrap:wrap;gap:8px;}
+  .cp-plat{display:flex;gap:6px;align-items:center;padding:8px 14px;border-radius:100px;background:#fff;border:1px solid var(--grey-200);font-size:14px;font-weight:500;line-height:20px;color:var(--grey-800);}
+  .cp-plat svg{width:18px;height:18px;}
+  .cp-ctas{background:var(--blue-100);border-left:3px solid var(--blue-500);border-radius:0 12px 12px 0;padding:16px 20px;display:flex;flex-direction:column;gap:8px;}
+  .cp-ctas p{font-style:italic;color:var(--grey-800);}
+  .cp-restrict{list-style:none;counter-reset:r;display:flex;flex-direction:column;gap:10px;}
+  .cp-restrict li{counter-increment:r;display:flex;gap:12px;align-items:center;font-size:14px;line-height:20px;color:var(--grey-800);}
+  .cp-restrict li::before{content:counter(r);width:24px;height:24px;flex-shrink:0;border-radius:100px;background:var(--grey-100);border:1px solid var(--grey-200);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:500;color:var(--grey-600);}
+  .cp-meta{display:flex;gap:12px;align-items:center;justify-content:center;flex-wrap:wrap;}
+  .cp-metaplat{display:flex;gap:10px;align-items:center;color:var(--grey-700);}
+  .cp-metaplat svg{width:18px;height:18px;}
+  .cp-earncard{overflow:hidden;padding-top:0 !important;}
+  .cp-earnup{background:linear-gradient(160deg,var(--blue-500),var(--blue-700));color:#fff;padding:20px 16px 24px;display:flex;flex-direction:column;gap:4px;}
+  .cp-earnup .lbl{font-size:14px;font-weight:500;line-height:20px;opacity:.85;}
+  .cp-earnup .amt{font-size:32px;font-weight:600;line-height:40px;letter-spacing:-.01em;font-variant-numeric:tabular-nums;}
+  .cp-budgetline{margin-top:10px;font-size:12px;line-height:16px;color:var(--grey-600);}
   .cp-createdby{display:flex;flex-direction:column;gap:16px;padding:32px 24px 10px;}
   .cp-creatorcard{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;padding:8px 0 16px;}
   .cp-creatorcard .col{display:flex;flex-direction:column;gap:16px;}
@@ -358,6 +372,33 @@
   .cp-questions{padding:8px 24px 0 8px;}
 
   .cp-side{position:sticky;top:calc(var(--header) + 16px);display:flex;flex-direction:column;gap:16px;}
+  /* Similar campaigns — left column, desktop landscape only */
+  .cp-similar{display:none;}
+  @media (min-width:1440px) and (orientation:landscape){
+    body.wide{--page:1680px;}
+    .cp{--side:300px;grid-template-columns:var(--side) minmax(0,1fr) var(--side);gap:28px;}
+    .cp-similar{display:flex;flex-direction:column;gap:12px;position:sticky;top:calc(var(--header) + 16px);max-height:calc(100dvh - var(--header) - 32px);overflow-y:auto;overscroll-behavior:contain;padding-right:8px;margin-right:-8px;padding-bottom:8px;
+      scrollbar-width:thin;scrollbar-color:var(--grey-400) transparent;scrollbar-gutter:stable;}
+    .cp-similar h3{position:sticky;top:0;z-index:1;background:var(--grey-50);padding-bottom:8px;margin-bottom:-4px;}
+    .cp-similar::-webkit-scrollbar{width:6px;}
+    .cp-similar::-webkit-scrollbar-track{background:transparent;}
+    .cp-similar::-webkit-scrollbar-thumb{background:var(--grey-400);border-radius:100px;}
+    .cp-similar::-webkit-scrollbar-thumb:hover{background:var(--grey-600);}
+  }
+  @media (min-width:1600px) and (orientation:landscape){.cp{--side:var(--rail);gap:32px;}}
+  .cp-similar h3{font-size:16px;font-weight:600;line-height:20px;color:var(--grey-800);padding:4px 4px 4px;}
+  .sim-card{display:flex;flex-direction:column;background:#fff;border-radius:20px;overflow:hidden;border:1px solid var(--grey-200);flex-shrink:0;transition:transform .25s cubic-bezier(.16,1,.3,1),box-shadow .25s ease;}
+  .sim-card:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(0,0,0,.08);}
+  .sim-card:active{transform:scale(.98);}
+  .sim-img{position:relative;height:132px;background:var(--grey-200);}
+  .sim-img>img:first-child{width:100%;height:100%;object-fit:cover;}
+  .sim-logo{position:absolute;left:12px;bottom:12px;width:32px;height:32px;border-radius:100px;border:1px solid var(--grey-50);object-fit:cover;background:#fff;}
+  .sim-body{padding:12px 14px 14px;display:flex;flex-direction:column;gap:8px;}
+  .sim-title{font-size:14px;font-weight:600;line-height:18px;color:var(--grey-800);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+  .sim-meta{display:flex;justify-content:space-between;gap:8px;font-size:12px;font-weight:500;line-height:16px;color:var(--grey-600);}
+  .sim-earn{color:var(--blue-500);font-weight:600;white-space:nowrap;}
+  .sim-all{flex-shrink:0;text-align:center;padding:12px;border-radius:100px;background:var(--grey-100);font-size:14px;font-weight:500;color:var(--grey-800);transition:background .25s ease;}
+  .sim-all:hover{background:var(--grey-200);}
   .cp-side .wcard{padding:8px 0 16px;display:flex;flex-direction:column;}
   .cp-side .progress-group{padding:8px 16px 16px;}
   .cp-side .cta{padding:0 16px;}
@@ -577,6 +618,7 @@
     .feedgrid{grid-template-columns:minmax(0,1fr);gap:16px;margin-top:24px;}
     .mw-list{grid-template-columns:minmax(0,1fr);}
     .cp-hero{height:320px;}
+    .cp-spec{grid-template-columns:repeat(2,minmax(0,1fr));}
     .sc-inputs{grid-template-columns:minmax(0,1fr);}
     .pop{left:var(--gutter);width:auto;}
   }
@@ -722,12 +764,15 @@ function bindAssets(root){
   });
 }
 const AVSET='<img data-a="av1" data-label="C" alt=""><img data-a="av2" data-label="C" alt=""><img data-a="av3" data-label="C" alt=""><img data-a="av4" data-label="C" alt="">';
-const PLAT={insta:CPICON.insta,tiktok:CPICON.tiktok,linkedin:CPICON.linkedin};
+const PLAT={insta:CPICON.insta,tiktok:CPICON.tiktok,linkedin:CPICON.linkedin,
+  youtube:`<svg viewBox="0 0 24 24" fill="currentColor"><path d="M21.6 7.2a2.5 2.5 0 00-1.8-1.8C18.2 5 12 5 12 5s-6.2 0-7.8.4a2.5 2.5 0 00-1.8 1.8C2 8.8 2 12 2 12s0 3.2.4 4.8a2.5 2.5 0 001.8 1.8C5.8 19 12 19 12 19s6.2 0 7.8-.4a2.5 2.5 0 001.8-1.8c.4-1.6.4-4.8.4-4.8s0-3.2-.4-4.8zM10 15V9l5.2 3L10 15z"/></svg>`,
+  facebook:`<svg viewBox="0 0 24 24" fill="currentColor"><path d="M13.5 21v-7.5H16l.4-3h-2.9V8.6c0-.9.3-1.5 1.5-1.5h1.5V4.4c-.3 0-1.2-.1-2.2-.1-2.2 0-3.7 1.3-3.7 3.8v2.4H8.1v3h2.5V21h2.9z"/></svg>`};
+const PLATNAME={tiktok:'TikTok',insta:'Instagram',youtube:'YouTube',facebook:'Facebook',linkedin:'LinkedIn'};
 const MWHEART=`<svg viewBox="0 0 24 24" fill="none"><path d="M12 7.69431C10 2.99988 3 3.49988 3 9.49991C3 15.4999 12 20.5001 12 20.5001C12 20.5001 21 15.4999 21 9.49991C21 3.49988 14 2.99988 12 7.69431Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
 
 /* ================= Data (from the mobile prototype) ================= */
 const SPEC=[['Format','Vertical 9:16'],['Duration','30–45 seconds'],['Quality','Min 1080p'],['Language','English, Sinhala'],['Captions','Required']];
-const RESTRICT=['No AI generated content','Face must be visible in the content','No competitor brands in the frame','Caption must tag the brand handle','Use only licensed or original audio'];
+const RESTRICT=['No AI generated content','Face must be visible in the content','No competitor brands in the frame','Caption must tag the brand handle','Use only licensed or original audio','Keep the post live for at least 30 days'];
 
 const C={
   uber:{img:'card1',logo:'logo1',abbr:'Ub',cat:'Mobility',
@@ -736,6 +781,8 @@ const C={
     list:[['Base price per content','Rs. 6488'],['Max earning per content','Rs. 100,000'],['Performance pricing','Rs. 2000 / 1K views'],['Total budget','Rs. 1,000,000']],
     tags:[['Females','people'],['25-35 age','age'],['Colombo','pin'],['Selfie','camera'],['Reels','video']],
     reqDesc:'Show your audience how Uber Moto can make everyday city travel quicker, easier, and more convenient.',
+    platforms:['tiktok','insta','youtube','facebook'],visibility:'Uber Moto helmet and app ride screen clearly visible',
+    ctas:['Skip the traffic — ride Uber Moto.','Book your Moto in two taps.','Show us your fastest Colombo shortcut and tag us.'],
     brand:'Uber Sri Lanka',since:'Since Mar 2026',brandDesc:'Create creative content when you ride Uber Moto across Colombo and share your journey.',
     totalPaid:'Rs. 2.6 M',campaigns:'48',metrics:[['Content approval rate','96 %'],['Approval time','1 d'],['Responds within','2 hrs']],
     handles:[['10K','insta'],['2.5K','tiktok'],['546','linkedin']]},
@@ -745,6 +792,8 @@ const C={
     list:[['Base price per content','Rs. 5200'],['Max earning per content','Rs. 80,000'],['Performance pricing','Rs. 1500 / 1K views'],['Total budget','Rs. 500,000']],
     tags:[['Foodies','people'],['20-30 age','age'],['Colombo','pin'],['Reels','video'],['Story','camera']],
     reqDesc:'Show how UberEats brings your favourite Colombo restaurants to your door in minutes.',
+    platforms:['tiktok','insta','facebook'],visibility:'Uber Eats bag and the order screen clearly visible',
+    ctas:['Your favourites, at your door.','Order in — tag us with your Uber Eats haul.','Craving it? Uber Eats it.'],
     brand:'Uber Eats LK',since:'Since Jan 2026',brandDesc:'Create tasty content while ordering your favourite meals on Uber Eats.',
     totalPaid:'Rs. 1.8 M',campaigns:'32',metrics:[['Content approval rate','94 %'],['Approval time','1 d'],['Responds within','3 hrs']],
     handles:[['8K','insta'],['1.9K','tiktok'],['420','linkedin']]},
@@ -754,6 +803,8 @@ const C={
     list:[['Base price per content','Rs. 8000'],['Max earning per content','Rs. 150,000'],['Performance pricing','Rs. 2500 / 1K views'],['Total budget','Rs. 500,000']],
     tags:[['All ages','people'],['Colombo','pin'],['Music','video'],['Reels','video'],['Story','camera']],
     reqDesc:'Capture the energy of Akon live in Colombo — the countdown, the venue, and the crowd.',
+    platforms:['tiktok','insta','youtube'],visibility:'Hiru TV branding and the stage clearly visible',
+    ctas:['Akon. Live. Colombo.','Grab your tickets on PickMe Events.','Show us your best moment from the crowd.'],
     brand:'Hiru TV',since:'Since Jan 2026',brandDesc:'Sri Lanka’s leading entertainment network bringing world-class events to Colombo.',
     totalPaid:'Rs. 5.2 M',campaigns:'120',metrics:[['Content approval rate','98 %'],['Approval time','2 d'],['Responds within','1 hr']],
     handles:[['50K','insta'],['20K','tiktok'],['15K','linkedin']],
@@ -764,6 +815,8 @@ const C={
     list:[['Base price per content','Rs. 6488'],['Max earning per content','Rs. 100,000'],['Performance pricing','Rs. 2000 / 1K views'],['Total budget','Rs. 500,000']],
     tags:[['All genders','people'],['18-35 age','age'],['Colombo','pin'],['Selfie','camera'],['Reels','video']],
     reqDesc:'Create creative content when you are using Uber Eats Food Delivery service with Uber Eats logo being clearly visible and a shot at the Uber Eats UI from your phone.',
+    platforms:['tiktok','insta','youtube','facebook'],visibility:'Starbucks cup and Christmas Mocha label clearly visible',
+    ctas:['Make it a Christmas Mocha moment.','Sip the season at Starbucks.','Show us your holiday cup and tag us.'],
     brand:'Starbucks Sri Lanka',since:'Since Mar 2026',brandDesc:'Create creative content when you are using Uber Eats Food Delivery service with Uber.',
     totalPaid:'Rs. 2.6 M',campaigns:'48',metrics:[['Content approval rate','96 %'],['Approval time','1 d'],['Responds within','2 hrs']],
     handles:[['10K','insta'],['2.5K','tiktok'],['546','linkedin']]},
@@ -773,6 +826,8 @@ const C={
     list:[['Base price per content','Rs. 7250'],['Max earning per content','Rs. 120,000'],['Performance pricing','Rs. 1800 / 1K views'],['Total budget','Rs. 2,000,000']],
     tags:[['Foodies','people'],['18-30 age','age'],['Colombo','pin'],['Reels','video']],
     reqDesc:'Film your first bite of the Whopper on a Wednesday and tell your audience what makes it worth the queue.',
+    platforms:['tiktok','insta'],visibility:'Whopper wrap and Burger King tray clearly visible',
+    ctas:['Whopper Wednesday — worth the queue.','Have it your way, every Wednesday.','Show us your first bite and tag us.'],
     brand:'Burger King LK',since:'Since Jun 2026',brandDesc:'Flame-grilled burgers across 23 outlets island-wide.',
     totalPaid:'Rs. 940 K',campaigns:'11',metrics:[['Content approval rate','91 %'],['Approval time','2 d'],['Responds within','5 hrs']],
     handles:[['22K','insta'],['6.1K','tiktok'],['1.2K','linkedin']]},
@@ -782,6 +837,8 @@ const C={
     list:[['Base price per content','Rs. 6488'],['Max earning per content','Rs. 100,000'],['Performance pricing','Rs. 2000 / 1K views'],['Total budget','Rs. 1,500,000']],
     tags:[['Foodies','people'],['20-35 age','age'],['Colombo','pin'],['Reels','video']],
     reqDesc:'Unbox the new Polos Pizza with friends and capture the first reactions on camera.',
+    platforms:['tiktok','insta','facebook'],visibility:'Domino’s box and the Polos Pizza clearly visible',
+    ctas:['Polos Pizza is here — grab a slice.','Order Polos on the Domino’s app.','Show us your first-slice reaction and tag us.'],
     brand:'Domino’s Pizza LK',since:'Since Feb 2026',brandDesc:'Hot pizza delivered in 30 minutes across Colombo and suburbs.',
     totalPaid:'Rs. 1.4 M',campaigns:'27',metrics:[['Content approval rate','93 %'],['Approval time','1 d'],['Responds within','4 hrs']],
     handles:[['31K','insta'],['9.4K','tiktok'],['870','linkedin']]},
@@ -791,6 +848,8 @@ const C={
     list:[['Base price per content','Rs. 4400'],['Max earning per content','Rs. 60,000'],['Performance pricing','Rs. 1200 / 1K views'],['Total budget','Rs. 280,000']],
     tags:[['Spice lovers','people'],['18-30 age','age'],['Island-wide','pin'],['Reels','video']],
     reqDesc:'Film your honest first bite of the new Hot & Crispy bucket — the crunch, the heat, the reaction.',
+    platforms:['tiktok','insta','youtube'],visibility:'KFC bucket and Hot & Crispy pieces clearly visible',
+    ctas:['Feel the crunch — Hot & Crispy.','Can you handle the heat?','Show us your first bite and tag us.'],
     brand:'KFC Sri Lanka',since:'Since Apr 2026',brandDesc:'Finger lickin’ good chicken from 38 restaurants across the island.',
     totalPaid:'Rs. 610 K',campaigns:'9',metrics:[['Content approval rate','97 %'],['Approval time','1 d'],['Responds within','6 hrs']],
     handles:[['14K','insta'],['3.3K','tiktok'],['2.1K','linkedin']]},
@@ -800,6 +859,8 @@ const C={
     list:[['Base price per content','Rs. 9500'],['Max earning per content','Rs. 200,000'],['Performance pricing','Rs. 3000 / 1K views'],['Total budget','Rs. 2,000,000']],
     tags:[['All ages','people'],['Colombo','pin'],['Music','video'],['Reels','video']],
     reqDesc:'Take your audience inside City of Dreams for Shakira’s first show in Sri Lanka.',
+    platforms:['tiktok','insta','youtube','facebook'],visibility:'Hiru TV branding and the City of Dreams stage clearly visible',
+    ctas:['Shakira. Live. City of Dreams.','Grab your tickets on PickMe Events.','Show us your best moment from the show.'],
     brand:'Hiru TV',since:'Since Jan 2026',brandDesc:'Sri Lanka’s leading entertainment network bringing world-class events to Colombo.',
     totalPaid:'Rs. 5.2 M',campaigns:'120',metrics:[['Content approval rate','98 %'],['Approval time','2 d'],['Responds within','1 hr']],
     handles:[['50K','insta'],['20K','tiktok'],['15K','linkedin']],
@@ -905,7 +966,7 @@ function viewCampaign(id,statusOverride){
   const c=C[id]; if(!c) return viewExplore();
   const status=statusOverride||c.status||'open';
   const listRows=c.list.map(r=>`<div class="div"></div><div class="row"><span class="k">${r[0]}</span><span class="v">${r[1]}</span></div>`).join('');
-  const list=`<div class="cp-list"><div class="row"><span class="k">Target platforms</span><span class="social">${CPICON.insta}${CPICON.tiktok}</span></div>${listRows}</div>`;
+  const list=`<div class="cp-list"><div class="row"><span class="k">Target platforms</span><span class="social">${c.platforms.map(p=>PLAT[p]).join('')}</span></div>${listRows}</div>`;
   const tags=c.tags.map(t=>`<div class="cp-tag">${CPICON[t[1]]}<span>${t[0]}</span></div>`).join('');
   const metrics=c.metrics.map((m,i)=>(i?'<div class="div"></div>':'')+`<div class="row"><span class="k">${m[0]}</span><span class="v">${m[1]}</span></div>`).join('');
   const handles=c.handles.map(h=>`<div class="handle"><img class="pf" data-a="${c.logo}" data-label="${c.abbr}" alt=""><div class="badge">${PLAT[h[1]]}</div><span class="fc">${h[0]}</span></div>`).join('');
@@ -927,10 +988,11 @@ function viewCampaign(id,statusOverride){
         <div class="l"><span class="cp-mut">creators</span><span class="cp-creators-mini">${AVSET}</span><span class="cp-mut">up to now.</span></div>
       </div></div>`;
   let side;
+  const earnUpTo=`<div class="cp-earnup"><span class="lbl">You can earn up to</span><span class="amt">${c.list[1][1]}</span></div>`;
+  const budgetLine=`<p class="cp-budgetline">${c.available} still available · ${c.spent} spent on ${c.joinedShort} creators</p>`;
   if(status==='open'){
-    side=`<div class="wcard">${list}
-      <div class="progress-group"><div class="progress"><div class="fill" style="width:${c.progress}%"></div></div>
-        <div class="card-foot">${c.joined?`<div class="joined">${ICON.user}<span>${c.joined}</span></div>`:'<span></span>'}<div class="money">${c.money}</div></div></div>
+    side=`<div class="wcard cp-earncard">${earnUpTo}${list}
+      <div class="progress-group"><div class="progress"><div class="fill" style="width:${(pct*100).toFixed(1)}%"></div></div>${budgetLine}</div>
       <div class="cta"><a class="btn-primary" href="#/submit/${id}">Join Campaign</a></div></div>`;
   } else {
     const s=STATUS[status];
@@ -942,7 +1004,16 @@ function viewCampaign(id,statusOverride){
       </div></div>
       <div class="wcard">${list}</div>`;
   }
+  const others=Object.keys(C).filter(k=>k!==id);
+  const similar=[...others.filter(k=>C[k].cat===c.cat),...others.filter(k=>C[k].cat!==c.cat)].slice(0,5);
+  const simHTML=`<aside class="cp-similar" aria-label="Similar campaigns"><h3>Similar campaigns</h3>
+      ${similar.map(k=>{const s=C[k];return `<a class="sim-card" href="#/campaign/${k}">
+        <div class="sim-img"><img data-a="${s.img}" data-label="${s.abbr}" alt=""><img class="sim-logo" data-a="${s.logo}" data-label="${s.abbr}" alt=""></div>
+        <div class="sim-body"><p class="sim-title">${s.title}</p>
+          <div class="sim-meta"><span>${s.right||s.time}</span><span class="sim-earn">Up to ${s.list[1][1]}</span></div></div></a>`;}).join('')}
+      <a class="sim-all" href="#/explore">See all campaigns</a></aside>`;
   return `<div class="cp">
+    ${simHTML}
     <div class="cp-main">
       <div class="cp-hero"><img data-a="${c.img}" data-label="${c.abbr}" alt="">
         <div class="cp-headrow"><a class="iconbtn" data-back>${CPICON.chevL}</a><div class="cp-headright"><a class="iconbtn like-heart">${CPICON.heart}</a><a class="iconbtn" data-act="share">${CPICON.share}</a></div></div>
@@ -951,17 +1022,23 @@ function viewCampaign(id,statusOverride){
         <img class="cp-logo" data-a="${c.logo}" data-label="${c.abbr}" alt="">
         <p class="cp-title">${c.title}</p>
         <div class="cp-time"><span>${c.time}</span>${c.right?`<span class="dot"></span><span>${c.right}</span>`:''}</div>
-        <div class="cp-joined"><div class="cp-avatars">${AVSET}</div><span class="count">${c.joinedShort}</span></div>
+        <div class="cp-meta"><div class="cp-joined"><div class="cp-avatars">${AVSET}</div><span class="count">${c.joinedShort} creators joined</span></div>
+          <div class="cp-metaplat" aria-label="Platforms">${c.platforms.map(p=>`<span title="${PLATNAME[p]}">${PLAT[p]}</span>`).join('')}</div></div>
       </div>
       <div class="band">
         <div class="sheet-b cp-infotags"><h3>Best suited for</h3><div class="cp-tags">${tags}</div></div>
         ${mid}
-        <div class="sheet-t cp-reqs" id="reqs"><h3>Requirements &amp; Resources</h3><p>${c.reqDesc}</p>
-          <div class="reqmore"><div>
-            <div class="cp-list">${SPEC.map((r,i)=>(i?'<div class="div"></div>':'')+`<div class="row"><span class="k">${r[0]}</span><span class="v">${r[1]}</span></div>`).join('')}</div>
-            <h4>Restrictions</h4><ul>${RESTRICT.map(r=>`<li>${r}</li>`).join('')}</ul>
-          </div></div>
-          <div class="btn-secondary" data-act="reqs">Show more</div></div>
+        <div class="sheet-t cp-reqs" id="reqs">
+          <section class="cp-sec"><h3>About this campaign</h3><p>${c.reqDesc}</p></section>
+          <section class="cp-sec"><h3>Requirements &amp; resources</h3>
+            <div class="cp-spec">${[...SPEC,['Brand visibility',c.visibility]].map(r=>`<div class="cp-spectile"><span class="k">${r[0]}</span><span class="v">${r[1]}</span></div>`).join('')}</div>
+            <h4>Platforms to post on</h4>
+            <div class="cp-plats">${c.platforms.map(p=>`<span class="cp-plat">${PLAT[p]}${PLATNAME[p]}</span>`).join('')}</div>
+            <h4>Call-to-action ideas</h4>
+            <blockquote class="cp-ctas">${c.ctas.map(t=>`<p>“${t}”</p>`).join('')}</blockquote>
+            <h4>Restrictions</h4>
+            <ol class="cp-restrict">${RESTRICT.map(r=>`<li>${r}</li>`).join('')}</ol>
+          </section></div>
       </div>
       <div class="cp-createdby"><h3>Campaign created by</h3>
         <div class="wcard cp-creatorcard">
@@ -973,7 +1050,7 @@ function viewCampaign(id,statusOverride){
           <div class="col">
             <div class="cp-cmetrics">${metrics}</div>
             <div class="handles">${handles}</div>
-            <div class="cp-questions"><div class="btn-questions" data-act="soon">Any questions?</div></div>
+            <div class="cp-questions"><div class="btn-questions" data-act="soon">Any questions? Message the brand</div></div>
           </div>
         </div></div>
     </div>
@@ -1160,6 +1237,7 @@ function route(){
   else if(r==='submit'){html=viewSubmit(a);title='Submit content';}
   else html=viewExplore();
   view.innerHTML=html;
+  document.body.classList.toggle('wide',r==='campaign');
   bindAssets(view);
   if(tabSwitch) staggerMyWork();
   else {view.classList.remove('nav-in');void view.offsetWidth;view.classList.add('nav-in');window.scrollTo({top:0,behavior:'instant'});}
@@ -1240,7 +1318,6 @@ function doAct(a,el){
   if(a==='soon') return toast('This screen is next to build');
   if(a==='share') return toast('Link copied');
   if(a==='clear'){state.cat='All';state.q='';const qi=document.getElementById('q');if(qi)qi.value='';document.querySelectorAll('[data-cat]').forEach(c=>c.classList.toggle('active',c.dataset.cat==='All'));return renderFeed();}
-  if(a==='reqs'){const r=document.getElementById('reqs');r.classList.toggle('open');el.textContent=r.classList.contains('open')?'Show less':'Show more';return;}
   if(a==='upload') return document.getElementById('file').click();
   if(SHEETS[a]) return openOverlay(SHEETS[a]());
 }
