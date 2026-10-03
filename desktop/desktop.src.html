@@ -278,9 +278,9 @@
   .cp-top,.cp-main{border-left:1px solid var(--grey-200);border-right:1px solid var(--grey-200);padding-left:24px;padding-right:24px;}
   .cp-main{padding-bottom:80px;}
   .cp-main{display:flex;flex-direction:column;min-width:0;}
-  .cp-hero{position:relative;height:300px;border-radius:20px;overflow:hidden;background:var(--grey-200);}
-  .cp-brandpill{position:absolute;left:16px;bottom:16px;display:flex;gap:8px;align-items:center;padding:4px 14px 4px 4px;border-radius:100px;background:rgba(18,18,18,.55);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);font-size:14px;font-weight:600;line-height:20px;color:#fff;}
-  .cp-brandpill img{width:28px;height:28px;border-radius:100px;object-fit:cover;background:#fff;}
+  .cp-hero{position:relative;height:300px;border-radius:20px 20px 0 0;overflow:hidden;background:var(--grey-200);}
+  .cp-brandpill{position:absolute;left:16px;bottom:16px;width:40px;height:40px;border-radius:100px;border:2px solid #fff;overflow:hidden;background:#fff;box-shadow:0 2px 8px rgba(0,0,0,.18);}
+  .cp-brandpill img{width:100%;height:100%;object-fit:cover;display:block;}
   .cp-hero>img{width:100%;height:100%;object-fit:cover;object-position:center 30%;}
   /* Top bar above the main image: back link on the left, like + share on the right */
   .cp-top{grid-row:1;grid-column:1;align-self:stretch;display:flex;align-items:center;justify-content:space-between;gap:16px;padding-top:24px;padding-bottom:16px;}
@@ -942,7 +942,7 @@ function viewCampaign(id,statusOverride){
     ${simHTML}
     <div class="cp-main">
       <div class="cp-hero"><img data-a="${c.img}" data-label="${c.abbr}" alt="">
-        <div class="cp-brandpill"><img data-a="${c.logo}" data-label="${c.abbr}" alt=""><span>${c.brand}</span></div>
+        <div class="cp-brandpill"><img data-a="${c.logo}" data-label="${c.abbr}" alt="${c.brand}"></div>
       </div>
       <div class="cp-details">
         <h1 class="cp-title">${c.title}</h1>
