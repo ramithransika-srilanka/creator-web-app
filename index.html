@@ -269,17 +269,28 @@
   .pagehead .page-title{padding-bottom:0;}
 
   /* ================= Campaign page ================= */
-  .cp{display:grid;grid-template-columns:minmax(0,1fr) var(--rail);gap:32px;align-items:start;}
+  .cp{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:32px;align-items:start;max-width:1140px;margin:0 auto;}
   .cp-main{display:flex;flex-direction:column;min-width:0;}
-  .cp-hero{position:relative;height:420px;border-radius:28px 28px 0 0;overflow:hidden;background:var(--grey-200);}
-  .cp-hero>img{width:100%;height:100%;object-fit:cover;}
-  .cp-headrow{position:absolute;top:16px;left:16px;right:16px;display:flex;align-items:center;justify-content:space-between;}
-  .cp-headright{display:flex;gap:12px;align-items:center;}
-  .cp-details{position:relative;margin-top:-72px;display:flex;flex-direction:column;gap:12px;align-items:center;padding:16px 16px 24px;background:var(--grey-50);border-radius:40px 40px 0 0;}
+  .cp-hero{position:relative;height:280px;border-radius:28px 28px 0 0;overflow:hidden;background:var(--grey-200);}
+  .cp-hero>img{width:100%;height:100%;object-fit:cover;object-position:center 30%;}
+  /* Top bar above the main image: back link on the left, like + share on the right */
+  .cp-top{grid-row:1;grid-column:1;display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:-8px;}
+  .cp>:not(.cp-top){grid-row:2;}
+  .cp-back{display:inline-flex;align-items:center;gap:8px;padding:8px 8px 8px 0;font-size:15px;font-weight:500;line-height:20px;color:var(--grey-600);transition:color .2s ease;}
+  .cp-back svg{width:20px;height:20px;transition:transform .25s cubic-bezier(.16,1,.3,1);}
+  .cp-back:hover{color:var(--grey-800);}
+  .cp-back:hover svg{transform:translateX(-3px);}
+  .cp-actions{display:flex;gap:12px;align-items:center;}
+  .cp-round{width:40px;height:40px;border-radius:100px;background:#fff;border:1px solid var(--grey-200);display:flex;align-items:center;justify-content:center;color:var(--grey-800);transition:background .2s ease,border-color .2s ease,transform .2s cubic-bezier(.16,1,.3,1);}
+  .cp-round svg{width:20px;height:20px;}
+  .cp-round:hover{background:var(--grey-100);border-color:var(--grey-400);}
+  .cp-round:active{transform:scale(.94);}
+  .cp-details{position:relative;margin-top:-40px;display:flex;flex-direction:column;gap:12px;align-items:center;padding:16px 16px 24px;background:var(--grey-50);border-radius:32px 32px 0 0;}
   .cp-logo{width:40px;height:40px;border-radius:100px;border:1px solid var(--grey-50);object-fit:cover;background:#fff;}
   .cp-title{font-size:20px;font-weight:600;line-height:24px;color:var(--grey-800);text-align:center;max-width:520px;}
   .cp-time{display:flex;gap:10px;align-items:center;justify-content:center;font-size:12px;font-weight:500;line-height:12px;color:var(--grey-500);}
   .cp-time .dot{width:4px;height:4px;border-radius:4px;background:currentColor;}
+  .cp-details>.cp-list{margin-top:12px;padding:8px 8px 0;border-radius:0;}
   .cp-joined{display:flex;gap:8px;align-items:center;background:var(--grey-200);padding:4px 12px 4px 4px;border-radius:20px;}
   .cp-avatars{display:flex;}
   .cp-avatars img{width:24px;height:24px;border-radius:20px;border:1px solid #f6f6f6;object-fit:cover;margin-left:-8px;background:#ddd;}
@@ -291,19 +302,6 @@
   .cp-tag{background:var(--grey-200);display:flex;gap:4px;align-items:center;justify-content:center;padding:6px 12px;border-radius:100px;}
   .cp-tag svg{width:20px;height:20px;color:var(--grey-800);}
   .cp-tag span{font-size:12px;font-weight:500;line-height:12px;color:var(--grey-800);}
-  .cp-budget{display:flex;align-items:center;justify-content:center;padding:24px 0;}
-  .cp-budget .inner{padding:8px 0;display:flex;flex-direction:column;align-items:center;text-align:center;}
-  .cp-budget .l{display:flex;gap:8px;align-items:center;justify-content:center;font-size:20px;font-weight:600;line-height:25px;}
-  .cp-light{color:var(--grey-50);}
-  .cp-mut{color:var(--grey-500);}
-  .cp-white{color:#fff;}
-  .cp-coin{width:16px;height:16px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#ffd76a,#e0952b);display:inline-block;}
-  .cp-mini{width:54px;height:16px;background:var(--blue-200);border-radius:20px;position:relative;overflow:hidden;display:inline-block;}
-  .cp-mini .track{position:absolute;left:9px;top:6px;width:36px;height:4px;background:var(--grey-50);border-radius:20px;}
-  .cp-mini .fill{position:absolute;left:9px;top:6px;height:4px;background:var(--blue-500);border-radius:20px;}
-  .cp-creators-mini{display:flex;}
-  .cp-creators-mini img{width:16px;height:16px;border-radius:20px;object-fit:cover;margin-left:-4px;background:#ddd;}
-  .cp-creators-mini img:first-child{margin-left:0;}
   .cp-event{display:flex;justify-content:center;padding:16px 24px;}
   .cp-event-card{display:flex;flex-direction:column;gap:12px;align-items:center;padding:16px 20px;}
   .cp-event-info{display:flex;flex-direction:column;align-items:center;}
@@ -340,15 +338,15 @@
   .cp-metaplat{display:flex;gap:10px;align-items:center;color:var(--grey-700);}
   .cp-metaplat svg{width:18px;height:18px;}
   .cp-earncard{overflow:hidden;padding-top:0 !important;}
-  .cp-earnup{background:linear-gradient(160deg,var(--blue-500),var(--blue-700));color:#fff;padding:20px 16px 24px;display:flex;flex-direction:column;gap:4px;}
+  .cp-earnup{background:linear-gradient(160deg,var(--blue-500),var(--blue-700));color:#fff;padding:16px 16px 20px;display:flex;flex-direction:column;gap:2px;}
   .cp-earnup .lbl{font-size:14px;font-weight:500;line-height:20px;opacity:.85;}
-  .cp-earnup .amt{font-size:32px;font-weight:600;line-height:40px;letter-spacing:-.01em;font-variant-numeric:tabular-nums;}
+  .cp-earnup .amt{font-size:26px;font-weight:600;line-height:32px;letter-spacing:-.01em;font-variant-numeric:tabular-nums;}
   .cp-budgetline{margin-top:10px;font-size:12px;line-height:16px;color:var(--grey-600);}
   .cp-createdby{display:flex;flex-direction:column;gap:16px;padding:32px 24px 10px;}
   .cp-creatorcard{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;padding:8px 0 16px;}
   .cp-creatorcard .col{display:flex;flex-direction:column;gap:16px;}
   .cp-identity{display:flex;flex-direction:column;gap:16px;align-items:center;padding:16px 32px 4px;}
-  .cp-identity .av{width:80px;height:80px;border-radius:100px;object-fit:cover;background:#fff;}
+  .cp-identity .av{width:64px;height:64px;border-radius:100px;object-fit:cover;background:#fff;}
   .cp-idtext{display:flex;flex-direction:column;gap:8px;align-items:center;}
   .cp-identity .name{font-size:20px;font-weight:600;line-height:20px;color:var(--grey-800);}
   .cp-identity .since{font-size:12px;line-height:16px;color:var(--grey-600);}
@@ -375,9 +373,10 @@
   /* Similar campaigns — left column, desktop landscape only */
   .cp-similar{display:none;}
   @media (min-width:1440px) and (orientation:landscape){
-    body.wide{--page:1680px;}
-    .cp{--side:300px;grid-template-columns:var(--side) minmax(0,1fr) var(--side);gap:28px;}
-    .cp-similar{display:flex;flex-direction:column;gap:12px;position:sticky;top:calc(var(--header) + 16px);max-height:calc(100dvh - var(--header) - 32px);overflow-y:auto;overscroll-behavior:contain;padding-right:8px;margin-right:-8px;padding-bottom:8px;
+    body.wide{--page:1440px;}
+    .cp{--side:280px;grid-template-columns:var(--side) minmax(0,1fr) var(--side);gap:32px;max-width:none;}
+    .cp-top{grid-column:2;}
+    .cp-similar{display:flex;flex-direction:column;gap:12px;position:sticky;top:calc(var(--header) + 16px);max-height:calc(100dvh - var(--header) - 32px);overflow-y:auto;overscroll-behavior:contain;padding-right:15px;margin-right:-16px;border-right:1px solid var(--grey-200);padding-bottom:8px;
       scrollbar-width:thin;scrollbar-color:var(--grey-400) transparent;scrollbar-gutter:stable;}
     .cp-similar h3{position:sticky;top:0;z-index:1;background:var(--grey-50);padding-bottom:8px;margin-bottom:-4px;}
     .cp-similar::-webkit-scrollbar{width:6px;}
@@ -385,22 +384,22 @@
     .cp-similar::-webkit-scrollbar-thumb{background:var(--grey-400);border-radius:100px;}
     .cp-similar::-webkit-scrollbar-thumb:hover{background:var(--grey-600);}
   }
-  @media (min-width:1600px) and (orientation:landscape){.cp{--side:var(--rail);gap:32px;}}
   .cp-similar h3{font-size:16px;font-weight:600;line-height:20px;color:var(--grey-800);padding:4px 4px 4px;}
   .sim-card{display:flex;flex-direction:column;background:#fff;border-radius:20px;overflow:hidden;border:1px solid var(--grey-200);flex-shrink:0;transition:transform .25s cubic-bezier(.16,1,.3,1),box-shadow .25s ease;}
   .sim-card:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(0,0,0,.08);}
   .sim-card:active{transform:scale(.98);}
-  .sim-img{position:relative;height:132px;background:var(--grey-200);}
+  .sim-img{position:relative;height:112px;background:var(--grey-200);}
   .sim-img>img:first-child{width:100%;height:100%;object-fit:cover;}
   .sim-logo{position:absolute;left:12px;bottom:12px;width:32px;height:32px;border-radius:100px;border:1px solid var(--grey-50);object-fit:cover;background:#fff;}
   .sim-body{padding:12px 14px 14px;display:flex;flex-direction:column;gap:8px;}
   .sim-title{font-size:14px;font-weight:600;line-height:18px;color:var(--grey-800);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
   .sim-meta{display:flex;justify-content:space-between;gap:8px;font-size:12px;font-weight:500;line-height:16px;color:var(--grey-600);}
+  .sim-meta>span:first-child{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
   .sim-earn{color:var(--blue-500);font-weight:600;white-space:nowrap;}
   .sim-all{flex-shrink:0;text-align:center;padding:12px;border-radius:100px;background:var(--grey-100);font-size:14px;font-weight:500;color:var(--grey-800);transition:background .25s ease;}
   .sim-all:hover{background:var(--grey-200);}
   .cp-side .wcard{padding:8px 0 16px;display:flex;flex-direction:column;}
-  .cp-side .progress-group{padding:8px 16px 16px;}
+  .cp-side .progress-group{padding:16px 16px;}
   .cp-side .cta{padding:0 16px;}
   /* status card (Ongoing / Pending approval / Completed) */
   .sbo-green{background:var(--ongoing);border-radius:20px;width:100%;display:flex;flex-direction:column;}
@@ -410,9 +409,9 @@
   .sbo-green-box{background:#fff;border-radius:20px;padding:16px;display:flex;flex-direction:column;gap:10px;align-items:center;box-shadow:4px 4px 6px rgba(0,0,0,.12);}
   .sbo-earn{display:flex;flex-direction:column;align-items:center;color:var(--blue-500);}
   .sbo-earn .lbl{font-size:16px;font-weight:500;line-height:20px;}
-  .sbo-earn .amt{font-size:28px;font-weight:600;line-height:38px;}
+  .sbo-earn .amt{font-size:24px;font-weight:600;line-height:32px;}
   .sbo-thumbs{display:grid;grid-template-columns:1fr 1fr;gap:8px;width:100%;}
-  .sbo-thumb{position:relative;height:180px;border-radius:20px;overflow:hidden;}
+  .sbo-thumb{position:relative;height:150px;border-radius:20px;overflow:hidden;}
   .sbo-thumb img{width:100%;height:100%;object-fit:cover;}
   .sbo-thumb .badge{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:48px;height:48px;border-radius:100px;background:var(--grey-50);display:flex;align-items:center;justify-content:center;filter:drop-shadow(2px 4px 4px rgba(0,0,0,.4));color:#121212;}
   .sbo-thumb .badge svg{width:24px;height:24px;}
@@ -627,7 +626,7 @@
     .home-title{font-size:32px;line-height:40px;}
     .feedgrid{grid-template-columns:minmax(0,1fr);gap:16px;margin-top:24px;}
     .mw-list{grid-template-columns:minmax(0,1fr);}
-    .cp-hero{height:320px;}
+    .cp-hero{height:240px;}
     .cp-spec{grid-template-columns:repeat(2,minmax(0,1fr));}
     .pop{left:var(--gutter);width:auto;}
   }
@@ -972,6 +971,7 @@ function renderFeed(){
 const esc=s=>String(s).replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
 
 /* ---------- Campaign page ---------- */
+const BACKARROW='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>';
 function viewCampaign(id,statusOverride){
   const c=C[id]; if(!c) return viewExplore();
   const status=statusOverride||c.status||'open';
@@ -991,17 +991,12 @@ function viewCampaign(id,statusOverride){
         </div>
         <div class="cp-event-cta"><span class="lbl">Buy tickets from</span><a class="cp-event-link" data-act="soon"><span>${c.event.ticket}</span><span class="ext">${CPICON.extlink}</span></a></div>
       </div></div>`
-    : `<div class="cp-budget"><div class="inner">
-        <div class="l"><span class="cp-light">${c.available}</span><span class="cp-mini"><span class="track"></span><span class="fill" style="width:${(36*pct).toFixed(1)}px"></span></span><span class="cp-mut">is</span></div>
-        <div class="l"><span class="cp-mut">available to spend.</span></div>
-        <div class="l"><span class="cp-white">${c.spent}</span><span class="cp-coin"></span><span class="cp-light">was spent <span class="cp-mut">on</span></span></div>
-        <div class="l"><span class="cp-mut">creators</span><span class="cp-creators-mini">${AVSET}</span><span class="cp-mut">up to now.</span></div>
-      </div></div>`;
+    : '';
   let side;
   const earnUpTo=`<div class="cp-earnup"><span class="lbl">You can earn up to</span><span class="amt">${c.list[1][1]}</span></div>`;
   const budgetLine=`<p class="cp-budgetline">${c.available} still available · ${c.spent} spent on ${c.joinedShort} creators</p>`;
   if(status==='open'){
-    side=`<div class="wcard cp-earncard">${earnUpTo}${list}
+    side=`<div class="wcard cp-earncard">${earnUpTo}
       <div class="progress-group"><div class="progress"><div class="fill" style="width:${(pct*100).toFixed(1)}%"></div></div>${budgetLine}</div>
       <div class="cta"><a class="btn-primary" href="#/submit/${id}">Join Campaign</a></div></div>`;
   } else {
@@ -1011,8 +1006,7 @@ function viewCampaign(id,statusOverride){
         <div class="sbo-thumbs">${s.content.map((im,i)=>`<div class="sbo-thumb"><img data-a="${im}" alt=""><div class="badge">${i?CPICON.tiktok:CPICON.insta}</div></div>`).join('')}</div>
         <div class="sbo-earndetails">${s.rows.map((r,i)=>(i?'<div class="ed-div"></div>':'')+`<div class="row"><span class="k ${r[2]?'blue':''}">${r[0]}</span><span class="v ${r[2]?'blue':''}">${r[1]}</span></div>`).join('')}
           <div class="btn-secondary" data-act="soon">${s.btn}</div></div>
-      </div></div>
-      <div class="wcard">${list}</div>`;
+      </div></div>`;
   }
   const others=Object.keys(C).filter(k=>k!==id);
   const similar=[...others.filter(k=>C[k].cat===c.cat),...others.filter(k=>C[k].cat!==c.cat)].slice(0,5);
@@ -1022,11 +1016,15 @@ function viewCampaign(id,statusOverride){
         <div class="sim-body"><p class="sim-title">${s.title}</p>
           <div class="sim-meta"><span>${s.right||s.time}</span><span class="sim-earn">Up to ${s.list[1][1]}</span></div></div></a>`;}).join('')}
       <a class="sim-all" href="#/explore">See all campaigns</a></aside>`;
+  const backTo=status==='open'?'Campaigns':'My work';
   return `<div class="cp">
+    <div class="cp-top">
+      <a class="cp-back" data-back aria-label="Back to ${backTo}">${BACKARROW}<span>${backTo}</span></a>
+      <div class="cp-actions"><button class="cp-round like-heart" type="button" aria-label="Like campaign">${CPICON.heart}</button><button class="cp-round" type="button" data-act="share" aria-label="Share campaign">${CPICON.share}</button></div>
+    </div>
     ${simHTML}
     <div class="cp-main">
       <div class="cp-hero"><img data-a="${c.img}" data-label="${c.abbr}" alt="">
-        <div class="cp-headrow"><a class="iconbtn" data-back>${CPICON.chevL}</a><div class="cp-headright"><a class="iconbtn like-heart">${CPICON.heart}</a><a class="iconbtn" data-act="share">${CPICON.share}</a></div></div>
       </div>
       <div class="cp-details">
         <img class="cp-logo" data-a="${c.logo}" data-label="${c.abbr}" alt="">
@@ -1034,11 +1032,12 @@ function viewCampaign(id,statusOverride){
         <div class="cp-time"><span>${c.time}</span>${c.right?`<span class="dot"></span><span>${c.right}</span>`:''}</div>
         <div class="cp-meta"><div class="cp-joined"><div class="cp-avatars">${AVSET}</div><span class="count">${c.joinedShort} creators joined</span></div>
           <div class="cp-metaplat" aria-label="Platforms">${c.platforms.map(p=>`<span title="${PLATNAME[p]}">${PLAT[p]}</span>`).join('')}</div></div>
+        ${list}
       </div>
-      <div class="band">
-        <div class="sheet-b cp-infotags"><h3>Best suited for</h3><div class="cp-tags">${tags}</div></div>
+      <div class="${c.event?'band':''}">
+        <div class="${c.event?'sheet-b ':''}cp-infotags"><h3>Best suited for</h3><div class="cp-tags">${tags}</div></div>
         ${mid}
-        <div class="sheet-t cp-reqs" id="reqs">
+        <div class="${c.event?'sheet-t ':''}cp-reqs" id="reqs">
           <section class="cp-sec"><h3>About this campaign</h3><p>${c.reqDesc}</p></section>
           <section class="cp-sec"><h3>Requirements &amp; resources</h3>
             <div class="cp-spec">${[...SPEC,['Brand visibility',c.visibility]].map(r=>`<div class="cp-spectile"><span class="k">${r[0]}</span><span class="v">${r[1]}</span></div>`).join('')}</div>
