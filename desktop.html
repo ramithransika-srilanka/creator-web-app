@@ -273,8 +273,17 @@
   .cp-main{display:flex;flex-direction:column;min-width:0;}
   .cp-hero{position:relative;height:420px;border-radius:28px 28px 0 0;overflow:hidden;background:var(--grey-200);}
   .cp-hero>img{width:100%;height:100%;object-fit:cover;}
-  .cp-headrow{position:absolute;top:16px;left:16px;right:16px;display:flex;align-items:center;justify-content:space-between;}
-  .cp-headright{display:flex;gap:12px;align-items:center;}
+  /* Top bar: back link on the left, like + share on the right — spans every column */
+  .cp-top{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:-8px;}
+  .cp-back{display:inline-flex;align-items:center;gap:8px;padding:8px 8px 8px 0;font-size:16px;font-weight:500;line-height:20px;color:var(--grey-600);transition:color .2s ease;}
+  .cp-back svg{width:20px;height:20px;transition:transform .25s cubic-bezier(.16,1,.3,1);}
+  .cp-back:hover{color:var(--grey-800);}
+  .cp-back:hover svg{transform:translateX(-3px);}
+  .cp-actions{display:flex;gap:12px;align-items:center;}
+  .cp-round{width:48px;height:48px;border-radius:100px;background:#fff;border:1px solid var(--grey-200);display:flex;align-items:center;justify-content:center;color:var(--grey-800);transition:background .2s ease,border-color .2s ease,transform .2s cubic-bezier(.16,1,.3,1);}
+  .cp-round svg{width:22px;height:22px;}
+  .cp-round:hover{background:var(--grey-100);border-color:var(--grey-400);}
+  .cp-round:active{transform:scale(.94);}
   .cp-details{position:relative;margin-top:-72px;display:flex;flex-direction:column;gap:12px;align-items:center;padding:16px 16px 24px;background:var(--grey-50);border-radius:40px 40px 0 0;}
   .cp-logo{width:40px;height:40px;border-radius:100px;border:1px solid var(--grey-50);object-fit:cover;background:#fff;}
   .cp-title{font-size:20px;font-weight:600;line-height:24px;color:var(--grey-800);text-align:center;max-width:520px;}
@@ -962,6 +971,7 @@ function renderFeed(){
 const esc=s=>String(s).replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
 
 /* ---------- Campaign page ---------- */
+const BACKARROW='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>';
 function viewCampaign(id,statusOverride){
   const c=C[id]; if(!c) return viewExplore();
   const status=statusOverride||c.status||'open';
@@ -1012,11 +1022,15 @@ function viewCampaign(id,statusOverride){
         <div class="sim-body"><p class="sim-title">${s.title}</p>
           <div class="sim-meta"><span>${s.right||s.time}</span><span class="sim-earn">Up to ${s.list[1][1]}</span></div></div></a>`;}).join('')}
       <a class="sim-all" href="#/explore">See all campaigns</a></aside>`;
+  const backTo=status==='open'?'Campaigns':'My work';
   return `<div class="cp">
+    <div class="cp-top">
+      <a class="cp-back" data-back aria-label="Back to ${backTo}">${BACKARROW}<span>${backTo}</span></a>
+      <div class="cp-actions"><button class="cp-round like-heart" type="button" aria-label="Like campaign">${CPICON.heart}</button><button class="cp-round" type="button" data-act="share" aria-label="Share campaign">${CPICON.share}</button></div>
+    </div>
     ${simHTML}
     <div class="cp-main">
       <div class="cp-hero"><img data-a="${c.img}" data-label="${c.abbr}" alt="">
-        <div class="cp-headrow"><a class="iconbtn" data-back>${CPICON.chevL}</a><div class="cp-headright"><a class="iconbtn like-heart">${CPICON.heart}</a><a class="iconbtn" data-act="share">${CPICON.share}</a></div></div>
       </div>
       <div class="cp-details">
         <img class="cp-logo" data-a="${c.logo}" data-label="${c.abbr}" alt="">
