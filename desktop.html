@@ -345,12 +345,10 @@
   .cp-mi svg{width:16px;height:16px;}
   .cp-metaplat{display:flex;gap:12px;align-items:center;color:var(--grey-600);}
   .cp-metaplat svg{width:16px;height:16px;}
-  .cp-earncard{overflow:hidden;padding-top:0 !important;}
-  .cp-earnup{background:linear-gradient(160deg,var(--blue-500),var(--blue-700));color:#fff;padding:16px 16px 20px;display:flex;flex-direction:column;gap:2px;}
-  .cp-earnup .lbl{font-size:14px;font-weight:500;line-height:20px;opacity:.85;}
-  .cp-earnup .amt{font-size:26px;font-weight:600;line-height:32px;letter-spacing:-.01em;font-variant-numeric:tabular-nums;}
   .cp-budgetline{margin-top:10px;font-size:12px;line-height:16px;color:var(--grey-600);}
   .cp-createdby{display:flex;flex-direction:column;gap:16px;padding:32px 0 10px;}
+  .cp-join{padding-top:24px;}
+  .cp-join .btn-primary{padding:16px 24px;font-size:16px;font-weight:600;line-height:24px;}
   .cp-main>div:not(.band)>.cp-reqs{padding-left:0;padding-right:0;}
   .cp-creatorcard{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;padding:8px 0 16px;}
   .cp-creatorcard .col{display:flex;flex-direction:column;gap:16px;}
@@ -378,12 +376,14 @@
   .handle .fc{font-size:14px;font-weight:500;line-height:20px;color:#121212;}
   .cp-questions{padding:8px 24px 0 8px;}
 
+  .cp.no-side{grid-template-columns:minmax(0,760px);}
   .cp-side{position:sticky;top:calc(var(--header) + 16px);display:flex;flex-direction:column;gap:16px;}
   /* Similar campaigns — left column, desktop landscape only */
   .cp-similar{display:none;}
   @media (min-width:1440px) and (orientation:landscape){
     body.wide{--page:1440px;}
-    .cp{--side:280px;grid-template-columns:var(--side) minmax(0,760px) var(--side);justify-content:space-between;}
+    .cp{--side:280px;--sim:320px;grid-template-columns:var(--sim) minmax(0,760px) var(--side);justify-content:space-between;}
+    .cp.no-side{--sim:360px;grid-template-columns:var(--sim) minmax(0,760px);justify-content:center;column-gap:48px;}
     .cp-top{grid-column:2;}
     .cp>.cp-similar{grid-row:1 / span 2;display:flex;flex-direction:column;gap:12px;position:sticky;top:var(--header);max-height:calc(100dvh - var(--header));padding-top:24px;overflow-y:auto;overscroll-behavior:contain;padding-right:8px;margin-right:-8px;padding-bottom:8px;
       scrollbar-width:thin;scrollbar-color:var(--grey-400) transparent;scrollbar-gutter:stable;}
@@ -398,7 +398,7 @@
   .sim-list{display:flex;flex-direction:column;gap:16px;}
   .cp-similar .cardwrap{padding:8px;flex-shrink:0;background:#fff;border:1px solid var(--grey-200);border-radius:24px;transition:transform .45s cubic-bezier(.16,1,.3,1),box-shadow .45s cubic-bezier(.16,1,.3,1);}
   .cp-similar .cardwrap:hover{transform:translateY(-2px);box-shadow:0 20px 40px -24px rgba(18,18,18,.22);}
-  .cp-similar .card-img{height:160px;border-radius:16px;}
+  .cp-similar .card-img{height:190px;border-radius:16px;}
   .cp-similar .card-logobar{padding:12px;}
   .cp-similar .card-logobar .logo{width:28px;height:28px;}
   .cp-similar .heart{width:20px;height:20px;}
@@ -418,8 +418,6 @@
   .sim-all{flex-shrink:0;text-align:center;padding:12px;border-radius:100px;background:var(--grey-100);font-size:14px;font-weight:500;color:var(--grey-800);transition:background .25s ease;}
   .sim-all:hover{background:var(--grey-200);}
   .cp-side .wcard{padding:8px 0 16px;display:flex;flex-direction:column;}
-  .cp-side .progress-group{padding:16px 16px;}
-  .cp-side .cta{padding:0 16px;}
   /* status card (Ongoing / Pending approval / Completed) */
   .sbo-green{background:var(--ongoing);border-radius:20px;width:100%;display:flex;flex-direction:column;}
   .sbo-green.pending{background:var(--pending);}
@@ -1004,8 +1002,6 @@ function viewCampaign(id,statusOverride){
   const tags=c.tags.map(t=>`<div class="cp-tag">${CPICON[t[1]]}<span>${t[0]}</span></div>`).join('');
   const metrics=c.metrics.map((m,i)=>(i?'<div class="div"></div>':'')+`<div class="row"><span class="k">${m[0]}</span><span class="v">${m[1]}</span></div>`).join('');
   const handles=c.handles.map(h=>`<div class="handle"><img class="pf" data-a="${c.logo}" data-label="${c.abbr}" alt=""><div class="badge">${PLAT[h[1]]}</div><span class="fc">${h[0]}</span></div>`).join('');
-  const num=v=>+String(v).replace(/[^0-9]/g,'');
-  const pct=num(c.spent)/(num(c.spent)+num(c.available));
   const mid=c.event
     ? `<div class="cp-event"><div class="cp-event-card">
         <div class="cp-event-info">
@@ -1016,14 +1012,8 @@ function viewCampaign(id,statusOverride){
         <div class="cp-event-cta"><span class="lbl">Buy tickets from</span><a class="cp-event-link" data-act="soon"><span>${c.event.ticket}</span><span class="ext">${CPICON.extlink}</span></a></div>
       </div></div>`
     : '';
-  let side;
-  const earnUpTo=`<div class="cp-earnup"><span class="lbl">You can earn up to</span><span class="amt">${c.list[1][1]}</span></div>`;
-  const budgetLine=`<p class="cp-budgetline">${c.available} still available · ${c.spent} spent on ${c.joinedShort} creators</p>`;
-  if(status==='open'){
-    side=`<div class="wcard cp-earncard">${earnUpTo}
-      <div class="progress-group"><div class="progress"><div class="fill" style="width:${(pct*100).toFixed(1)}%"></div></div>${budgetLine}</div>
-      <div class="cta"><a class="btn-primary" href="#/submit/${id}">Join Campaign</a></div></div>`;
-  } else {
+  let side='';
+  if(status!=='open'){
     const s=STATUS[status];
     side=`<div class="sbo-green ${s.cls}"><div class="sbo-green-label">${s.label}</div><div class="sbo-green-box">
         <div class="sbo-earn"><span class="lbl">${s.earnLbl}</span><span class="amt">${s.amt}</span></div>
@@ -1038,7 +1028,7 @@ function viewCampaign(id,statusOverride){
       <div class="sim-list">${similar.map(k=>cardHTML(k)).join('')}</div>
       <a class="sim-all" href="#/explore">See all campaigns</a></aside>`;
   const backTo=status==='open'?'Campaigns':'My work';
-  return `<div class="cp">
+  return `<div class="cp${side?'':' no-side'}">
     <div class="cp-top">
       <a class="cp-back" data-back aria-label="Back to ${backTo}">${BACKARROW}<span>${backTo}</span></a>
       <div class="cp-actions"><button class="cp-round like-heart" type="button" aria-label="Like campaign">${CPICON.heart}</button><button class="cp-round" type="button" data-act="share" aria-label="Share campaign">${CPICON.share}</button></div>
@@ -1085,8 +1075,9 @@ function viewCampaign(id,statusOverride){
             <div class="cp-questions"><div class="btn-questions" data-act="soon">Any questions? Message the brand</div></div>
           </div>
         </div></div>
+      ${status==='open'?`<div class="cp-join"><a class="btn-primary" href="#/submit/${id}">Join Campaign</a></div>`:''}
     </div>
-    <aside class="cp-side">${side}</aside>
+    ${side?`<aside class="cp-side">${side}</aside>`:''}
   </div>`;
 }
 
