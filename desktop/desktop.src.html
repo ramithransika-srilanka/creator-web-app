@@ -289,6 +289,7 @@
   .cp-title{font-size:20px;font-weight:600;line-height:24px;color:var(--grey-800);text-align:center;max-width:520px;}
   .cp-time{display:flex;gap:10px;align-items:center;justify-content:center;font-size:12px;font-weight:500;line-height:12px;color:var(--grey-500);}
   .cp-time .dot{width:4px;height:4px;border-radius:4px;background:currentColor;}
+  .cp-details>.cp-list{max-width:480px;margin-top:12px;background:#fff;border:1px solid var(--grey-200);}
   .cp-joined{display:flex;gap:8px;align-items:center;background:var(--grey-200);padding:4px 12px 4px 4px;border-radius:20px;}
   .cp-avatars{display:flex;}
   .cp-avatars img{width:24px;height:24px;border-radius:20px;border:1px solid #f6f6f6;object-fit:cover;margin-left:-8px;background:#ddd;}
@@ -409,7 +410,7 @@
   .sim-all{flex-shrink:0;text-align:center;padding:12px;border-radius:100px;background:var(--grey-100);font-size:14px;font-weight:500;color:var(--grey-800);transition:background .25s ease;}
   .sim-all:hover{background:var(--grey-200);}
   .cp-side .wcard{padding:8px 0 16px;display:flex;flex-direction:column;}
-  .cp-side .progress-group{padding:8px 16px 16px;}
+  .cp-side .progress-group{padding:16px 16px;}
   .cp-side .cta{padding:0 16px;}
   /* status card (Ongoing / Pending approval / Completed) */
   .sbo-green{background:var(--ongoing);border-radius:20px;width:100%;display:flex;flex-direction:column;}
@@ -907,7 +908,7 @@ function viewCampaign(id,statusOverride){
   const earnUpTo=`<div class="cp-earnup"><span class="lbl">You can earn up to</span><span class="amt">${c.list[1][1]}</span></div>`;
   const budgetLine=`<p class="cp-budgetline">${c.available} still available · ${c.spent} spent on ${c.joinedShort} creators</p>`;
   if(status==='open'){
-    side=`<div class="wcard cp-earncard">${earnUpTo}${list}
+    side=`<div class="wcard cp-earncard">${earnUpTo}
       <div class="progress-group"><div class="progress"><div class="fill" style="width:${(pct*100).toFixed(1)}%"></div></div>${budgetLine}</div>
       <div class="cta"><a class="btn-primary" href="#/submit/${id}">Join Campaign</a></div></div>`;
   } else {
@@ -917,8 +918,7 @@ function viewCampaign(id,statusOverride){
         <div class="sbo-thumbs">${s.content.map((im,i)=>`<div class="sbo-thumb"><img data-a="${im}" alt=""><div class="badge">${i?CPICON.tiktok:CPICON.insta}</div></div>`).join('')}</div>
         <div class="sbo-earndetails">${s.rows.map((r,i)=>(i?'<div class="ed-div"></div>':'')+`<div class="row"><span class="k ${r[2]?'blue':''}">${r[0]}</span><span class="v ${r[2]?'blue':''}">${r[1]}</span></div>`).join('')}
           <div class="btn-secondary" data-act="soon">${s.btn}</div></div>
-      </div></div>
-      <div class="wcard">${list}</div>`;
+      </div></div>`;
   }
   const others=Object.keys(C).filter(k=>k!==id);
   const similar=[...others.filter(k=>C[k].cat===c.cat),...others.filter(k=>C[k].cat!==c.cat)].slice(0,5);
@@ -944,6 +944,7 @@ function viewCampaign(id,statusOverride){
         <div class="cp-time"><span>${c.time}</span>${c.right?`<span class="dot"></span><span>${c.right}</span>`:''}</div>
         <div class="cp-meta"><div class="cp-joined"><div class="cp-avatars">${AVSET}</div><span class="count">${c.joinedShort} creators joined</span></div>
           <div class="cp-metaplat" aria-label="Platforms">${c.platforms.map(p=>`<span title="${PLATNAME[p]}">${PLAT[p]}</span>`).join('')}</div></div>
+        ${list}
       </div>
       <div class="band">
         <div class="sheet-b cp-infotags"><h3>Best suited for</h3><div class="cp-tags">${tags}</div></div>
