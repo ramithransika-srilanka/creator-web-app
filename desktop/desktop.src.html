@@ -269,12 +269,15 @@
   .pagehead .page-title{padding-bottom:0;}
 
   /* ================= Campaign page ================= */
-  .cp{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:32px;align-items:start;max-width:1140px;margin:0 auto;}
+  .cp{display:grid;grid-template-columns:minmax(0,760px) 300px;column-gap:32px;row-gap:0;justify-content:center;align-items:start;margin:-24px auto -80px;}
+  /* Main column sits between two full-height divider lines (top bar + content) */
+  .cp-top,.cp-main{border-left:1px solid var(--grey-200);border-right:1px solid var(--grey-200);padding-left:24px;padding-right:24px;}
+  .cp-main{padding-bottom:80px;}
   .cp-main{display:flex;flex-direction:column;min-width:0;}
   .cp-hero{position:relative;height:280px;border-radius:28px 28px 0 0;overflow:hidden;background:var(--grey-200);}
   .cp-hero>img{width:100%;height:100%;object-fit:cover;object-position:center 30%;}
   /* Top bar above the main image: back link on the left, like + share on the right */
-  .cp-top{grid-row:1;grid-column:1;display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:-8px;}
+  .cp-top{grid-row:1;grid-column:1;align-self:stretch;display:flex;align-items:center;justify-content:space-between;gap:16px;padding-top:24px;padding-bottom:16px;}
   .cp>:not(.cp-top){grid-row:2;}
   .cp-back{display:inline-flex;align-items:center;gap:8px;padding:8px 8px 8px 0;font-size:15px;font-weight:500;line-height:20px;color:var(--grey-600);transition:color .2s ease;}
   .cp-back svg{width:20px;height:20px;transition:transform .25s cubic-bezier(.16,1,.3,1);}
@@ -374,9 +377,9 @@
   .cp-similar{display:none;}
   @media (min-width:1440px) and (orientation:landscape){
     body.wide{--page:1440px;}
-    .cp{--side:280px;grid-template-columns:var(--side) minmax(0,1fr) var(--side);gap:32px;max-width:none;}
+    .cp{--side:280px;grid-template-columns:var(--side) minmax(0,760px) var(--side);justify-content:space-between;}
     .cp-top{grid-column:2;}
-    .cp-similar{display:flex;flex-direction:column;gap:12px;position:sticky;top:calc(var(--header) + 16px);max-height:calc(100dvh - var(--header) - 32px);overflow-y:auto;overscroll-behavior:contain;padding-right:15px;margin-right:-16px;border-right:1px solid var(--grey-200);padding-bottom:8px;
+    .cp>.cp-similar{grid-row:1 / span 2;display:flex;flex-direction:column;gap:12px;position:sticky;top:var(--header);max-height:calc(100dvh - var(--header));padding-top:24px;overflow-y:auto;overscroll-behavior:contain;padding-right:8px;margin-right:-8px;padding-bottom:8px;
       scrollbar-width:thin;scrollbar-color:var(--grey-400) transparent;scrollbar-gutter:stable;}
     .cp-similar h3{position:sticky;top:0;z-index:1;background:var(--grey-50);padding-bottom:8px;margin-bottom:-4px;}
     .cp-similar::-webkit-scrollbar{width:6px;}
@@ -385,17 +388,27 @@
     .cp-similar::-webkit-scrollbar-thumb:hover{background:var(--grey-600);}
   }
   .cp-similar h3{font-size:16px;font-weight:600;line-height:20px;color:var(--grey-800);padding:4px 4px 4px;}
-  .sim-card{display:flex;flex-direction:column;background:#fff;border-radius:20px;overflow:hidden;border:1px solid var(--grey-200);flex-shrink:0;transition:transform .25s cubic-bezier(.16,1,.3,1),box-shadow .25s ease;}
-  .sim-card:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(0,0,0,.08);}
-  .sim-card:active{transform:scale(.98);}
-  .sim-img{position:relative;height:112px;background:var(--grey-200);}
-  .sim-img>img:first-child{width:100%;height:100%;object-fit:cover;}
-  .sim-logo{position:absolute;left:12px;bottom:12px;width:32px;height:32px;border-radius:100px;border:1px solid var(--grey-50);object-fit:cover;background:#fff;}
-  .sim-body{padding:12px 14px 14px;display:flex;flex-direction:column;gap:8px;}
-  .sim-title{font-size:14px;font-weight:600;line-height:18px;color:var(--grey-800);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
-  .sim-meta{display:flex;justify-content:space-between;gap:8px;font-size:12px;font-weight:500;line-height:16px;color:var(--grey-600);}
-  .sim-meta>span:first-child{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-  .sim-earn{color:var(--blue-500);font-weight:600;white-space:nowrap;}
+  /* Same campaign card as the explore feed, scaled down for the column */
+  .sim-list{display:flex;flex-direction:column;gap:16px;}
+  .cp-similar .cardwrap{padding:8px;flex-shrink:0;background:#fff;border:1px solid var(--grey-200);border-radius:24px;transition:transform .45s cubic-bezier(.16,1,.3,1),box-shadow .45s cubic-bezier(.16,1,.3,1);}
+  .cp-similar .cardwrap:hover{transform:translateY(-2px);box-shadow:0 20px 40px -24px rgba(18,18,18,.22);}
+  .cp-similar .card-img{height:160px;border-radius:16px;}
+  .cp-similar .card-logobar{padding:12px;}
+  .cp-similar .card-logobar .logo{width:28px;height:28px;}
+  .cp-similar .heart{width:20px;height:20px;}
+  .cp-similar .overlaybar{height:48px;padding:0 10px 0 14px;}
+  .cp-similar .overlaybar::before{border-radius:16px;}
+  .cp-similar .details{gap:5px;}
+  .cp-similar .details svg{width:12px;height:12px;}
+  .cp-similar .price-chip{font-size:11px;line-height:11px;padding:3px 7px;}
+  .cp-similar .view-btn{padding:6px 14px;font-size:12px;line-height:16px;}
+  .cp-similar .card-content{gap:6px;padding:10px 8px 8px;}
+  .cp-similar .card-content .ctitle{font-size:14px;line-height:18px;}
+  .cp-similar .card-time{font-size:11px;line-height:11px;}
+  .cp-similar .card-foot{font-size:11px;justify-content:flex-end;}
+  .cp-similar .card-foot .joined{display:none;}
+  .cp-similar .card-foot .money{gap:3px;}
+  .cp-similar .card-foot .joined svg{width:12px;height:12px;}
   .sim-all{flex-shrink:0;text-align:center;padding:12px;border-radius:100px;background:var(--grey-100);font-size:14px;font-weight:500;color:var(--grey-800);transition:background .25s ease;}
   .sim-all:hover{background:var(--grey-200);}
   .cp-side .wcard{padding:8px 0 16px;display:flex;flex-direction:column;}
@@ -602,6 +615,10 @@
   @media (max-width:1279px){
     .cp,.submit{grid-template-columns:minmax(0,1fr);}
     .cp-side,.sc-side{position:static;}
+    .cp{margin-bottom:0;justify-content:stretch;}
+    .cp>:not(.cp-top){grid-row:auto;}
+    .cp-main{padding-bottom:32px;}
+    .cp-side{margin-top:24px;}
     .feedgrid{grid-template-columns:repeat(2,minmax(0,1fr));}
   }
   @media (max-width:1023px){
@@ -917,10 +934,7 @@ function viewCampaign(id,statusOverride){
   const others=Object.keys(C).filter(k=>k!==id);
   const similar=[...others.filter(k=>C[k].cat===c.cat),...others.filter(k=>C[k].cat!==c.cat)].slice(0,5);
   const simHTML=`<aside class="cp-similar" aria-label="Similar campaigns"><h3>Similar campaigns</h3>
-      ${similar.map(k=>{const s=C[k];return `<a class="sim-card" href="#/campaign/${k}">
-        <div class="sim-img"><img data-a="${s.img}" data-label="${s.abbr}" alt=""><img class="sim-logo" data-a="${s.logo}" data-label="${s.abbr}" alt=""></div>
-        <div class="sim-body"><p class="sim-title">${s.title}</p>
-          <div class="sim-meta"><span>${s.right||s.time}</span><span class="sim-earn">Up to ${s.list[1][1]}</span></div></div></a>`;}).join('')}
+      <div class="sim-list">${similar.map(k=>cardHTML(k)).join('')}</div>
       <a class="sim-all" href="#/explore">See all campaigns</a></aside>`;
   const backTo=status==='open'?'Campaigns':'My work';
   return `<div class="cp">
