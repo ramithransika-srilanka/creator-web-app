@@ -342,11 +342,11 @@
   .cp-restrict{list-style:none;counter-reset:r;display:flex;flex-direction:column;gap:8px;}
   .cp-restrict li{counter-increment:r;display:flex;gap:9px;align-items:center;font-size:14px;line-height:20px;color:var(--grey-800);}
   .cp-restrict li::before{content:counter(r);width:24px;height:24px;flex-shrink:0;border-radius:75px;background:var(--grey-100);border:1px solid var(--grey-200);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:500;color:var(--grey-600);}
-  .cp-meta{display:flex;gap:6px 15px;align-items:center;flex-wrap:wrap;font-size:14px;font-weight:500;line-height:20px;color:var(--grey-600);}
-  .cp-mi{display:flex;gap:5px;align-items:center;white-space:nowrap;}
+  .cp-meta{display:flex;gap:8px 16px;align-items:center;flex-wrap:wrap;font-size:14px;font-weight:500;line-height:20px;color:var(--grey-600);}
+  .cp-mi{display:flex;gap:8px;align-items:center;white-space:nowrap;}
   .cp-mi svg{width:16px;height:16px;}
-  .cp-metaplat{display:flex;gap:9px;align-items:center;color:var(--grey-600);}
-  .cp-metaplat svg{width:16px;height:16px;}
+  .cp-mi .dot{width:4px;height:4px;border-radius:4px;background:var(--grey-800);flex-shrink:0;}
+  .cp-meta .vsep{width:1px;height:14px;background:var(--grey-400);flex-shrink:0;}
   .cp-budgetline{margin-top:8px;font-size:12px;line-height:16px;color:var(--grey-600);}
   .cp-createdby{display:flex;flex-direction:column;gap:12px;padding:24px 0 8px;}
   .cp-join{padding-top:18px;}
@@ -890,7 +890,6 @@ function renderFeed(){
 const esc=s=>String(s).replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
 
 /* ---------- Campaign page ---------- */
-const CLOCK='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>';
 const BACKARROW='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>';
 function viewCampaign(id,statusOverride){
   const c=C[id]; if(!c) return viewExplore();
@@ -939,10 +938,9 @@ function viewCampaign(id,statusOverride){
       <div class="cp-details">
         <h1 class="cp-title">${c.title}</h1>
         <div class="cp-meta">
-          ${c.event?`<span class="cp-mi">${CPICON.calendar}${c.time}</span>`:`<span class="cp-mi">Posted ${c.time}</span>`}
-          ${c.right?`<span class="cp-mi">${CLOCK}${c.right}</span>`:''}
-          <div class="cp-joined"><div class="cp-avatars">${AVSET}</div><span class="count">${c.joinedShort} creators joined</span></div>
-          <div class="cp-metaplat" aria-label="Platforms">${c.platforms.map(p=>`<span title="${PLATNAME[p]}">${PLAT[p]}</span>`).join('')}</div></div>
+          <span class="cp-mi">${c.event?CPICON.calendar:''}${c.time}${c.right?`<span class="dot" aria-hidden="true"></span>${c.right}`:''}</span>
+          <span class="vsep" aria-hidden="true"></span>
+          <div class="cp-joined"><div class="cp-avatars">${AVSET}</div><span class="count">${c.joinedShort} joined</span></div></div>
         ${list}
       </div>
       <div class="${c.event?'band':''}">
