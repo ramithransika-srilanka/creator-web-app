@@ -175,6 +175,7 @@
   .pending-earned{text-align:center;padding:5px 0;font-size:14px;font-weight:500;line-height:16px;color:var(--grey-50);}
   .card-content{display:flex;flex-direction:column;gap:6px;padding:12px;}
   .card-content .ctitle{font-size:15px;font-weight:600;line-height:19px;color:#000;cursor:pointer;}
+  .cardwrap .ctitle{min-height:38px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
   .card-time{display:flex;gap:8px;align-items:center;font-size:12px;font-weight:500;line-height:12px;color:var(--grey-600);}
   .card-time .dot{width:2px;height:2px;border-radius:2px;background:var(--grey-600);}
   .progress-group{display:flex;flex-direction:column;gap:3px;}
@@ -609,9 +610,10 @@
   @media (max-width:1279px){
     .feedgrid{grid-template-columns:repeat(2,minmax(0,1fr));}
   }
-  /* 2-column feed: cards are wider here, so give the image a little more height */
+  /* 2-column feed: cards are wider here, so give the image a little more height and a 50% larger logo */
   @media (min-width:768px) and (max-width:1279px){
     .feedgrid .card-img{height:220px;}
+    .feedgrid .card-logobar .logo{width:40px;height:40px;}
   }
   @media (max-width:1023px){
     :root{--gutter:18px;}
