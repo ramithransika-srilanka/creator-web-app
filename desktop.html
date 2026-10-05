@@ -79,7 +79,7 @@
   .tags{display:flex;gap:12px;flex-wrap:wrap;}
   .tag{flex-shrink:0;padding:8px 12px;border-radius:100px;background:var(--grey-100);font-size:12px;font-weight:500;line-height:12px;color:var(--grey-800);white-space:nowrap;cursor:pointer;transition:background .25s ease,color .25s ease;}
   .tag.active{background:var(--blue-200);}
-  .tag.pop{animation:mwTagPop .36s cubic-bezier(.34,1.56,.64,1);}
+  .tag.tag-pop{animation:mwTagPop .36s cubic-bezier(.34,1.56,.64,1);}
   @keyframes mwTagPop{0%{transform:scale(.82);}55%{transform:scale(1.1);}100%{transform:scale(1);}}
 
   .sechead{display:flex;align-items:center;justify-content:space-between;padding:0 16px;}
@@ -264,9 +264,8 @@
   .mw-chip .chip-more{font-size:14px;font-weight:600;line-height:20px;padding:4px 8px;color:var(--grey-800);}
   .mw-chip.dark .chip-more{color:var(--grey-50);}
   .mw-pending{padding:8px 16px;}
-  .mw-tags{display:flex;gap:8px;flex-wrap:wrap;}
-  .pagehead{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:24px;}
-  .pagehead .page-title{padding-bottom:0;}
+  /* Heading + tags match the Campaigns (explore) heading */
+  .mw-home #mw-body{margin-top:32px;}
 
   /* ================= Campaign page ================= */
   .cp{display:grid;grid-template-columns:minmax(0,1fr) var(--rail);gap:32px;align-items:start;}
@@ -1089,9 +1088,11 @@ function viewMyWork(filter){
   else if(f==='saved') body=`<div class="mw-sheet" style="padding:0">${head('Ending Today','#/explore')}${today}</div>${week}`;
   else body=completed.replace('class="mw-sec"','class="mw-sec" style="padding-top:0"');
   const title=f==='pending'?'Pending approvals':'My work';
-  return `<div class="pagehead"><div class="page-title">${title}</div>
-    ${f==='pending'?'':`<div class="mw-tags">${tabs.map(t=>`<a class="tag${f===t[0]?' active':''}" href="#/mywork/${t[0]}" data-tab="${t[0]}">${t[1]}</a>`).join('')}</div>`}</div>
-    <div id="mw-body">${body}</div>`;
+  return `<div class="home mw-home">
+    <h1 class="home-title">${title}</h1>
+    ${f==='pending'?'':`<div class="tags mw-tags">${tabs.map(t=>`<a class="tag${f===t[0]?' active':''}" href="#/mywork/${t[0]}" data-tab="${t[0]}">${t[1]}</a>`).join('')}</div>`}
+    <div id="mw-body">${body}</div>
+  </div>`;
 }
 
 /* ---------- Wallet ---------- */
@@ -1255,7 +1256,7 @@ window.addEventListener('hashchange',route);
 
 /* My work tag switch: tag pop + staggered 3D reveal, as on mobile */
 function staggerMyWork(){
-  const t=view.querySelector('.mw-tags .tag.active'); if(t) t.classList.add('pop');
+  const t=view.querySelector('.mw-tags .tag.active'); if(t) t.classList.add('tag-pop');
   [...view.querySelectorAll('.sechead,.mw-logo72,.mw-card,.mw-chip,.cardwrap')].forEach((el,i)=>{
     el.style.animationDelay=Math.min(i*55,440)+'ms'; el.classList.add('mw-stagger');
     el.addEventListener('animationend',()=>{el.classList.remove('mw-stagger');el.style.animationDelay='';},{once:true});
