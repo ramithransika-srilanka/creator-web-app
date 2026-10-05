@@ -554,10 +554,10 @@
   .sc-foot{display:flex;flex-direction:column;gap:6px;}
   .sc-foot .msg{font-size:12px;line-height:16px;color:var(--pink-500);text-align:center;min-height:16px;}
   .sc-side{position:sticky;top:calc(var(--header) + 18px);max-height:calc(100dvh - var(--header) - 18px);overflow-y:auto;overscroll-behavior:contain;display:flex;flex-direction:column;gap:12px;
-    padding:0 6px 18px 0;margin-right:-16px;scrollbar-width:thin;scrollbar-color:var(--grey-400) transparent;scrollbar-gutter:stable;}
+    padding:0 6px 18px 0;scrollbar-width:thin;scrollbar-color:var(--grey-400) transparent;scrollbar-gutter:stable;}
   .sc-side>*{flex-shrink:0;}
-  .sc-side .cp-list .row .v{white-space:normal;}
-  .sc-side .cp-list .row .k{flex-shrink:0;max-width:55%;}
+  .sc-side .cp-list .row .v{white-space:normal;max-width:60%;}
+  .sc-side .cp-list .row .k{flex:1;min-width:0;}
   .sc-side::-webkit-scrollbar{width:6px;}
   .sc-side::-webkit-scrollbar-track{background:transparent;}
   .sc-side::-webkit-scrollbar-thumb{background:var(--grey-400);border-radius:75px;}
