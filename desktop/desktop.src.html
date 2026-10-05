@@ -274,15 +274,15 @@
   .pagehead .page-title{padding-bottom:0;}
 
   /* ================= Campaign page ================= */
-  .cp{display:grid;grid-template-columns:minmax(0,555px) 300px;column-gap:24px;row-gap:0;justify-content:center;align-items:start;margin:-18px auto -60px;}
+  .cp{display:grid;grid-template-columns:minmax(0,1fr);column-gap:24px;row-gap:0;align-items:start;margin:-18px 0 -60px;}
   /* Main column sits between two full-height divider lines (top bar + content) */
   .cp-top,.cp-main{border-left:1px solid var(--grey-200);border-right:1px solid var(--grey-200);padding-left:18px;padding-right:18px;}
   .cp-main{padding-bottom:60px;}
   .cp-main{display:flex;flex-direction:column;min-width:0;}
-  .cp-hero{position:relative;height:225px;border-radius:15px 15px 0 0;background:var(--grey-200);}
+  .cp-hero{position:relative;aspect-ratio:519/225;border-radius:15px 15px 0 0;background:var(--grey-200);}
   .cp-brandpill{position:absolute;z-index:1;left:20px;bottom:-27px;width:54px;height:54px;border-radius:75px;border:3px solid #fff;overflow:hidden;background:#fff;}
   .cp-brandpill img{width:100%;height:100%;object-fit:cover;display:block;}
-  .cp-hero>img{width:100%;height:100%;object-fit:cover;object-position:center 30%;border-radius:inherit;}
+  .cp-hero>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 30%;border-radius:inherit;}
   /* Top bar above the main image: back link on the left, like + share on the right */
   .cp-top{grid-row:1;grid-column:1;align-self:stretch;display:flex;align-items:center;justify-content:space-between;gap:12px;padding-top:18px;padding-bottom:12px;}
   .cp>:not(.cp-top){grid-row:2;}
@@ -377,18 +377,16 @@
   .handle .fc{font-size:14px;font-weight:500;line-height:20px;color:#121212;}
   .cp-questions{padding:6px 18px 0 6px;}
 
-  .cp.no-side{grid-template-columns:minmax(0,555px);}
-  .cp-side{position:sticky;top:calc(var(--header) + 16px);display:flex;flex-direction:column;gap:12px;}
-  /* Similar campaigns — left column, desktop landscape only */
+  .cp-status{margin-top:18px;}
+  /* Same frame as the brand web app's campaign dashboard: 264px left column (Explore more),
+     24px gap, campaign details in the larger column. Explore more hides below 1024px. */
   .cp-similar{display:none;}
-  @media (min-width:1440px) and (orientation:landscape){
-    body.wide{--page:1128px;}
-    .cp{--side:300px;--sim:225px;grid-template-columns:var(--sim) minmax(0,555px) var(--side);justify-content:space-between;}
-    .cp.no-side{--sim:300px;grid-template-columns:var(--sim) minmax(0,555px);justify-content:center;column-gap:24px;}
+  @media (min-width:1024px){
+    .cp{grid-template-columns:264px minmax(0,1fr);}
     .cp-top{grid-column:2;}
-    .cp>.cp-similar{grid-row:1 / span 2;display:flex;flex-direction:column;gap:9px;position:sticky;top:var(--header);max-height:calc(100dvh - var(--header));overflow-y:auto;overscroll-behavior:contain;padding-right:6px;margin-right:-6px;padding-bottom:6px;
+    .cp>.cp-similar{grid-column:1;grid-row:1 / span 2;display:flex;flex-direction:column;gap:9px;position:sticky;top:var(--header);max-height:calc(100dvh - var(--header));overflow-y:auto;overscroll-behavior:contain;padding-right:6px;margin-right:-16px;padding-bottom:6px;
       scrollbar-width:thin;scrollbar-color:var(--grey-400) transparent;scrollbar-gutter:stable;}
-    .cp>.cp-similar h3{position:sticky;top:0;z-index:1;background:var(--grey-50);padding-top:21px;margin-bottom:-3px;}
+    .cp>.cp-similar h3{padding-top:21px;margin-bottom:-3px;}
     .cp-similar::-webkit-scrollbar{width:6px;}
     .cp-similar::-webkit-scrollbar-track{background:transparent;}
     .cp-similar::-webkit-scrollbar-thumb{background:var(--grey-400);border-radius:75px;}
@@ -418,7 +416,6 @@
   .cp-similar .card-foot .joined svg{width:12px;height:12px;}
   .sim-all{flex-shrink:0;text-align:center;padding:9px;border-radius:75px;background:var(--grey-100);font-size:14px;font-weight:500;color:var(--grey-800);transition:background .25s ease;}
   .sim-all:hover{background:var(--grey-200);}
-  .cp-side .wcard{padding:6px 0 12px;display:flex;flex-direction:column;}
   /* status card (Ongoing / Pending approval / Completed) */
   .sbo-green{background:var(--ongoing);border-radius:15px;width:100%;display:flex;flex-direction:column;}
   .sbo-green.pending{background:var(--pending);}
@@ -618,18 +615,18 @@
 
   /* ================= Responsive ================= */
   @media (max-width:1279px){
-    .cp,.submit{grid-template-columns:minmax(0,1fr);}
-    .cp-side,.sc-side{position:static;}
-    .cp{margin-bottom:0;justify-content:stretch;}
-    .cp>:not(.cp-top){grid-row:auto;}
-    .cp-main{padding-bottom:24px;}
-    .cp-side{margin-top:18px;}
+    .submit{grid-template-columns:minmax(0,1fr);}
+    .sc-side{position:static;}
     .feedgrid{grid-template-columns:repeat(2,minmax(0,1fr));}
   }
   @media (max-width:1023px){
     :root{--gutter:18px;}
     .wallet,.profile,.settings{grid-template-columns:minmax(0,1fr);}
     .wallet .w-stack,.pf-left,.set-nav{position:static;}
+    .cp{margin-bottom:0;}
+    .cp-main{padding-bottom:24px;}
+    /* No Explore more column here, so drop the divider lines and their inset */
+    .cp-top,.cp-main{border-left:0;border-right:0;padding-left:0;padding-right:0;}
     .cp-creatorcard{grid-template-columns:minmax(0,1fr);}
     .cp-cmetrics,.cp-questions{padding-left:18px;}
     .pf-grid{grid-template-columns:repeat(3,minmax(0,1fr));}
@@ -930,11 +927,11 @@ function viewCampaign(id,statusOverride){
   }
   const others=Object.keys(C).filter(k=>k!==id);
   const similar=[...others.filter(k=>C[k].cat===c.cat),...others.filter(k=>C[k].cat!==c.cat)].slice(0,5);
-  const simHTML=`<aside class="cp-similar" aria-label="Similar campaigns"><h3>Similar campaigns</h3>
+  const simHTML=`<aside class="cp-similar" aria-label="Explore more"><h3>Explore more</h3>
       <div class="sim-list">${similar.map(k=>cardHTML(k)).join('')}</div>
       <a class="sim-all" href="#/explore">See all campaigns</a></aside>`;
   const backTo=status==='open'?'Campaigns':'My work';
-  return `<div class="cp${side?'':' no-side'}">
+  return `<div class="cp">
     <div class="cp-top">
       <a class="cp-back" data-back aria-label="Back to ${backTo}">${BACKARROW}<span>${backTo}</span></a>
       <div class="cp-actions"><button class="cp-round like-heart" type="button" aria-label="Like campaign">${CPICON.heart}</button><button class="cp-round" type="button" data-act="share" aria-label="Share campaign">${CPICON.share}</button></div>
@@ -981,9 +978,9 @@ function viewCampaign(id,statusOverride){
             <div class="cp-questions"><div class="btn-questions" data-act="soon">Any questions? Message the brand</div></div>
           </div>
         </div></div>
+      ${side?`<div class="cp-status">${side}</div>`:''}
       ${status==='open'?`<div class="cp-join"><a class="btn-primary" href="#/submit/${id}">Join Campaign</a></div>`:''}
     </div>
-    ${side?`<aside class="cp-side">${side}</aside>`:''}
   </div>`;
 }
 
