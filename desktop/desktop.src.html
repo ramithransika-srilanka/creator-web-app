@@ -237,13 +237,22 @@
   .wallet .w-recent{max-width:640px;}
 
   /* ================= My work ================= */
-  .mw-logos{display:flex;gap:16px;align-items:center;flex-wrap:wrap;padding:4px 16px 0;}
-  .mw-logo72{width:72px;height:72px;border-radius:100px;border:1px solid var(--grey-200);overflow:hidden;flex-shrink:0;cursor:pointer;background:#fff;}
+  .mw-layout{display:grid;grid-template-columns:var(--rail) minmax(0,1fr);gap:48px;align-items:start;}
+  /* Dark only behind the lower half so the sheet's top corners stay clean */
+  .mw-rail{position:sticky;top:88px;border-radius:28px;overflow:hidden;background:linear-gradient(transparent 50%,var(--grey-800) 50%);}
+  .mw-rail .sheet-b{border-radius:28px;}
+  .mw-main{display:flex;flex-direction:column;gap:48px;min-width:0;padding-top:16px;}  /* lines section headings up with the rail's sheet heading */
+  .mw-logos{display:grid;grid-template-columns:repeat(4,minmax(0,72px));gap:12px;padding:0 16px;}
+  .mw-logo72{width:100%;aspect-ratio:1;border-radius:100px;border:1px solid var(--grey-200);overflow:hidden;flex-shrink:0;cursor:pointer;background:#fff;transition:transform .3s cubic-bezier(.16,1,.3,1);}
+  .mw-logo72:hover{transform:translateY(-2px);}
+  .mw-logo72:active{transform:scale(.96);}
   .mw-logo72 img{width:100%;height:100%;object-fit:cover;}
-  .mw-sheet{padding:16px;display:flex;flex-direction:column;gap:24px;}
-  .mw-sec{display:flex;flex-direction:column;gap:24px;padding:32px 16px 0;}
-  .mw-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:8px;}
-  .mw-card{position:relative;height:160px;border-radius:20px;overflow:hidden;width:100%;cursor:pointer;}
+  .mw-sheet{padding:16px 16px 24px;display:flex;flex-direction:column;gap:24px;}
+  .mw-sec{display:flex;flex-direction:column;gap:24px;}
+  .mw-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;}
+  .mw-list.lead>.mw-card:first-child{grid-column:1/-1;}
+  .mw-card{position:relative;height:160px;border-radius:20px;overflow:hidden;width:100%;cursor:pointer;transition:transform .45s cubic-bezier(.16,1,.3,1);}
+  .mw-card:active{transform:scale(.98);}
   .mw-card .bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
   .mw-card-ov{position:absolute;inset:0;border-radius:20px;background:rgba(18,18,18,.6);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);padding:16px;display:flex;flex-direction:column;justify-content:space-between;align-items:center;gap:10px;}
   .mw-card-top{display:flex;align-items:flex-start;justify-content:space-between;width:100%;}
@@ -598,6 +607,8 @@
     :root{--gutter:24px;}
     .wallet,.profile,.settings{grid-template-columns:minmax(0,1fr);}
     .wallet .w-stack,.pf-left,.set-nav{position:static;}
+    .mw-layout{grid-template-columns:minmax(0,1fr);gap:32px;}
+    .mw-rail{position:static;}
     .cp-creatorcard{grid-template-columns:minmax(0,1fr);}
     .cp-cmetrics,.cp-questions{padding-left:24px;}
     .pf-grid{grid-template-columns:repeat(3,minmax(0,1fr));}
@@ -964,35 +975,36 @@ function viewCampaign(id,statusOverride){
 }
 
 /* ---------- My work ---------- */
+/* Layout: persistent summary rail (Ongoing + Pending approvals) on the left, tag-filtered sections on the right */
 function viewMyWork(filter){
   const f=filter||'all'; state.mw=f;
   const tabs=[['all','All'],['ongoing','Ongoing'],['saved','Saved'],['completed','Completed']];
   const head=(t,go)=>`<div class="sechead"><span class="h20">${t}</span>${go?`<a class="seeall" href="${go}">See all</a>`:''}</div>`;
-  const today=`<div class="mw-list">
-      ${mwCardHTML('eats','Today Event','Total budget','Rs. 1,000,000','Join now','#/campaign/eats',{img:'grid4'})}
-      ${mwCardHTML('hiru','Happening July 4','Total budget','Rs. 500,000','Join now','#/campaign/hiru')}
-      ${chip('Ending today',['pepsi','dominos'],'#/explore')}</div>`;
-  const week=`<section class="mw-sec">${head('Coming up this week')}<div class="mw-list">
-      ${mwCardHTML('burgerking','1d left','Remaining budget','Rs. 1,248,572','Join now','#/campaign/burgerking')}
-      ${mwCardHTML('shakira','Thursday','Total budget','Rs. 1,000,000','Join now','#/campaign/shakira',{img:'grid6'})}
-      ${chip('Ending this week',['pepsi','dominos'],'#/explore')}</div></section>`;
-  const completed=`<section class="mw-sec">${head('Completed campaigns','#/mywork/completed')}<div class="mw-list">
-      ${COMPLETED.map(o=>mwCardHTML(o.id,o.ended,'You earned',o.earned,'View',`#/campaign/${o.id}/completed`,{liked:1})).join('')}</div></section>`;
+  /* Odd card counts lead with one full-width card so the 2-column grid never ends on an orphan */
+  const list=(cards,extra='')=>`<div class="mw-list${cards.length%2?' lead':''}">${cards.join('')}${extra}</div>`;
+  const sec=(t,go,inner)=>`<section class="mw-sec">${head(t,go)}${inner}</section>`;
+  const today=sec('Ending today','#/explore',list([
+      mwCardHTML('eats','Today Event','Total budget','Rs. 1,000,000','Join now','#/campaign/eats',{img:'grid4'}),
+      mwCardHTML('hiru','Happening July 4','Total budget','Rs. 500,000','Join now','#/campaign/hiru')],
+      chip('Ending today',['pepsi','dominos'],'#/explore')));
+  const week=sec('Coming up this week','',list([
+      mwCardHTML('burgerking','1d left','Remaining budget','Rs. 1,248,572','Join now','#/campaign/burgerking'),
+      mwCardHTML('shakira','Thursday','Total budget','Rs. 1,000,000','Join now','#/campaign/shakira',{img:'grid6'})],
+      chip('Ending this week',['pepsi','dominos'],'#/explore')));
+  const completed=sec('Completed campaigns',f==='completed'?'':'#/mywork/completed',
+      list(COMPLETED.map(o=>mwCardHTML(o.id,o.ended,'You earned',o.earned,'View',`#/campaign/${o.id}/completed`,{liked:1}))));
+  const ongoing=sec('Ongoing campaigns','',
+      list(ONGOING.map(o=>mwCardHTML(o.id,'Ongoing','You earned',o.earned,'View',`#/campaign/${o.id}/ongoing`,{ongoing:1,liked:1}))));
   const ongoingLogos=`<div class="mw-logos">${[['starbucks','starbucks'],['pepsi','starbucks'],['logo2','eats'],['kfcLogo','kfc']].map(l=>`<a class="mw-logo72" href="#/campaign/${l[1]}/ongoing"><img data-a="${l[0]}" alt=""></a>`).join('')}</div>`;
-  const ongoingList=`<div class="mw-list">${ONGOING.map(o=>mwCardHTML(o.id,'Ongoing','You earned',o.earned,'View',`#/campaign/${o.id}/ongoing`,{ongoing:1,liked:1})).join('')}</div>`;
   const pendingChip=`<div class="mw-pending">${chip('Pending approvals',['dominos','legoLogo','logo2'],'#/mywork/pending','+4').replace('mw-chip','mw-chip dark')}</div>`;
-  let body;
-  if(f==='pending'){
-    body=`<div class="feedgrid">${PENDING.map(id=>cardHTML(id,{pending:1,go:`#/campaign/${id}/pending`})).join('')}</div>`;
-  } else if(f==='all') body=`
-    <div class="band">
-      <div class="sheet-b mw-sheet">${head('Ongoing','#/mywork/ongoing')}${ongoingLogos}</div>
+  const rail=`<aside class="mw-rail band">
+      <div class="sheet-b mw-sheet">${head('Ongoing',f==='ongoing'?'':'#/mywork/ongoing')}${ongoingLogos}</div>
       ${pendingChip}
-      <div class="sheet-t mw-sheet">${head('Ending Today','#/explore')}${today}</div>
-    </div>${week}${completed}`;
-  else if(f==='ongoing') body=`<div class="mw-sheet" style="padding:0">${head('Ongoing')}${ongoingList}</div>`;
-  else if(f==='saved') body=`<div class="mw-sheet" style="padding:0">${head('Ending Today','#/explore')}${today}</div>${week}`;
-  else body=completed.replace('class="mw-sec"','class="mw-sec" style="padding-top:0"');
+    </aside>`;
+  const main={all:today+week+completed,ongoing,saved:today+week,completed}[f];
+  const body=f==='pending'
+    ? `<div class="feedgrid">${PENDING.map(id=>cardHTML(id,{pending:1,go:`#/campaign/${id}/pending`})).join('')}</div>`
+    : `<div class="mw-layout">${rail}<div class="mw-main">${main}</div></div>`;
   const title=f==='pending'?'Pending approvals':'My work';
   return `<div class="home mw-home">
     <h1 class="home-title">${title}</h1>
