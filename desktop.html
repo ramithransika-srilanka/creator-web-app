@@ -512,9 +512,9 @@
   .set-version{font-size:12px;color:var(--grey-500);padding:18px 12px 0;}
 
   /* ================= Submit content ================= */
-  .backbar{display:inline-flex;align-items:center;gap:6px;padding:6px 0;margin-bottom:6px;cursor:pointer;}
+  .backbar{display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;padding:8px;margin:0 0 12px -8px;border-radius:999px;cursor:pointer;transition:background .15s;}
+  .backbar:hover{background:var(--grey-100,#f2f2f2);}
   .backbar svg{width:24px;height:24px;color:var(--grey-800);}
-  .backbar span{font-size:14px;font-weight:600;color:var(--grey-800);}
   /* Single column: the form only, no campaign summary beside it */
   .submit{display:flex;flex-direction:column;max-width:720px;margin:0 auto;}
   .sc-main{display:flex;flex-direction:column;min-width:0;}
@@ -1181,7 +1181,7 @@ function viewSubmit(id){
       <span class="err">That doesn’t look like a ${PLATNAME[p]} post link</span></div>`).join('');
   return `<div class="submit">
     <div class="sc-main">
-      <a class="backbar" href="#/campaign/${id}">${MICON.back}<span>Back to campaign</span></a>
+      <a class="backbar" href="#/campaign/${id}" aria-label="Back to campaign" title="Back to campaign">${MICON.back}</a>
     <form class="sc-content" id="sform" novalidate>
       <div class="sc-titlecard"><div class="sc-h1">Submit content</div><p class="sc-desc">Already posted this? Paste the link for each platform so the brand can review it. Once approved, every link is tracked and you earn from the total reach across them.</p></div>
       <div class="sc-section" id="g-links"><div class="sc-h2">Social media links</div><div class="sc-sub">Paste a link to your post. At least one is required.</div>
