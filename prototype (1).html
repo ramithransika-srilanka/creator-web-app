@@ -477,8 +477,9 @@
   .sc-scroll{position:absolute;inset:0;overflow-y:auto;scrollbar-width:none;}
   .sc-scroll::-webkit-scrollbar{display:none;}
   .sc-header{position:sticky;top:0;z-index:20;background:var(--grey-50);display:flex;flex-direction:column;gap:8px;padding-bottom:8px;}
-  .sc-headrow{height:24px;display:flex;align-items:center;padding:0 32px;}
-  .sc-back{display:flex;cursor:pointer;color:#121212;}
+  .sc-headrow{height:40px;display:flex;align-items:center;padding:0 16px;}
+  .sc-back{display:flex;align-items:center;justify-content:center;width:40px;height:40px;padding:8px;border-radius:999px;cursor:pointer;color:#121212;transition:background .15s;}
+  .sc-back:hover,.sc-back:active{background:var(--grey-100);}
   .sc-back svg{width:24px;height:24px;display:block;}
   .sc-content{display:flex;flex-direction:column;gap:32px;align-items:flex-start;padding:8px 24px 0;}
   .sc-titlecard{display:flex;flex-direction:column;gap:12px;width:100%;}
@@ -1187,7 +1188,7 @@
   <section class="screen" id="submit">
     <div class="sc-scroll">
       <div class="sc-header"><div class="statusbar"></div>
-        <div class="sc-headrow"><a class="sc-back" data-back><svg viewBox="0 0 24 24" fill="none"><path d="M14 16L10 12L14 8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a></div>
+        <div class="sc-headrow"><a class="sc-back" data-back aria-label="Back" title="Back"><svg viewBox="0 0 24 24" fill="none"><path d="M14 16L10 12L14 8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a></div>
       </div>
       <div class="sc-content">
         <div class="sc-titlecard">
