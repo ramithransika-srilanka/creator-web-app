@@ -208,7 +208,9 @@
   .search input::placeholder{color:var(--grey-600);}
   .search input::-webkit-search-cancel-button{display:none;}
   .search kbd{font:500 12px/12px var(--font);color:var(--grey-500);padding:3px 6px;border-radius:6px;background:var(--grey-100);}
-  .home .tags{margin-top:12px;gap:6px;}
+  /* One line that scrolls sideways; runs to the screen edges so the overflow reads as scrollable */
+  .home .tags{margin:8px calc(var(--gutter) * -1) -4px;gap:6px;flex-wrap:nowrap;overflow-x:auto;padding:4px var(--gutter);scroll-padding:0 var(--gutter);scrollbar-width:none;-webkit-overflow-scrolling:touch;}
+  .home .tags::-webkit-scrollbar{display:none;}
   .tag:active{transform:scale(.96);}
 
   .feedgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin-top:24px;}
