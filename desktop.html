@@ -663,6 +663,8 @@
     .drawer.open{transform:none;visibility:visible;transition:transform .45s cubic-bezier(.16,1,.3,1),visibility 0s;}
     body.drawer-open{overflow:hidden;}
     .feedgrid{grid-template-columns:minmax(0,1fr);gap:12px;margin-top:18px;}
+    /* Card image sits on the 12px gutter: drop the invisible wrapper's side inset */
+    .feedgrid>.cardwrap,.feedgrid>.sk-card{padding-left:0;padding-right:0;border-width:0;}
     .mw-list{grid-template-columns:minmax(0,1fr);}
     .cp-hero{height:180px;}
     .cp-spec{grid-template-columns:repeat(2,minmax(0,1fr));}
