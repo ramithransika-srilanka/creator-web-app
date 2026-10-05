@@ -378,15 +378,15 @@
   .cp-questions{padding:6px 18px 0 6px;}
 
   .cp-status{margin-top:18px;}
-  /* Same frame as the brand web app's campaign dashboard: 264px left column (Similar campaigns),
-     24px gap, campaign details in the larger column. Similar campaigns hides below 1024px. */
+  /* Same frame as the brand web app's campaign dashboard: 264px left column (Explore more),
+     24px gap, campaign details in the larger column. Explore more hides below 1024px. */
   .cp-similar{display:none;}
   @media (min-width:1024px){
     .cp{grid-template-columns:264px minmax(0,1fr);}
     .cp-top{grid-column:2;}
     .cp>.cp-similar{grid-column:1;grid-row:1 / span 2;display:flex;flex-direction:column;gap:9px;position:sticky;top:var(--header);max-height:calc(100dvh - var(--header));overflow-y:auto;overscroll-behavior:contain;padding-right:6px;margin-right:-16px;padding-bottom:6px;
       scrollbar-width:thin;scrollbar-color:var(--grey-400) transparent;scrollbar-gutter:stable;}
-    .cp>.cp-similar h3{position:sticky;top:0;z-index:1;background:var(--grey-50);padding-top:21px;margin-bottom:-3px;}
+    .cp>.cp-similar h3{padding-top:21px;margin-bottom:-3px;}
     .cp-similar::-webkit-scrollbar{width:6px;}
     .cp-similar::-webkit-scrollbar-track{background:transparent;}
     .cp-similar::-webkit-scrollbar-thumb{background:var(--grey-400);border-radius:75px;}
@@ -625,7 +625,7 @@
     .wallet .w-stack,.pf-left,.set-nav{position:static;}
     .cp{margin-bottom:0;}
     .cp-main{padding-bottom:24px;}
-    /* No Similar campaigns column here, so drop the divider lines and their inset */
+    /* No Explore more column here, so drop the divider lines and their inset */
     .cp-top,.cp-main{border-left:0;border-right:0;padding-left:0;padding-right:0;}
     .cp-creatorcard{grid-template-columns:minmax(0,1fr);}
     .cp-cmetrics,.cp-questions{padding-left:18px;}
@@ -927,7 +927,7 @@ function viewCampaign(id,statusOverride){
   }
   const others=Object.keys(C).filter(k=>k!==id);
   const similar=[...others.filter(k=>C[k].cat===c.cat),...others.filter(k=>C[k].cat!==c.cat)].slice(0,5);
-  const simHTML=`<aside class="cp-similar" aria-label="Similar campaigns"><h3>Similar campaigns</h3>
+  const simHTML=`<aside class="cp-similar" aria-label="Explore more"><h3>Explore more</h3>
       <div class="sim-list">${similar.map(k=>cardHTML(k)).join('')}</div>
       <a class="sim-all" href="#/explore">See all campaigns</a></aside>`;
   const backTo=status==='open'?'Campaigns':'My work';
