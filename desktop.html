@@ -351,7 +351,7 @@
   .cp-join{padding-top:18px;}
   .cp-join .btn-primary{padding:12px 18px;font-size:15px;font-weight:600;line-height:23px;}
   .cp-main>div:not(.band)>.cp-reqs{padding-left:0;padding-right:0;}
-  .cp-creatorcard{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px;padding:6px 0 12px;}
+  .cp-creatorcard{filter:none;border:1px solid #e2e2e2;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px;padding:6px 0 12px;}
   .cp-creatorcard .col{display:flex;flex-direction:column;gap:12px;}
   .cp-identity{display:flex;flex-direction:column;gap:12px;align-items:center;padding:12px 24px 3px;}
   .cp-identity .av{width:48px;height:48px;border-radius:75px;object-fit:cover;background:#fff;}
@@ -512,9 +512,9 @@
   .set-version{font-size:12px;color:var(--grey-500);padding:18px 12px 0;}
 
   /* ================= Submit content ================= */
-  .backbar{display:inline-flex;align-items:center;gap:6px;padding:6px 0;margin-bottom:6px;cursor:pointer;}
+  .backbar{display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;padding:8px;margin:0 0 12px -8px;border-radius:999px;cursor:pointer;transition:background .15s;}
+  .backbar:hover{background:var(--grey-100,#f2f2f2);}
   .backbar svg{width:24px;height:24px;color:var(--grey-800);}
-  .backbar span{font-size:14px;font-weight:600;color:var(--grey-800);}
   /* Single column: the form only, no campaign summary beside it */
   .submit{display:flex;flex-direction:column;max-width:720px;margin:0 auto;}
   .sc-main{display:flex;flex-direction:column;min-width:0;}
@@ -608,6 +608,10 @@
   /* ================= Responsive ================= */
   @media (max-width:1279px){
     .feedgrid{grid-template-columns:repeat(2,minmax(0,1fr));}
+  }
+  /* 2-column feed: cards are wider here, so give the image a little more height */
+  @media (min-width:768px) and (max-width:1279px){
+    .feedgrid .card-img{height:220px;}
   }
   @media (max-width:1023px){
     :root{--gutter:18px;}
@@ -1181,7 +1185,7 @@ function viewSubmit(id){
       <span class="err">That doesn’t look like a ${PLATNAME[p]} post link</span></div>`).join('');
   return `<div class="submit">
     <div class="sc-main">
-      <a class="backbar" href="#/campaign/${id}">${MICON.back}<span>Back to campaign</span></a>
+      <a class="backbar" href="#/campaign/${id}" data-back="#/campaign/${id}" aria-label="Back to campaign" title="Back to campaign">${MICON.back}</a>
     <form class="sc-content" id="sform" novalidate>
       <div class="sc-titlecard"><div class="sc-h1">Submit content</div><p class="sc-desc">Already posted this? Paste the link for each platform so the brand can review it. Once approved, every link is tracked and you earn from the total reach across them.</p></div>
       <div class="sc-section" id="g-links"><div class="sc-h2">Social media links</div><div class="sc-sub">Paste a link to your post. At least one is required.</div>
@@ -1228,8 +1232,24 @@ function toggleSearch(){
 
 /* ================= Router ================= */
 const view=document.getElementById('view');
-const hist=[];
+// Each history entry carries its position, so in-app back can use the browser's own
+// history (staying in sync with the browser back/forward buttons).
+let navIdx=-1,replacing=false;
+// Swap the current entry instead of adding one (back then skips it).
+function replaceHash(h){ if(location.hash===h) return; replacing=true; location.replace(h); }
 let prev={root:null,a:null};
+// Where back goes when there is no earlier in-app page (e.g. a link opened directly).
+function parentOf(hash){
+  const [root,a,b]=hash.replace(/^#\/?/,'').split('/');
+  if(root==='submit') return '#/campaign/'+(a||'uber');
+  if(root==='campaign') return (b||(C[a]&&C[a].status))?'#/mywork':'#/explore';
+  if(root==='settings') return '#/profile';
+  return '#/explore';
+}
+function goBack(fallback){
+  if(navIdx>0) history.back();
+  else replaceHash(fallback||parentOf(location.hash));
+}
 function route(){
   const h=location.hash.replace(/^#\/?/,'')||'explore';
   const [root,a,b]=h.split('/');
@@ -1255,7 +1275,9 @@ function route(){
   document.title=title+' — UGC Platform';
   const navRoot=r==='campaign'?(b||(C[a]&&C[a].status)?'mywork':'explore'):r==='submit'?'explore':r;
   document.querySelectorAll('#tnav a').forEach(n=>n.classList.toggle('active',n.dataset.root===navRoot));
-  if(hist[hist.length-1]!==location.hash) hist.push(location.hash);
+  const st=history.state;
+  if(st&&typeof st.i==='number') navIdx=st.i;
+  else{if(!replacing) navIdx++; replacing=false; history.replaceState({i:navIdx},'');}
   prev={root:r,a};
   closePop();closeOverlay();
 }
@@ -1307,7 +1329,7 @@ document.addEventListener('click',e=>{
   if(t.closest('[data-pop]')){e.preventDefault();pop.classList.toggle('open');return;}
   if(pop.classList.contains('open')&&!t.closest('#pop-notifs')) closePop();
   const cl=t.closest('[data-close]');
-  if(cl){closeOverlay();if(cl.dataset.toast)toast(cl.dataset.toast);if(cl.dataset.go)location.hash=cl.dataset.go;return;}
+  if(cl){closeOverlay();if(cl.dataset.toast)toast(cl.dataset.toast);if(cl.dataset.go)replaceHash(cl.dataset.go);return;}
   const cat=t.closest('[data-cat]');
   if(cat){state.cat=cat.dataset.cat;document.querySelectorAll('[data-cat]').forEach(c=>c.classList.toggle('active',c===cat));renderFeed();return;}
   const tg=t.closest('[data-tg]');
@@ -1316,7 +1338,8 @@ document.addEventListener('click',e=>{
   if(chk){chk.classList.toggle('on');chk.classList.remove('bad');return;}
   const sc=t.closest('[data-scroll]');
   if(sc){document.getElementById(sc.dataset.scroll).scrollIntoView({behavior:'smooth',block:'start'});return;}
-  if(t.closest('[data-back]')){e.preventDefault();if(hist.length>1){hist.pop();location.hash=hist.pop();}else location.hash='#/explore';return;}
+  const bk=t.closest('[data-back]');
+  if(bk){e.preventDefault();goBack(bk.dataset.back);return;}
   const act=t.closest('[data-act]');
   if(act){e.preventDefault();return doAct(act.dataset.act,act);}
   const go=t.closest('[data-go]');
