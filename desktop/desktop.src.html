@@ -69,6 +69,9 @@
   .menu-btn{display:none;width:40px;height:40px;border:0;background:none;border-radius:100px;align-items:center;justify-content:center;color:var(--grey-800);cursor:pointer;transition:background .25s ease,transform .2s cubic-bezier(.16,1,.3,1);}
   .menu-btn svg{width:24px;height:24px;}
   .menu-btn:active{transform:scale(.94);}
+  .menu-btn.on{background:var(--grey-800);color:var(--grey-50);}
+  .menu-list{display:flex;flex-direction:column;gap:4px;margin-top:24px;}
+  .menu-list .set-row.active{background:var(--grey-100);}
 
   .content{width:100%;max-width:calc(var(--page) + var(--gutter) * 2);margin:0 auto;padding:24px var(--gutter) 80px;}
 
@@ -554,11 +557,6 @@
     background:var(--grey-50);border-radius:28px;box-shadow:0 16px 40px rgba(0,0,0,.18);border:1px solid var(--grey-200);
     opacity:0;transform:translateY(-8px);pointer-events:none;transition:opacity .25s ease,transform .35s cubic-bezier(.16,1,.3,1);}
   .pop.open{opacity:1;transform:none;pointer-events:auto;}
-  .pop-menu{display:none;left:var(--gutter);right:auto;width:240px;padding:8px;gap:4px;}
-  .pop-menu a{display:flex;align-items:center;gap:12px;height:48px;padding:0 16px;border-radius:20px;font-size:16px;font-weight:600;line-height:24px;color:var(--grey-500);transition:background .25s ease,color .25s ease;}
-  .pop-menu a svg{width:22px;height:22px;flex-shrink:0;}
-  .pop-menu a:active{transform:scale(.98);}
-  .pop-menu a.active{background:var(--grey-100);color:var(--grey-800);}
   .nt-title{padding:24px 24px 0;font-size:20px;font-weight:600;line-height:24px;color:var(--grey-800);}
   .nt-list{display:flex;flex-direction:column;gap:16px;padding:20px 16px 24px;overflow-y:auto;}
   .nt-item{display:flex;gap:12px;align-items:flex-start;}
@@ -622,17 +620,17 @@
   @media (max-width:767px){
     :root{--gutter:16px;--header:64px;}
     /* Phone top bar: menu | balance pill (centred) | search, bell, avatar */
-    .topbar{grid-template-columns:40px minmax(0,1fr) auto auto auto;gap:4px;}
+    .topbar{grid-template-columns:40px minmax(0,1fr) auto;gap:4px;}
     .brand,.tnav{display:none;}
     .menu-btn{display:flex;grid-column:1;}
-    .top-right{display:contents;}
-    .wallet-pill{grid-column:2;justify-self:center;height:28px;padding:0 12px;}
+    .top-right{gap:4px;}
+    /* Pill sits in the true centre of the bar, independent of the side widths */
+    .wallet-pill{position:absolute;inset:0;margin:auto;width:fit-content;height:28px;padding:0 12px;}
     .wallet-pill span{font-size:14px;line-height:20px;}
     .top-right .hicon{width:36px;height:36px;background:none;border:0;}
     .top-right .hicon.on{background:var(--grey-800);}
     .top-right .hicon .dot{top:6px;right:7px;}
     .top-av{width:28px;height:28px;margin-left:4px;}
-    .pop-menu{display:flex;}
     .home-title{font-size:32px;line-height:40px;}
     .feedgrid{grid-template-columns:minmax(0,1fr);gap:16px;margin-top:24px;}
     .mw-list{grid-template-columns:minmax(0,1fr);}
@@ -645,7 +643,7 @@
 </head>
 <body>
 <header class="topbar" id="topbar">
-  <button class="menu-btn" id="menu-btn" data-pop="menu" aria-label="Menu" aria-expanded="false" aria-controls="pop-menu"></button>
+  <button class="menu-btn" id="menu-btn" aria-label="Menu"></button>
   <a class="brand" href="#/explore" aria-label="UGC Platform home"><svg viewBox="0 0 269 184" fill="none" aria-hidden="true"><path d="M121.556 4.06404C141.556 -7.48297 166.556 6.9505 166.556 30.0445C166.556 31.0921 165.899 32.0212 164.936 32.4319C152.062 37.9179 143.037 50.6867 143.037 65.564V116.564C143.037 131.086 151.636 143.598 164.02 149.29C165.519 149.979 166.556 151.435 166.556 153.085C166.555 176.178 141.556 190.612 121.556 179.065L15 117.545C-5 105.998 -5 77.1306 15 65.5836L121.556 4.06404Z" fill="currentColor"/><path d="M227.969 0.278931C250.418 0.27893 268.617 18.478 268.617 40.9274V140.409C268.617 162.858 250.418 181.056 227.969 181.056C210.666 181.056 195.891 170.245 190.025 155.01C189.233 152.955 190.505 150.769 192.546 149.942C205.734 144.6 215.037 131.669 215.037 116.564V65.5641C215.037 50.3684 205.621 37.3734 192.306 32.0911C190.279 31.2867 188.994 29.1414 189.737 27.0903C195.397 11.453 210.378 0.278951 227.969 0.278931Z" fill="currentColor"/></svg></a>
   <nav class="tnav" id="tnav" aria-label="Main"></nav>
   <div class="top-right">
@@ -657,7 +655,6 @@
 </header>
 <main class="content" id="view"></main>
 
-<nav class="pop pop-menu" id="pop-menu" aria-label="Main"></nav>
 <div class="pop" id="pop-notifs"><div class="nt-title">Notifications</div><div class="nt-list" id="nt-list"></div></div>
 <div class="overlay" id="overlay"><div class="ov-scrim" data-close></div><div id="overlay-sheet"></div></div>
 <div class="toast" id="toast"></div>
@@ -1023,6 +1020,13 @@ function viewMyWork(filter){
   </div>`;
 }
 
+/* ---------- Menu (phone hamburger page) ---------- */
+function viewMenu(from){
+  return `<div class="home"><h1 class="home-title">Menu</h1>
+    <nav class="menu-list" aria-label="Main">${NAV().map(i=>`<a class="set-row${i[0]===from?' active':''}" href="${i[1]}"><span class="set-ic">${i[2]}</span><span class="set-lbl">${i[3]}</span><span class="set-chev">${MICON.rowChev}</span></a>`).join('')}</nav>
+  </div>`;
+}
+
 /* ---------- Wallet ---------- */
 function viewWallet(){
   return `<div class="page-title">My wallet</div>
@@ -1123,10 +1127,9 @@ function viewSubmit(id){
 }
 
 /* ================= Top menu ================= */
+const NAV=()=>[['explore','#/explore',ICON.explore,'Campaigns'],['mywork','#/mywork',ICON.work,'My work'],['wallet','#/wallet',ICON.wallet,'Wallet']];
 function renderTopNav(){
-  const items=[['explore','#/explore',ICON.explore,'Campaigns'],['mywork','#/mywork',ICON.work,'My work'],['wallet','#/wallet',ICON.wallet,'Wallet']];
-  document.getElementById('tnav').innerHTML=items.map(i=>`<a href="${i[1]}" data-root="${i[0]}" aria-label="${i[3]}" title="${i[3]}">${i[2]}</a>`).join('');
-  document.getElementById('pop-menu').innerHTML=items.map(i=>`<a href="${i[1]}" data-root="${i[0]}">${i[2]}<span>${i[3]}</span></a>`).join('');
+  document.getElementById('tnav').innerHTML=NAV().map(i=>`<a href="${i[1]}" data-root="${i[0]}" aria-label="${i[3]}" title="${i[3]}">${i[2]}</a>`).join('');
   document.getElementById('menu-btn').innerHTML=MICON.menu;
   document.getElementById('search-btn').innerHTML=MICON.search;
   document.getElementById('bell-ic').innerHTML=MICON.bell;
@@ -1156,7 +1159,7 @@ let prev={root:null,a:null};
 function route(){
   const h=location.hash.replace(/^#\/?/,'')||'explore';
   const [root,a,b]=h.split('/');
-  const known=['campaign','mywork','wallet','profile','settings','submit'];
+  const known=['campaign','mywork','wallet','profile','settings','submit','menu'];
   const r=known.includes(root)?root:'explore';
   const tabSwitch=r==='mywork'&&prev.root==='mywork'&&(a||'all')!==(prev.a||'all');
   let html,title='Campaigns';
@@ -1166,6 +1169,7 @@ function route(){
   else if(r==='profile'){html=viewProfile();title='My profile';}
   else if(r==='settings'){html=viewSettings();title='Account settings';}
   else if(r==='submit'){html=viewSubmit(a);title='Submit content';}
+  else if(r==='menu'){html=viewMenu(prev.root);title='Menu';}
   else html=viewExplore();
   view.innerHTML=html;
   document.body.classList.toggle('wide',r==='campaign');
@@ -1177,7 +1181,8 @@ function route(){
   if(r!=='explore') state.searchOpen=false;
   document.title=title+' — UGC Platform';
   const navRoot=r==='campaign'?(b||(C[a]&&C[a].status)?'mywork':'explore'):r==='submit'?'explore':r;
-  document.querySelectorAll('#tnav a,#pop-menu a').forEach(n=>n.classList.toggle('active',n.dataset.root===navRoot));
+  document.querySelectorAll('#tnav a').forEach(n=>n.classList.toggle('active',n.dataset.root===navRoot));
+  document.getElementById('menu-btn').classList.toggle('on',r==='menu');
   if(hist[hist.length-1]!==location.hash) hist.push(location.hash);
   prev={root:r,a};
   closePop();closeOverlay();
@@ -1211,11 +1216,8 @@ const SHEETS={
 /* ================= Interactions ================= */
 const toastEl=document.getElementById('toast');let toastT;
 function toast(m){toastEl.textContent=m;toastEl.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>toastEl.classList.remove('show'),2200);}
-/* Header popovers: notifications and the phone menu; opening one closes the other */
-function closePop(except){
-  document.querySelectorAll('.pop.open').forEach(p=>{if(p!==except)p.classList.remove('open');});
-  document.getElementById('menu-btn').setAttribute('aria-expanded',document.getElementById('pop-menu').classList.contains('open'));
-}
+const pop=document.getElementById('pop-notifs');
+function closePop(){pop.classList.remove('open');}
 function renderNotifs(){
   const text=n=>n.type==='approved'?`<b>${n.brand} campaign</b><span class="med"> got approved</span>`
     :n.type==='reply'?`<span class="med">Check out the </span><b>reply from ${n.brand}</b>`
@@ -1230,9 +1232,10 @@ document.addEventListener('click',e=>{
   const heart=t.closest('.like-heart');
   if(heart){e.preventDefault();e.stopPropagation();heart.classList.toggle('liked');return;}
   if(t.closest('[data-search]')){e.preventDefault();toggleSearch();return;}
-  const pb=t.closest('[data-pop]');
-  if(pb){e.preventDefault();const p=document.getElementById('pop-'+pb.dataset.pop);closePop(p);p.classList.toggle('open');closePop(p);return;}
-  if(!t.closest('.pop')) closePop();
+  if(t.closest('[data-pop]')){e.preventDefault();pop.classList.toggle('open');return;}
+  if(pop.classList.contains('open')&&!t.closest('#pop-notifs')) closePop();
+  /* Hamburger opens the menu page; tapping it again on that page goes back */
+  if(t.closest('#menu-btn')){e.preventDefault();if(prev.root==='menu'&&hist.length>1){hist.pop();location.hash=hist.pop();}else location.hash='#/menu';return;}
   const cl=t.closest('[data-close]');
   if(cl){closeOverlay();if(cl.dataset.toast)toast(cl.dataset.toast);if(cl.dataset.go)location.hash=cl.dataset.go;return;}
   const cat=t.closest('[data-cat]');
