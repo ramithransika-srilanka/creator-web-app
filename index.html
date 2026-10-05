@@ -1181,7 +1181,7 @@ function viewSubmit(id){
       <span class="err">That doesn’t look like a ${PLATNAME[p]} post link</span></div>`).join('');
   return `<div class="submit">
     <div class="sc-main">
-      <a class="backbar" href="#/campaign/${id}" aria-label="Back to campaign" title="Back to campaign">${MICON.back}</a>
+      <a class="backbar" href="#/campaign/${id}" data-back="#/campaign/${id}" aria-label="Back to campaign" title="Back to campaign">${MICON.back}</a>
     <form class="sc-content" id="sform" novalidate>
       <div class="sc-titlecard"><div class="sc-h1">Submit content</div><p class="sc-desc">Already posted this? Paste the link for each platform so the brand can review it. Once approved, every link is tracked and you earn from the total reach across them.</p></div>
       <div class="sc-section" id="g-links"><div class="sc-h2">Social media links</div><div class="sc-sub">Paste a link to your post. At least one is required.</div>
@@ -1228,8 +1228,24 @@ function toggleSearch(){
 
 /* ================= Router ================= */
 const view=document.getElementById('view');
-const hist=[];
+// Each history entry carries its position, so in-app back can use the browser's own
+// history (staying in sync with the browser back/forward buttons).
+let navIdx=-1,replacing=false;
+// Swap the current entry instead of adding one (back then skips it).
+function replaceHash(h){ if(location.hash===h) return; replacing=true; location.replace(h); }
 let prev={root:null,a:null};
+// Where back goes when there is no earlier in-app page (e.g. a link opened directly).
+function parentOf(hash){
+  const [root,a,b]=hash.replace(/^#\/?/,'').split('/');
+  if(root==='submit') return '#/campaign/'+(a||'uber');
+  if(root==='campaign') return (b||(C[a]&&C[a].status))?'#/mywork':'#/explore';
+  if(root==='settings') return '#/profile';
+  return '#/explore';
+}
+function goBack(fallback){
+  if(navIdx>0) history.back();
+  else replaceHash(fallback||parentOf(location.hash));
+}
 function route(){
   const h=location.hash.replace(/^#\/?/,'')||'explore';
   const [root,a,b]=h.split('/');
@@ -1255,7 +1271,9 @@ function route(){
   document.title=title+' — UGC Platform';
   const navRoot=r==='campaign'?(b||(C[a]&&C[a].status)?'mywork':'explore'):r==='submit'?'explore':r;
   document.querySelectorAll('#tnav a').forEach(n=>n.classList.toggle('active',n.dataset.root===navRoot));
-  if(hist[hist.length-1]!==location.hash) hist.push(location.hash);
+  const st=history.state;
+  if(st&&typeof st.i==='number') navIdx=st.i;
+  else{if(!replacing) navIdx++; replacing=false; history.replaceState({i:navIdx},'');}
   prev={root:r,a};
   closePop();closeOverlay();
 }
@@ -1307,7 +1325,7 @@ document.addEventListener('click',e=>{
   if(t.closest('[data-pop]')){e.preventDefault();pop.classList.toggle('open');return;}
   if(pop.classList.contains('open')&&!t.closest('#pop-notifs')) closePop();
   const cl=t.closest('[data-close]');
-  if(cl){closeOverlay();if(cl.dataset.toast)toast(cl.dataset.toast);if(cl.dataset.go)location.hash=cl.dataset.go;return;}
+  if(cl){closeOverlay();if(cl.dataset.toast)toast(cl.dataset.toast);if(cl.dataset.go)replaceHash(cl.dataset.go);return;}
   const cat=t.closest('[data-cat]');
   if(cat){state.cat=cat.dataset.cat;document.querySelectorAll('[data-cat]').forEach(c=>c.classList.toggle('active',c===cat));renderFeed();return;}
   const tg=t.closest('[data-tg]');
@@ -1316,7 +1334,8 @@ document.addEventListener('click',e=>{
   if(chk){chk.classList.toggle('on');chk.classList.remove('bad');return;}
   const sc=t.closest('[data-scroll]');
   if(sc){document.getElementById(sc.dataset.scroll).scrollIntoView({behavior:'smooth',block:'start'});return;}
-  if(t.closest('[data-back]')){e.preventDefault();if(hist.length>1){hist.pop();location.hash=hist.pop();}else location.hash='#/explore';return;}
+  const bk=t.closest('[data-back]');
+  if(bk){e.preventDefault();goBack(bk.dataset.back);return;}
   const act=t.closest('[data-act]');
   if(act){e.preventDefault();return doAct(act.dataset.act,act);}
   const go=t.closest('[data-go]');

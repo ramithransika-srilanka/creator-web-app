@@ -2134,6 +2134,7 @@ function buildPlaceholders(){
 
 /* ===== Router & overlays ===== */
 
+const TAB_ROOTS=['home','mywork','wallet'];
 const stack=['home'];
 
 function goTo(id,opts){
@@ -2149,14 +2150,17 @@ function goTo(id,opts){
   el.querySelectorAll('.scroll,.cp-scroll').forEach(sc=>sc.scrollTop=0);
   if(el._update) requestAnimationFrame(el._update);
   if(el._strokeUpdate) requestAnimationFrame(el._strokeUpdate);
-  if(stack[stack.length-1]!==id) stack.push(id);
+  // Back history: a tab root starts a fresh stack; revisiting a screen already in the
+  // stack pops back to it instead of stacking a loop (e.g. campaign → submit → campaign).
+  if(TAB_ROOTS.includes(id)) stack.splice(0,stack.length,id);
+  else{const i=stack.indexOf(id); if(i>=0) stack.splice(i+1); else stack.push(id);}
 }
 
 function openOverlay(id){const o=document.getElementById('ov-'+id);if(o)requestAnimationFrame(()=>o.classList.add('open'));}
 
 function closeOverlay(){document.querySelectorAll('.overlay.open').forEach(o=>o.classList.remove('open'));}
 
-function goBack(){ if(stack.length>1){stack.pop();goTo(stack[stack.length-1],{back:true});} }
+function goBack(){ stack.pop(); goTo(stack.length?stack[stack.length-1]:'home',{back:true}); }
 
 /* ===== Wiring ===== */
 
