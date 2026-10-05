@@ -70,7 +70,7 @@
   .menu-btn svg{width:24px;height:24px;}
   .menu-btn:active{transform:scale(.94);}
   .menu-btn.on{background:var(--grey-800);color:var(--grey-50);}
-  .menu-list{display:flex;flex-direction:column;gap:4px;margin-top:24px;}
+  .menu-list{display:flex;flex-direction:column;gap:4px;}
   .menu-list .set-row.active{background:var(--grey-100);}
 
   .content{width:100%;max-width:calc(var(--page) + var(--gutter) * 2);margin:0 auto;padding:24px var(--gutter) 80px;}
@@ -1022,7 +1022,7 @@ function viewMyWork(filter){
 
 /* ---------- Menu (phone hamburger page) ---------- */
 function viewMenu(from){
-  return `<div class="home"><h1 class="home-title">Menu</h1>
+  return `<div class="home">
     <nav class="menu-list" aria-label="Main">${NAV().map(i=>`<a class="set-row${i[0]===from?' active':''}" href="${i[1]}"><span class="set-ic">${i[2]}</span><span class="set-lbl">${i[3]}</span><span class="set-chev">${MICON.rowChev}</span></a>`).join('')}</nav>
   </div>`;
 }
