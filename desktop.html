@@ -515,7 +515,9 @@
   .backbar{display:inline-flex;align-items:center;gap:6px;padding:6px 0;margin-bottom:6px;cursor:pointer;}
   .backbar svg{width:24px;height:24px;color:var(--grey-800);}
   .backbar span{font-size:14px;font-weight:600;color:var(--grey-800);}
-  .submit{display:grid;grid-template-columns:minmax(0,1fr) var(--rail);gap:36px;align-items:start;}
+  /* Same frame as the campaign page: 264px campaign summary on the left (scrolls on its own), form in the larger column */
+  .submit{display:grid;grid-template-columns:264px minmax(0,1fr);gap:24px;align-items:start;}
+  .sc-main{display:flex;flex-direction:column;min-width:0;}
   .sc-content{display:flex;flex-direction:column;gap:24px;min-width:0;}
   .sc-titlecard{display:flex;flex-direction:column;gap:9px;}
   .sc-h1{font-size:20px;font-weight:600;line-height:27px;color:#121212;}
@@ -551,7 +553,15 @@
   .sc-terms .link{color:#1548eb;}
   .sc-foot{display:flex;flex-direction:column;gap:6px;}
   .sc-foot .msg{font-size:12px;line-height:16px;color:var(--pink-500);text-align:center;min-height:16px;}
-  .sc-side{position:sticky;top:calc(var(--header) + 16px);display:flex;flex-direction:column;gap:12px;}
+  .sc-side{position:sticky;top:calc(var(--header) + 18px);max-height:calc(100dvh - var(--header) - 18px);overflow-y:auto;overscroll-behavior:contain;display:flex;flex-direction:column;gap:12px;
+    padding:0 6px 18px 0;margin-right:-16px;scrollbar-width:thin;scrollbar-color:var(--grey-400) transparent;scrollbar-gutter:stable;}
+  .sc-side>*{flex-shrink:0;}
+  .sc-side .cp-list .row .v{white-space:normal;}
+  .sc-side .cp-list .row .k{flex-shrink:0;max-width:55%;}
+  .sc-side::-webkit-scrollbar{width:6px;}
+  .sc-side::-webkit-scrollbar-track{background:transparent;}
+  .sc-side::-webkit-scrollbar-thumb{background:var(--grey-400);border-radius:75px;}
+  .sc-side::-webkit-scrollbar-thumb:hover{background:var(--grey-600);}
   .sc-summary{display:flex;flex-direction:column;}
   .sc-brand{font-size:12px;font-weight:500;line-height:16px;color:var(--grey-600);}
   .sc-budget{padding:0 12px 12px;}
@@ -615,11 +625,11 @@
 
   /* ================= Responsive ================= */
   @media (max-width:1279px){
-    .submit{grid-template-columns:minmax(0,1fr);}
-    .sc-side{position:static;}
     .feedgrid{grid-template-columns:repeat(2,minmax(0,1fr));}
   }
   @media (max-width:1023px){
+    .submit{grid-template-columns:minmax(0,1fr);}
+    .sc-side{position:static;max-height:none;overflow:visible;padding:0;margin:0;order:2;}
     :root{--gutter:18px;}
     .wallet,.profile,.settings{grid-template-columns:minmax(0,1fr);}
     .wallet .w-stack,.pf-left,.set-nav{position:static;}
@@ -1192,8 +1202,18 @@ function viewSubmit(id){
       <div class="sc-link">${PLAT[p]}<input class="sc-linkinput" id="l-${p}" data-plat="${p}" type="url" inputmode="url" autocomplete="off" placeholder="Paste your ${PLATNAME[p]} post link"></div>
       <span class="err">That doesn’t look like a ${PLATNAME[p]} post link</span></div>`).join('');
   const before=['Post must be public and live on the platform.','Link must come from the account you connected.',`${c.visibility}.`,'Captions are required.'];
-  return `<a class="backbar" href="#/campaign/${id}">${MICON.back}<span>Back to campaign</span></a>
-  <div class="submit">
+  return `<div class="submit">
+    <aside class="sc-side">
+      <div class="sc-summary wcard">
+        <div class="cardwrap" style="padding:9px 9px 0"><div class="card-img"><img class="photo" data-a="${c.img}" data-label="${c.abbr}" alt=""><div class="card-logobar"><img class="logo" data-a="${c.logo}" data-label="${c.abbr}" alt=""></div></div></div>
+        <div class="card-content" style="padding-bottom:0"><span class="sc-brand">${c.brand}</span><div class="ctitle">${c.title}</div>${timeHTML(c)}</div>
+        <div class="cp-list">${c.list.map((r,i)=>(i?'<div class="div"></div>':'')+`<div class="row"><span class="k">${r[0]}</span><span class="v">${r[1]}</span></div>`).join('')}</div>
+        <div class="sc-budget"><div class="progress"><div class="fill" style="width:${(pct*100).toFixed(1)}%"></div></div><p class="cp-budgetline">${c.available} still available · ${c.spent} spent</p></div>
+      </div>
+      <div class="sc-before wcard"><h3>Before you submit</h3><ul>${before.map(t=>`<li>${CHECKC}<span>${t}</span></li>`).join('')}</ul></div>
+    </aside>
+    <div class="sc-main">
+      <a class="backbar" href="#/campaign/${id}">${MICON.back}<span>Back to campaign</span></a>
     <form class="sc-content" id="sform" novalidate>
       <div class="sc-titlecard"><div class="sc-h1">Submit content</div><p class="sc-desc">Already posted this? Paste the link for each platform so the brand can review it. Once approved, every link is tracked and you earn from the total reach across them.</p></div>
       <div class="sc-section" id="g-links"><div class="sc-h2">Social media links</div><div class="sc-sub">Paste a link to your post. At least one is required.</div>
@@ -1209,15 +1229,7 @@ function viewSubmit(id){
       <div class="sc-terms" id="terms" data-check><span class="sc-check">${MICON.check}</span><p>I agree to the <span class="link">Terms &amp; Conditions</span> and confirm this content follows the campaign requirements.</p></div>
       <div class="sc-foot"><span class="msg" id="form-msg"></span><button class="btn-primary" type="submit" id="sbtn">Submit for approval</button></div>
     </form>
-    <aside class="sc-side">
-      <div class="sc-summary wcard">
-        <div class="cardwrap" style="padding:9px 9px 0"><div class="card-img"><img class="photo" data-a="${c.img}" data-label="${c.abbr}" alt=""><div class="card-logobar"><img class="logo" data-a="${c.logo}" data-label="${c.abbr}" alt=""></div></div></div>
-        <div class="card-content" style="padding-bottom:0"><span class="sc-brand">${c.brand}</span><div class="ctitle">${c.title}</div>${timeHTML(c)}</div>
-        <div class="cp-list">${c.list.map((r,i)=>(i?'<div class="div"></div>':'')+`<div class="row"><span class="k">${r[0]}</span><span class="v">${r[1]}</span></div>`).join('')}</div>
-        <div class="sc-budget"><div class="progress"><div class="fill" style="width:${(pct*100).toFixed(1)}%"></div></div><p class="cp-budgetline">${c.available} still available · ${c.spent} spent</p></div>
-      </div>
-      <div class="sc-before wcard"><h3>Before you submit</h3><ul>${before.map(t=>`<li>${CHECKC}<span>${t}</span></li>`).join('')}</ul></div>
-    </aside>
+    </div>
   </div>`;
 }
 
