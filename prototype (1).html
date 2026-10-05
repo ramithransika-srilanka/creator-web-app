@@ -477,8 +477,9 @@
   .sc-scroll{position:absolute;inset:0;overflow-y:auto;scrollbar-width:none;}
   .sc-scroll::-webkit-scrollbar{display:none;}
   .sc-header{position:sticky;top:0;z-index:20;background:var(--grey-50);display:flex;flex-direction:column;gap:8px;padding-bottom:8px;}
-  .sc-headrow{height:24px;display:flex;align-items:center;padding:0 32px;}
-  .sc-back{display:flex;cursor:pointer;color:#121212;}
+  .sc-headrow{height:40px;display:flex;align-items:center;padding:0 16px;}
+  .sc-back{display:flex;align-items:center;justify-content:center;width:40px;height:40px;padding:8px;border-radius:999px;cursor:pointer;color:#121212;transition:background .15s;}
+  .sc-back:hover,.sc-back:active{background:var(--grey-100);}
   .sc-back svg{width:24px;height:24px;display:block;}
   .sc-content{display:flex;flex-direction:column;gap:32px;align-items:flex-start;padding:8px 24px 0;}
   .sc-titlecard{display:flex;flex-direction:column;gap:12px;width:100%;}
@@ -1187,7 +1188,7 @@
   <section class="screen" id="submit">
     <div class="sc-scroll">
       <div class="sc-header"><div class="statusbar"></div>
-        <div class="sc-headrow"><a class="sc-back" data-back><svg viewBox="0 0 24 24" fill="none"><path d="M14 16L10 12L14 8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a></div>
+        <div class="sc-headrow"><a class="sc-back" data-back aria-label="Back" title="Back"><svg viewBox="0 0 24 24" fill="none"><path d="M14 16L10 12L14 8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a></div>
       </div>
       <div class="sc-content">
         <div class="sc-titlecard">
@@ -2133,6 +2134,7 @@ function buildPlaceholders(){
 
 /* ===== Router & overlays ===== */
 
+const TAB_ROOTS=['home','mywork','wallet'];
 const stack=['home'];
 
 function goTo(id,opts){
@@ -2148,14 +2150,17 @@ function goTo(id,opts){
   el.querySelectorAll('.scroll,.cp-scroll').forEach(sc=>sc.scrollTop=0);
   if(el._update) requestAnimationFrame(el._update);
   if(el._strokeUpdate) requestAnimationFrame(el._strokeUpdate);
-  if(stack[stack.length-1]!==id) stack.push(id);
+  // Back history: a tab root starts a fresh stack; revisiting a screen already in the
+  // stack pops back to it instead of stacking a loop (e.g. campaign → submit → campaign).
+  if(TAB_ROOTS.includes(id)) stack.splice(0,stack.length,id);
+  else{const i=stack.indexOf(id); if(i>=0) stack.splice(i+1); else stack.push(id);}
 }
 
 function openOverlay(id){const o=document.getElementById('ov-'+id);if(o)requestAnimationFrame(()=>o.classList.add('open'));}
 
 function closeOverlay(){document.querySelectorAll('.overlay.open').forEach(o=>o.classList.remove('open'));}
 
-function goBack(){ if(stack.length>1){stack.pop();goTo(stack[stack.length-1],{back:true});} }
+function goBack(){ stack.pop(); goTo(stack.length?stack[stack.length-1]:'home',{back:true}); }
 
 /* ===== Wiring ===== */
 
