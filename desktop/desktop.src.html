@@ -626,7 +626,7 @@
   .cdrawer{position:fixed;inset:0;z-index:40;}
   .cdrawer[hidden]{display:none;}
   .cd-scrim{position:absolute;inset:0;background:rgba(0,0,0,.4);opacity:0;transition:opacity .35s ease;}
-  .cd-panel{position:absolute;top:0;right:0;bottom:0;width:min(760px,calc(100% - 64px));background:var(--grey-50);display:flex;flex-direction:column;
+  .cd-panel{position:absolute;top:0;right:0;bottom:0;width:min(1080px,calc(100% - 64px));background:var(--grey-50);display:flex;flex-direction:column;
     box-shadow:-8px 0 32px rgba(0,0,0,.16);transform:translateX(100%);transition:transform .45s cubic-bezier(.16,1,.3,1);outline:none;}
   .cdrawer.open .cd-scrim{opacity:1;}
   .cdrawer.open .cd-panel{transform:none;}
@@ -645,6 +645,16 @@
   .cp-solo .cp-main{padding-bottom:32px;}
   #view .cp.cp-solo{max-width:760px;margin:0 auto;}
   #view .cp-solo .cp-top,#view .cp-solo .cp-main{padding-left:0;padding-right:0;}
+  /* Drawer: details on the left, a right column (creator card + Join) set off by a grey rule; both scroll together */
+  .cp.cp-drawer{grid-template-columns:minmax(0,1fr) 320px;}
+  .cp-drawer>.cp-rail{grid-column:2;align-self:stretch;border-left:1px solid var(--grey-200);padding:24px;display:flex;flex-direction:column;}
+  .cp-rail .cp-createdby{padding-top:0;}
+  .cp-rail .cp-creatorcard{display:flex;flex-direction:column;gap:16px;}
+  .cp-rail .cp-creatorcard .col{display:contents;}
+  .cp-rail .cp-questions{margin-top:0;align-self:stretch;}
+  .cp-rail .btn-questions{padding:9px 16px;text-align:center;}
+  .cp-rail .cp-status{margin-top:16px;}
+  .cp-rail .cp-join{padding-top:16px;}
   body.cdrawer-open{overflow:hidden;}
   @media(prefers-reduced-motion:reduce){.cd-scrim,.cd-panel{transition:none;}}
 
@@ -658,6 +668,8 @@
   }
   @media (max-width:1023px){
     :root{--gutter:18px;}
+    .cp.cp-drawer{grid-template-columns:minmax(0,1fr);}
+    .cp-drawer>.cp-rail{grid-column:1;grid-row:3;border-left:0;border-top:1px solid var(--grey-200);}
     .wallet,.profile,.settings{grid-template-columns:minmax(0,1fr);}
     .wallet .w-stack,.pf-left,.set-nav{position:static;}
     .cp{margin-bottom:0;}
@@ -986,7 +998,23 @@ function viewCampaign(id,statusOverride,opt={}){
   const backTo=status==='open'?'Campaigns':'My work';
   // Like + share sit on the hero, except on the "open in a new window" page where they stay beside the back link
   const actions=`<div class="cp-actions"><button class="cp-round like-heart" type="button" aria-label="Like campaign">${CPICON.heart}</button><button class="cp-round" type="button" data-act="share" aria-label="Share campaign">${CPICON.share}</button></div>`,actionsInTop=opt.solo&&!opt.drawer;
-  return `<div class="cp${opt.solo?' cp-solo':''}">
+  // Creator card, status and Join: below the details, or in the drawer's right column
+  const aside=`
+      <div class="cp-createdby"><h3>Campaign created by</h3>
+        <div class="wcard cp-creatorcard">
+          <div class="col">
+            <div class="cp-identity"><img class="av" data-a="${c.logo}" data-label="${c.abbr}" alt=""><div class="cp-idtext"><p class="name">${c.brand}</p><p class="since">${c.since}</p></div></div>
+            <p class="cp-cdesc">${c.brandDesc}</p>
+          </div>
+          <div class="col">
+            <div class="cp-stats"><div class="cp-stat"><span class="big">${c.totalPaid}</span><span class="lbl">Total paid</span></div><div class="cp-stat-div"></div><div class="cp-stat"><span class="big">${c.campaigns}</span><span class="lbl">Campaigns</span></div></div>
+            <div class="handles">${handles}</div>
+            <div class="cp-questions"><div class="btn-questions" data-act="soon">${opt.drawer?'Any questions?':'Any questions? Message the brand'}</div></div>
+          </div>
+        </div></div>
+      ${side?`<div class="cp-status">${side}</div>`:''}
+      ${status==='open'?`<div class="cp-join"><a class="btn-primary" href="#/submit/${id}">Join Campaign</a></div>`:''}`;
+  return `<div class="cp${opt.solo?' cp-solo':''}${opt.drawer?' cp-drawer':''}">
     ${opt.drawer?'':`<div class="cp-top"><a class="cp-back" data-back aria-label="Back to ${backTo}">${BACKARROW}<span>${backTo}</span></a>${actionsInTop?actions:''}</div>`}
     ${opt.solo?'':simHTML}
     <div class="cp-main">
@@ -1017,21 +1045,9 @@ function viewCampaign(id,statusOverride,opt={}){
             <ol class="cp-restrict">${RESTRICT.map(r=>`<li>${r}</li>`).join('')}</ol>
           </section></div>
       </div>
-      <div class="cp-createdby"><h3>Campaign created by</h3>
-        <div class="wcard cp-creatorcard">
-          <div class="col">
-            <div class="cp-identity"><img class="av" data-a="${c.logo}" data-label="${c.abbr}" alt=""><div class="cp-idtext"><p class="name">${c.brand}</p><p class="since">${c.since}</p></div></div>
-            <p class="cp-cdesc">${c.brandDesc}</p>
-          </div>
-          <div class="col">
-            <div class="cp-stats"><div class="cp-stat"><span class="big">${c.totalPaid}</span><span class="lbl">Total paid</span></div><div class="cp-stat-div"></div><div class="cp-stat"><span class="big">${c.campaigns}</span><span class="lbl">Campaigns</span></div></div>
-            <div class="handles">${handles}</div>
-            <div class="cp-questions"><div class="btn-questions" data-act="soon">Any questions? Message the brand</div></div>
-          </div>
-        </div></div>
-      ${side?`<div class="cp-status">${side}</div>`:''}
-      ${status==='open'?`<div class="cp-join"><a class="btn-primary" href="#/submit/${id}">Join Campaign</a></div>`:''}
+      ${opt.drawer?'':aside}
     </div>
+    ${opt.drawer?`<aside class="cp-rail">${aside}</aside>`:''}
   </div>`;
 }
 
