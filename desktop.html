@@ -274,7 +274,8 @@
   .cp-hero{position:relative;height:420px;border-radius:28px 28px 0 0;overflow:hidden;background:var(--grey-200);}
   .cp-hero>img{width:100%;height:100%;object-fit:cover;}
   .cp-headrow{position:absolute;top:16px;left:16px;right:16px;display:flex;align-items:center;justify-content:space-between;}
-  .cp-headright{display:flex;gap:12px;align-items:center;}
+  .cp-headright{display:flex;gap:12px;align-items:center;margin-left:auto;}
+  .cp-back{display:none;}
   .cp-details{position:relative;margin-top:-72px;display:flex;flex-direction:column;gap:12px;align-items:center;padding:16px 16px 24px;background:var(--grey-50);border-radius:40px 40px 0 0;}
   .cp-logo{width:40px;height:40px;border-radius:100px;border:1px solid var(--grey-50);object-fit:cover;background:#fff;}
   .cp-title{font-size:20px;font-weight:600;line-height:24px;color:var(--grey-800);text-align:center;max-width:520px;}
@@ -614,6 +615,7 @@
     .feedgrid{grid-template-columns:minmax(0,1fr);gap:16px;margin-top:24px;}
     .mw-list{grid-template-columns:minmax(0,1fr);}
     .cp-hero{height:320px;}
+    .cp-back{display:flex;justify-content:center;width:40px;height:40px;padding:0;border-radius:100px;background:rgba(246,246,246,.8);box-shadow:0 2px 8px rgba(0,0,0,.12);}
     .cp-spec{grid-template-columns:repeat(2,minmax(0,1fr));}
     .sc-inputs{grid-template-columns:minmax(0,1fr);}
     .nt-list{padding:20px 16px;}
@@ -1011,7 +1013,7 @@ function viewCampaign(id,statusOverride){
     ${simHTML}
     <div class="cp-main">
       <div class="cp-hero"><img data-a="${c.img}" data-label="${c.abbr}" alt="">
-        <div class="cp-headrow"><a class="iconbtn" data-back>${CPICON.chevL}</a><div class="cp-headright"><a class="iconbtn like-heart">${CPICON.heart}</a><a class="iconbtn" data-act="share">${CPICON.share}</a></div></div>
+        <div class="cp-headrow"><a class="iconbtn cp-back" data-back aria-label="Back">${CPICON.chevL}</a><div class="cp-headright"><a class="iconbtn like-heart">${CPICON.heart}</a><a class="iconbtn" data-act="share">${CPICON.share}</a></div></div>
       </div>
       <div class="cp-details">
         <img class="cp-logo" data-a="${c.logo}" data-label="${c.abbr}" alt="">
