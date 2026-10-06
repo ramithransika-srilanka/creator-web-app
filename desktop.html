@@ -620,6 +620,29 @@
   .ov-title .purple{color:var(--pending-card);}
   .ov-primary{background:var(--grey-800);color:var(--grey-50);border-radius:75px;padding:9px 15px;width:100%;text-align:center;font-size:14px;font-weight:500;cursor:pointer;box-shadow:2px 2px 5px rgba(0,0,0,.08);}
 
+  /* ================= Campaign drawer (slides in from the right on Campaigns) ================= */
+  .cdrawer{position:fixed;inset:0;z-index:40;}
+  .cdrawer[hidden]{display:none;}
+  .cd-scrim{position:absolute;inset:0;background:rgba(0,0,0,.4);opacity:0;transition:opacity .35s ease;}
+  .cd-panel{position:absolute;top:0;right:0;bottom:0;width:min(760px,calc(100% - 64px));background:var(--grey-50);display:flex;flex-direction:column;
+    box-shadow:-8px 0 32px rgba(0,0,0,.16);transform:translateX(100%);transition:transform .45s cubic-bezier(.16,1,.3,1);outline:none;}
+  .cdrawer.open .cd-scrim{opacity:1;}
+  .cdrawer.open .cd-panel{transform:none;}
+  .cd-bar{flex-shrink:0;display:flex;align-items:center;justify-content:space-between;gap:16px;height:60px;padding:0 24px;background:#fff;border-bottom:1px solid var(--grey-200);}
+  .cd-back{display:flex;align-items:center;justify-content:center;width:38px;height:38px;margin-left:-8px;border-radius:75px;color:var(--grey-800);transition:background .2s ease;}
+  .cd-back:hover{background:var(--grey-100);}
+  .cd-back svg,.cd-open svg{width:22px;height:22px;}
+  .cd-open{display:flex;align-items:center;gap:8px;padding:8px 12px;margin-right:-12px;border-radius:75px;font-size:14px;font-weight:600;line-height:20px;color:var(--blue-500);transition:background .2s ease;}
+  .cd-open:hover{background:var(--grey-50);}
+  .cd-body{flex:1;overflow-y:auto;overscroll-behavior:contain;}
+  .cd-body .cp{grid-template-columns:minmax(0,1fr);margin:0;}
+  .cd-body .cp-top{grid-column:1;justify-content:flex-end;padding-top:12px;}
+  .cd-body .cp-top,.cd-body .cp-main{border:0;padding-left:24px;padding-right:24px;}
+  .cd-body .cp-main{padding-bottom:32px;}
+  body.cdrawer-open{overflow:hidden;}
+  @media (max-width:767px){.cd-panel{width:100%;}.cd-bar{padding:0 16px;}.cdrawer .cd-body .cp-top,.cdrawer .cd-body .cp-main{padding-left:16px;padding-right:16px;}}
+  @media(prefers-reduced-motion:reduce){.cd-scrim,.cd-panel{transition:none;}}
+
   .toast{position:fixed;left:50%;bottom:24px;z-index:60;transform:translate(-50%,12px);opacity:0;pointer-events:none;background:var(--grey-800);color:var(--grey-50);
     padding:9px 15px;border-radius:75px;font-size:14px;font-weight:500;box-shadow:2px 2px 9px rgba(0,0,0,.16);transition:opacity .25s ease,transform .35s cubic-bezier(.16,1,.3,1);}
   .toast.show{opacity:1;transform:translate(-50%,0);}
@@ -684,6 +707,16 @@
 <nav class="drawer" id="drawer" aria-label="Main" aria-hidden="true"><div class="menu-list" id="drawer-list"></div></nav>
 
 <div class="overlay" id="overlay"><div class="ov-scrim" data-close></div><div id="overlay-sheet"></div></div>
+<div class="cdrawer" id="cdrawer" hidden>
+  <div class="cd-scrim" data-cdrawer-close></div>
+  <aside class="cd-panel" id="cd-panel" role="dialog" aria-modal="true" aria-label="Campaign details" tabindex="-1">
+    <div class="cd-bar">
+      <button class="cd-back" type="button" data-cdrawer-close aria-label="Back to campaigns"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12H4M10 6l-6 6 6 6"/></svg></button>
+      <a class="cd-open" id="cd-open" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9"/><path d="M18 14v4a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4"/></svg><span>Open campaign in a new window</span></a>
+    </div>
+    <div class="cd-body" id="cd-body"></div>
+  </aside>
+</div>
 <div class="toast" id="toast"></div>
 <input type="file" id="file" accept="image/jpeg,image/png,video/mp4" hidden>
 
@@ -946,13 +979,14 @@ const timeHTML=c=>`<div class="card-time"><span>${c.time}</span>${c.right?`<span
 
 function cardHTML(id,opt={}){
   const c=C[id], pending=opt.pending||c.status==='pending', go=opt.go||`#/campaign/${id}`;
-  return `<div class="cardwrap">${pending?'<div class="pending-card">':''}<div class="card-img" data-go="${go}">
+  const open=opt.drawer?`data-cdrawer="${id}"`:`data-go="${go}"`;
+  return `<div class="cardwrap">${pending?'<div class="pending-card">':''}<div class="card-img" ${open}>
       <img class="photo" data-a="${c.img}" data-label="${c.abbr}" alt="">
       <div class="card-logobar"><img class="logo" data-a="${c.logo}" data-label="${c.abbr}" alt="">${ICON.heart}</div>
       <div class="overlaybar"><div class="details">${ICON.tiktok}${ICON.insta}<span class="price-chip">${c.list[2][1].replace(/Rs\. (\d+) \/ 1K views/,'Rs.$1/1K')}</span></div><div class="view-btn">View</div></div>
     </div>${pending?'<div class="pending-earned">Pending for approval</div></div>':''}
     <div class="card-content">
-      <div class="ctitle" data-go="${go}">${c.title}</div>${timeHTML(c)}
+      <div class="ctitle" ${open}>${c.title}</div>${timeHTML(c)}
       <div class="progress-group"><div class="progress"><div class="fill" style="width:${c.progress}%"></div></div>
         <div class="card-foot">${c.joined?`<div class="joined">${ICON.user}<span>${c.joined}</span></div>`:'<span></span>'}<div class="money">${c.money}</div></div></div>
     </div></div>`;
@@ -999,7 +1033,7 @@ function renderFeed(){
     if(!['All','Price'].includes(state.cat)&&c.cat!==state.cat) return false;
     return !q||(c.title+' '+c.brand).toLowerCase().includes(q);});
   if(state.cat==='Price') ids=[...ids].sort((a,b)=>C[b].budgetN-C[a].budgetN);
-  f.innerHTML=ids.length?ids.map((id,i)=>cardHTML(id).replace('class="cardwrap"',`class="cardwrap" style="--i:${i}"`)).join('')
+  f.innerHTML=ids.length?ids.map((id,i)=>cardHTML(id,{drawer:true}).replace('class="cardwrap"',`class="cardwrap" style="--i:${i}"`)).join('')
     :`<div class="ph"><div class="tag2">No campaigns</div><h2>Nothing matches “${esc(state.q||state.cat)}”</h2><p>Try another brand name or clear the search to see every open campaign.</p><div class="tag" data-act="clear">Clear filters</div></div>`;
   bindAssets(f);
 }
@@ -1007,7 +1041,7 @@ const esc=s=>String(s).replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;',
 
 /* ---------- Campaign page ---------- */
 const BACKARROW='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>';
-function viewCampaign(id,statusOverride){
+function viewCampaign(id,statusOverride,opt={}){
   const c=C[id]; if(!c) return viewExplore();
   const status=statusOverride||c.status||'open';
   const listRows=c.list.map(r=>`<div class="div"></div><div class="row"><span class="k">${r[0]}</span><span class="v">${r[1]}</span></div>`).join('');
@@ -1043,10 +1077,10 @@ function viewCampaign(id,statusOverride){
   const backTo=status==='open'?'Campaigns':'My work';
   return `<div class="cp">
     <div class="cp-top">
-      <a class="cp-back" data-back aria-label="Back to ${backTo}">${BACKARROW}<span>${backTo}</span></a>
+      ${opt.drawer?'':`<a class="cp-back" data-back aria-label="Back to ${backTo}">${BACKARROW}<span>${backTo}</span></a>`}
       <div class="cp-actions"><button class="cp-round like-heart" type="button" aria-label="Like campaign">${CPICON.heart}</button><button class="cp-round" type="button" data-act="share" aria-label="Share campaign">${CPICON.share}</button></div>
     </div>
-    ${simHTML}
+    ${opt.drawer?'':simHTML}
     <div class="cp-main">
       <div class="cp-hero"><img data-a="${c.img}" data-label="${c.abbr}" alt="">
         <div class="cp-brandpill"><img data-a="${c.logo}" data-label="${c.abbr}" alt="${c.brand}"></div>
@@ -1311,6 +1345,7 @@ function route(){
   if(st&&typeof st.i==='number') navIdx=st.i;
   else{if(!replacing) navIdx++; replacing=false; history.replaceState({i:navIdx},'');}
   prev={root:r,a};
+  closeCampaignDrawer();
   closeOverlay();
 }
 window.addEventListener('hashchange',route);
@@ -1322,6 +1357,30 @@ function staggerMyWork(){
     el.style.animationDelay=Math.min(i*55,440)+'ms'; el.classList.add('mw-stagger');
     el.addEventListener('animationend',()=>{el.classList.remove('mw-stagger');el.style.animationDelay='';},{once:true});
   });
+}
+
+/* ================= Campaign drawer ================= */
+const cdrawer=document.getElementById('cdrawer'),cdPanel=document.getElementById('cd-panel'),cdBody=document.getElementById('cd-body');
+let cdReturn=null,cdHideT;
+function openCampaignDrawer(id){
+  if(!C[id]) return;
+  clearTimeout(cdHideT);
+  cdReturn=document.activeElement;
+  cdBody.innerHTML=viewCampaign(id,null,{drawer:true});
+  bindAssets(cdBody);cdBody.scrollTop=0;
+  document.getElementById('cd-open').href=`#/campaign/${id}`;
+  cdPanel.setAttribute('aria-label',C[id].title);
+  cdrawer.hidden=false;document.body.classList.add('cdrawer-open');
+  void cdrawer.offsetWidth;cdrawer.classList.add('open');
+  cdPanel.focus({preventScroll:true});
+}
+function closeCampaignDrawer(){
+  if(cdrawer.hidden) return;
+  cdrawer.classList.remove('open');document.body.classList.remove('cdrawer-open');
+  const done=()=>{cdrawer.hidden=true;cdBody.innerHTML='';};
+  if(matchMedia('(prefers-reduced-motion:reduce)').matches) done(); else cdHideT=setTimeout(done,450);
+  if(cdReturn&&document.contains(cdReturn)) cdReturn.focus({preventScroll:true});
+  cdReturn=null;
 }
 
 /* ================= Overlays ================= */
@@ -1363,6 +1422,9 @@ document.addEventListener('click',e=>{
   const heart=t.closest('.like-heart');
   if(heart){e.preventDefault();e.stopPropagation();heart.classList.toggle('liked');return;}
   if(t.closest('[data-search]')){e.preventDefault();toggleSearch();return;}
+  if(t.closest('[data-cdrawer-close]')){e.preventDefault();closeCampaignDrawer();return;}
+  const cd=t.closest('[data-cdrawer]');
+  if(cd){openCampaignDrawer(cd.dataset.cdrawer);return;}
   if(t.closest('#menu-btn')){e.preventDefault();setDrawer(!drawer.classList.contains('open'));return;}
   if(t.closest('#drawer a')||t.id==='drawer-scrim') setDrawer(false);
   const cl=t.closest('[data-close]');
@@ -1423,7 +1485,7 @@ document.addEventListener('input',e=>{const g=e.target.closest('.sc-linkgroup');
 document.addEventListener('input',e=>{if(e.target.id==='q'){state.q=e.target.value;renderFeed();}});
 document.addEventListener('keydown',e=>{
   if(e.key==='/'&&!['INPUT','TEXTAREA'].includes(document.activeElement.tagName)){e.preventDefault();if(state.searchOpen&&document.getElementById('q'))document.getElementById('q').focus();else toggleSearch();}
-  if(e.key==='Escape'){if(state.searchOpen&&document.activeElement.id==='q'){setSearch(false);document.getElementById('search-btn').focus();}closeOverlay();setDrawer(false);}
+  if(e.key==='Escape'){if(state.searchOpen&&document.activeElement.id==='q'){setSearch(false);document.getElementById('search-btn').focus();}if(overlay.classList.contains('open'))closeOverlay();else closeCampaignDrawer();setDrawer(false);}
 });
 
 /* ===== Init ===== */
