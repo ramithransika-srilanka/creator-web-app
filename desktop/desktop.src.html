@@ -309,10 +309,11 @@
   /* Top bar above the main image: back link on the left, like + share on the right */
   .cp-top{grid-row:1;grid-column:1;align-self:stretch;display:flex;align-items:center;justify-content:space-between;gap:12px;padding-top:18px;padding-bottom:12px;}
   .cp>:not(.cp-top){grid-row:2;}
-  .cp-back{display:inline-flex;align-items:center;gap:6px;padding:6px 6px 6px 0;font-size:14px;font-weight:500;line-height:19px;color:var(--grey-600);transition:color .2s ease;}
-  .cp-back svg{width:20px;height:20px;transition:transform .25s cubic-bezier(.16,1,.3,1);}
-  .cp-back:hover{color:var(--grey-800);}
-  .cp-back:hover svg{transform:translateX(-2px);}
+  /* One back link everywhere (campaign page, new-window page, drawer, submit): arrow + where it goes */
+  .back-link{display:inline-flex;align-items:center;gap:6px;padding:6px 6px 6px 0;background:none;border:0;font-family:inherit;font-size:14px;font-weight:500;line-height:20px;color:var(--grey-600);cursor:pointer;transition:color .2s ease;}
+  .back-link svg{width:20px;height:20px;flex-shrink:0;transition:transform .25s cubic-bezier(.16,1,.3,1);}
+  .back-link:hover{color:var(--grey-800);}
+  .back-link:hover svg{transform:translateX(-2px);}
   .cp-actions{display:flex;gap:8px;align-items:center;}
   .cp-hero .cp-actions{position:absolute;z-index:1;top:12px;right:12px;}
   .cp-hero .cp-round{width:36px;height:36px;border:0;box-shadow:0 2px 6px rgba(0,0,0,.16);}
@@ -536,9 +537,7 @@
   .set-version{font-size:12px;color:var(--grey-500);padding:18px 12px 0;}
 
   /* ================= Submit content ================= */
-  .backbar{display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;padding:8px;margin:0 0 12px -8px;border-radius:999px;cursor:pointer;transition:background .15s;}
-  .backbar:hover{background:var(--grey-100,#f2f2f2);}
-  .backbar svg{width:24px;height:24px;color:var(--grey-800);}
+  .sc-top{margin-bottom:12px;}
   /* Single column: the form only, no campaign summary beside it */
   .submit{display:flex;flex-direction:column;max-width:720px;margin:0 auto;}
   .sc-main{display:flex;flex-direction:column;min-width:0;}
@@ -630,9 +629,7 @@
   .cdrawer.open .cd-scrim{opacity:1;}
   .cdrawer.open .cd-panel{transform:none;}
   .cd-bar{flex-shrink:0;display:flex;align-items:center;justify-content:space-between;gap:16px;height:60px;padding:0 24px;background:#fff;border-bottom:1px solid var(--grey-200);}
-  .cd-back{display:flex;align-items:center;justify-content:center;width:38px;height:38px;margin-left:-8px;border-radius:75px;color:var(--grey-800);transition:background .2s ease;}
-  .cd-back:hover{background:var(--grey-100);}
-  .cd-back svg,.cd-open svg{width:22px;height:22px;}
+  .cd-open svg{width:22px;height:22px;}
   .cd-open{display:flex;align-items:center;gap:8px;padding:8px 12px;margin-right:-12px;border-radius:75px;font-size:14px;font-weight:600;line-height:20px;color:var(--blue-500);transition:background .2s ease;}
   .cd-open:hover{background:var(--grey-100);}
   .cd-body{flex:1;overflow-y:auto;overscroll-behavior:contain;}
@@ -729,7 +726,7 @@
   <div class="cd-scrim" data-cdrawer-close></div>
   <aside class="cd-panel" id="cd-panel" role="dialog" aria-modal="true" aria-label="Campaign details" tabindex="-1">
     <div class="cd-bar">
-      <button class="cd-back" type="button" data-cdrawer-close aria-label="Back to campaigns"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12H4M10 6l-6 6 6 6"/></svg></button>
+      <button class="back-link" type="button" data-cdrawer-close aria-label="Back to Campaigns"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 18l-6-6 6-6"/></svg><span>Campaigns</span></button>
       <a class="cd-open" id="cd-open" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9"/><path d="M18 14v4a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4"/></svg><span>Open campaign in a new window</span></a>
     </div>
     <div class="cd-body" id="cd-body"></div>
@@ -964,6 +961,8 @@ function renderFeed(){
 const esc=s=>String(s).replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
 
 /* ---------- Campaign page ---------- */
+// Back link: names the page it returns to (the previous in-app page, else the page's parent)
+const backHTML=fallback=>`<a class="back-link" href="${fallback}" data-back="${fallback}" aria-label="Back to ${backLabel}">${BACKARROW}<span>${backLabel}</span></a>`;
 const BACKARROW='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>';
 function viewCampaign(id,statusOverride,opt={}){
   const c=C[id]; if(!c) return viewExplore();
@@ -997,7 +996,6 @@ function viewCampaign(id,statusOverride,opt={}){
   const simHTML=`<aside class="cp-similar" aria-label="Explore more"><h3>Explore more</h3>
       <div class="sim-list">${similar.map(k=>cardHTML(k)).join('')}</div>
       <a class="sim-all" href="#/explore">See all campaigns</a></aside>`;
-  const backTo=status==='open'?'Campaigns':'My work';
   // Like + share sit on the hero, except on the "open in a new window" page where they stay beside the back link
   const actions=`<div class="cp-actions"><button class="cp-round like-heart" type="button" aria-label="Like campaign">${CPICON.heart}</button><button class="cp-round" type="button" data-act="share" aria-label="Share campaign">${CPICON.share}</button></div>`,actionsInTop=opt.solo&&!opt.drawer;
   // Creator card, status and Join: below the details, or in the drawer's right column
@@ -1017,7 +1015,7 @@ function viewCampaign(id,statusOverride,opt={}){
       ${side?`<div class="cp-status">${side}</div>`:''}
       ${status==='open'?`<div class="cp-join"><a class="btn-primary" href="#/submit/${id}">Join Campaign</a></div>`:''}`;
   return `<div class="cp${opt.solo?' cp-solo cp-railed':''}">
-    ${opt.drawer?'':`<div class="cp-top"><a class="cp-back" data-back aria-label="Back to ${backTo}">${BACKARROW}<span>${backTo}</span></a>${actionsInTop?actions:''}</div>`}
+    ${opt.drawer?'':`<div class="cp-top">${backHTML(parentOf(location.hash))}${actionsInTop?actions:''}</div>`}
     ${opt.solo?'':simHTML}
     <div class="cp-main">
       <div class="cp-hero"><img data-a="${c.img}" data-label="${c.abbr}" alt="">
@@ -1170,7 +1168,7 @@ function viewSubmit(id){
       <span class="err">That doesn’t look like a ${PLATNAME[p]} post link</span></div>`).join('');
   return `<div class="submit">
     <div class="sc-main">
-      <a class="backbar" href="#/campaign/${id}" data-back="#/campaign/${id}" aria-label="Back to campaign" title="Back to campaign">${MICON.back}</a>
+      <div class="sc-top">${backHTML('#/campaign/'+id)}</div>
     <form class="sc-content" id="sform" novalidate>
       <div class="sc-titlecard"><div class="sc-h1">Submit content</div><p class="sc-desc">Already posted this? Paste the link for each platform so the brand can review it. Once approved, every link is tracked and you earn from the total reach across them.</p></div>
       <div class="sc-section" id="g-links"><div class="sc-h2">Social media links</div><div class="sc-sub">Paste a link to your post. At least one is required.</div>
@@ -1233,6 +1231,10 @@ function parentOf(hash){
   if(root==='settings') return '#/profile';
   return '#/explore';
 }
+// Page names for back links
+const PAGE={explore:'Campaigns',view:'Campaign',campaign:'Campaign',submit:'Submit content',mywork:'My work',wallet:'My wallet',profile:'My profile',settings:'Account settings',notifications:'Notifications'};
+const pageOf=hash=>{const r=hash.replace(/^#\/?/,'').split('/')[0];return PAGE[r]?r:'explore';};
+let backLabel='Campaigns',curFrom=null;
 function goBack(fallback){
   if(navIdx>0) history.back();
   else replaceHash(fallback||parentOf(location.hash));
@@ -1243,6 +1245,11 @@ function route(){
   const known=['view','campaign','mywork','wallet','profile','settings','submit','notifications'];
   const r=known.includes(root)?root:'explore';
   const tabSwitch=r==='mywork'&&prev.root==='mywork'&&(a||'all')!==(prev.a||'all');
+  // Where back returns to: stored on each history entry, so browser back/forward keep it right
+  const st=history.state,known_=st&&typeof st.i==='number';
+  const drawerOpen=!cdrawer.hidden&&cdrawer.classList.contains('open');
+  const from=known_?st.from:replacing?curFrom:navIdx<0?null:(prev.root==='explore'&&drawerOpen?'Campaign':PAGE[prev.root]);
+  backLabel=from||PAGE[pageOf(parentOf(location.hash))];
   let html,title='Campaigns';
   if(r==='campaign'){html=viewCampaign(a,b);title=(C[a]||{}).title||'Campaign';}
   else if(r==='view'){html=viewCampaign(a,null,{solo:true});title=(C[a]||{}).title||'Campaign';}
@@ -1268,12 +1275,14 @@ function route(){
   const bell=document.getElementById('bell-btn');bell.classList.toggle('on',r==='notifications');
   if(r==='notifications'){bell.setAttribute('aria-current','page');document.getElementById('bell-dot')?.remove();}else bell.removeAttribute('aria-current');
   setDrawer(false);
-  const st=history.state;
-  if(st&&typeof st.i==='number') navIdx=st.i;
-  else{if(!replacing) navIdx++; replacing=false; history.replaceState({i:navIdx},'');}
+  if(known_) navIdx=st.i;
+  else{if(!replacing) navIdx++; replacing=false; history.replaceState({i:navIdx,from},'');}
+  curFrom=from;
   prev={root:r,a};
-  closeCampaignDrawer();
+  closeCampaignDrawer(true);
   closeOverlay();
+  // Coming back to Campaigns reopens the drawer that was open when you left
+  if(r==='explore'&&known_&&st.cd) openCampaignDrawer(st.cd);
 }
 window.addEventListener('hashchange',route);
 
@@ -1300,9 +1309,12 @@ function openCampaignDrawer(id){
   cdrawer.hidden=false;document.body.classList.add('cdrawer-open');
   void cdrawer.offsetWidth;cdrawer.classList.add('open');
   cdPanel.focus({preventScroll:true});
+  history.replaceState({...history.state,cd:id},'');
 }
-function closeCampaignDrawer(){
+// keepEntry: leaving the page (the entry keeps the drawer, so back reopens it)
+function closeCampaignDrawer(keepEntry){
   if(cdrawer.hidden) return;
+  if(!keepEntry&&history.state&&history.state.cd){const {cd,...rest}=history.state;history.replaceState(rest,'');}
   cdrawer.classList.remove('open');document.body.classList.remove('cdrawer-open');
   const done=()=>{cdrawer.hidden=true;cdBody.innerHTML='';};
   if(matchMedia('(prefers-reduced-motion:reduce)').matches) done(); else cdHideT=setTimeout(done,450);
