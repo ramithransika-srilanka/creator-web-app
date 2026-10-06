@@ -635,9 +635,10 @@
   .cd-open{display:flex;align-items:center;gap:8px;padding:8px 12px;margin-right:-12px;border-radius:75px;font-size:14px;font-weight:600;line-height:20px;color:var(--blue-500);transition:background .2s ease;}
   .cd-open:hover{background:var(--grey-50);}
   .cd-body{flex:1;overflow-y:auto;overscroll-behavior:contain;}
-  /* Details only (drawer and the "open in a new window" page): no Explore more column, no back link */
+  /* Details only (drawer and the "open in a new window" page): no Explore more column; the drawer also drops the back link */
   .cp.cp-solo{grid-template-columns:minmax(0,1fr);margin:0;}
-  .cp-solo .cp-top{grid-column:1;justify-content:flex-end;padding-top:12px;}
+  .cp-solo .cp-top{grid-column:1;padding-top:12px;}
+  .cd-body .cp-top{justify-content:flex-end;}
   .cp-solo .cp-top,.cp-solo .cp-main{border:0;padding-left:24px;padding-right:24px;}
   .cp-solo .cp-main{padding-bottom:32px;}
   #view .cp.cp-solo{max-width:760px;margin:0 auto;}
@@ -1077,12 +1078,12 @@ function viewCampaign(id,statusOverride,opt={}){
       <div class="sim-list">${similar.map(k=>cardHTML(k)).join('')}</div>
       <a class="sim-all" href="#/explore">See all campaigns</a></aside>`;
   const backTo=status==='open'?'Campaigns':'My work';
-  return `<div class="cp${opt.drawer?' cp-solo':''}">
+  return `<div class="cp${opt.solo?' cp-solo':''}">
     <div class="cp-top">
       ${opt.drawer?'':`<a class="cp-back" data-back aria-label="Back to ${backTo}">${BACKARROW}<span>${backTo}</span></a>`}
       <div class="cp-actions"><button class="cp-round like-heart" type="button" aria-label="Like campaign">${CPICON.heart}</button><button class="cp-round" type="button" data-act="share" aria-label="Share campaign">${CPICON.share}</button></div>
     </div>
-    ${opt.drawer?'':simHTML}
+    ${opt.solo?'':simHTML}
     <div class="cp-main">
       <div class="cp-hero"><img data-a="${c.img}" data-label="${c.abbr}" alt="">
         <div class="cp-brandpill"><img data-a="${c.logo}" data-label="${c.abbr}" alt="${c.brand}"></div>
@@ -1321,7 +1322,7 @@ function route(){
   const tabSwitch=r==='mywork'&&prev.root==='mywork'&&(a||'all')!==(prev.a||'all');
   let html,title='Campaigns';
   if(r==='campaign'){html=viewCampaign(a,b);title=(C[a]||{}).title||'Campaign';}
-  else if(r==='view'){html=viewCampaign(a,null,{drawer:true});title=(C[a]||{}).title||'Campaign';}
+  else if(r==='view'){html=viewCampaign(a,null,{solo:true});title=(C[a]||{}).title||'Campaign';}
   else if(r==='mywork'){html=viewMyWork(a);title='My work';}
   else if(r==='wallet'){html=viewWallet();title='My wallet';}
   else if(r==='profile'){html=viewProfile();title='My profile';}
@@ -1369,7 +1370,7 @@ function openCampaignDrawer(id){
   if(!C[id]) return;
   clearTimeout(cdHideT);
   cdReturn=document.activeElement;
-  cdBody.innerHTML=viewCampaign(id,null,{drawer:true});
+  cdBody.innerHTML=viewCampaign(id,null,{solo:true,drawer:true});
   bindAssets(cdBody);cdBody.scrollTop=0;
   document.getElementById('cd-open').href=`#/view/${id}`;
   cdPanel.setAttribute('aria-label',C[id].title);
