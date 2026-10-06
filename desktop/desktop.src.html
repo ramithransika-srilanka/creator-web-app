@@ -385,16 +385,11 @@
   .cp-identity .name{font-size:16px;font-weight:600;line-height:22px;color:var(--grey-800);}
   .cp-identity .since{font-size:12px;line-height:16px;color:var(--grey-600);}
   .cp-cdesc{font-size:14px;line-height:20px;color:var(--grey-800);text-align:center;}
-  .cp-stats{display:flex;align-items:center;justify-content:center;}
+  .cp-stats{display:flex;align-items:center;justify-content:center;padding:12px 0;border:1px solid var(--grey-200);border-radius:12px;}
   .cp-stat{display:flex;flex-direction:column;align-items:center;flex:1;}
   .cp-stat .big{font-size:16px;font-weight:600;line-height:22px;color:var(--grey-800);}
   .cp-stat .lbl{font-size:12px;font-weight:500;line-height:16px;color:var(--grey-600);}
   .cp-stat-div{width:1px;height:32px;background:var(--grey-200);}
-  .cp-cmetrics{display:flex;flex-direction:column;gap:8px;}
-  .cp-cmetrics .row{display:flex;align-items:center;justify-content:space-between;gap:16px;font-size:14px;line-height:20px;}
-  .cp-cmetrics .row .k{font-weight:500;color:var(--grey-600);}
-  .cp-cmetrics .row .v{font-weight:600;color:var(--grey-800);}
-  .cp-cmetrics .div{height:1px;background:var(--grey-200);}
   .handles{display:flex;gap:12px;align-items:center;justify-content:center;flex-wrap:wrap;}
   .handle{display:flex;flex-direction:column;gap:4px;align-items:center;padding:4px;position:relative;flex-shrink:0;}
   .handle .pf{width:48px;height:48px;border-radius:75px;object-fit:cover;background:#fff;}
@@ -667,7 +662,6 @@
     /* No Explore more column here, so drop the divider lines and their inset */
     .cp-top,.cp-main{border-left:0;border-right:0;padding-left:0;padding-right:0;}
     .cp-creatorcard{grid-template-columns:minmax(0,1fr);}
-    .cp-cmetrics,.cp-questions{padding-left:18px;}
     .pf-grid{grid-template-columns:repeat(3,minmax(0,1fr));}
   }
   @media (max-width:767px){
@@ -960,7 +954,6 @@ function viewCampaign(id,statusOverride,opt={}){
   const listRows=c.list.map(r=>`<div class="div"></div><div class="row"><span class="k">${r[0]}</span><span class="v">${r[1]}</span></div>`).join('');
   const list=`<div class="cp-list"><div class="row"><span class="k">Target platforms</span><span class="social">${c.platforms.map(p=>PLAT[p]).join('')}</span></div>${listRows}</div>`;
   const tags=c.tags.map(t=>`<div class="cp-tag">${CPICON[t[1]]}<span>${t[0]}</span></div>`).join('');
-  const metrics=c.metrics.map((m,i)=>(i?'<div class="div"></div>':'')+`<div class="row"><span class="k">${m[0]}</span><span class="v">${m[1]}</span></div>`).join('');
   const handles=c.handles.map(h=>`<div class="handle"><img class="pf" data-a="${c.logo}" data-label="${c.abbr}" alt=""><div class="badge">${PLAT[h[1]]}</div><span class="fc">${h[0]}</span></div>`).join('');
   const mid=c.event
     ? `<div class="cp-event"><div class="cp-event-card">
@@ -1026,10 +1019,9 @@ function viewCampaign(id,statusOverride,opt={}){
           <div class="col">
             <div class="cp-identity"><img class="av" data-a="${c.logo}" data-label="${c.abbr}" alt=""><div class="cp-idtext"><p class="name">${c.brand}</p><p class="since">${c.since}</p></div></div>
             <p class="cp-cdesc">${c.brandDesc}</p>
-            <div class="cp-stats"><div class="cp-stat"><span class="big">${c.totalPaid}</span><span class="lbl">Total paid</span></div><div class="cp-stat-div"></div><div class="cp-stat"><span class="big">${c.campaigns}</span><span class="lbl">Campaigns</span></div></div>
           </div>
           <div class="col">
-            <div class="cp-cmetrics">${metrics}</div>
+            <div class="cp-stats"><div class="cp-stat"><span class="big">${c.totalPaid}</span><span class="lbl">Total paid</span></div><div class="cp-stat-div"></div><div class="cp-stat"><span class="big">${c.campaigns}</span><span class="lbl">Campaigns</span></div></div>
             <div class="handles">${handles}</div>
             <div class="cp-questions"><div class="btn-questions" data-act="soon">Any questions? Message the brand</div></div>
           </div>
