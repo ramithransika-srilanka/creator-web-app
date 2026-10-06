@@ -700,7 +700,13 @@
     /* Card image sits on the 12px gutter: drop the invisible wrapper's side inset */
     .feedgrid>.cardwrap,.feedgrid>.sk-card{padding-left:0;padding-right:0;border-width:0;}
     .mw-list{grid-template-columns:minmax(0,1fr);}
-    .cp-hero{height:180px;}
+    /* Campaign page on phones: full-width, taller hero; logo, title, time and joined pill centred */
+    .cp-hero{height:auto;aspect-ratio:5/4;margin:0 calc(-1 * var(--gutter));border-radius:0;}
+    .cp-brandpill{left:50%;transform:translateX(-50%);}
+    .cp-details{align-items:center;text-align:center;}
+    .cp-details>.cp-list{align-self:stretch;text-align:left;}
+    .cp-meta{flex-direction:column;gap:12px;justify-content:center;}
+    .cp-meta .vsep{display:none;}
     .cp-spec{grid-template-columns:repeat(2,minmax(0,1fr));}
   }
 </style>
