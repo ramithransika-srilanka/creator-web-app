@@ -122,12 +122,12 @@
   .progress .fill{height:6px;background:var(--blue-500);border-radius:15px;}
 
   /* Key / value list (cp-list) */
-  .cp-list{padding:12px;border-radius:9px;display:flex;flex-direction:column;gap:6px;width:100%;}
-  .cp-list .row{display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:14px;line-height:20px;}
+  .cp-list{padding:12px;border-radius:12px;display:flex;flex-direction:column;gap:8px;width:100%;}
+  .cp-list .row{display:flex;align-items:center;justify-content:space-between;gap:16px;font-size:14px;line-height:20px;}
   .cp-list .row .k{font-weight:500;color:var(--grey-600);}
   .cp-list .row .v{font-weight:600;color:var(--grey-800);text-align:right;white-space:nowrap;}
-  .cp-list .div{height:1px;background:var(--grey-200);margin:3px 0;}
-  .cp-list .social{display:flex;gap:6px;align-items:center;}
+  .cp-list .div{height:1px;background:var(--grey-200);margin:0;}
+  .cp-list .social{display:flex;gap:8px;align-items:center;}
   .cp-list .social svg{width:16px;height:16px;color:var(--grey-800);}
 
   /* White card (creator card) */
@@ -302,8 +302,8 @@
   .cp-top,.cp-main{border-left:1px solid var(--grey-200);border-right:1px solid var(--grey-200);padding-left:18px;padding-right:18px;}
   .cp-main{padding-bottom:60px;}
   .cp-main{display:flex;flex-direction:column;min-width:0;}
-  .cp-hero{position:relative;aspect-ratio:519/225;border-radius:15px 15px 0 0;background:var(--grey-200);}
-  .cp-brandpill{position:absolute;z-index:1;left:20px;bottom:-38px;width:76px;height:76px;border-radius:75px;border:3px solid #fff;overflow:hidden;background:#fff;}
+  .cp-hero{position:relative;aspect-ratio:519/225;border-radius:15px;background:var(--grey-200);}
+  .cp-brandpill{position:absolute;z-index:1;left:20px;bottom:-38px;width:76px;height:76px;border-radius:75px;border:5px solid #fff;overflow:hidden;background:#fff;}
   .cp-brandpill img{width:100%;height:100%;object-fit:cover;display:block;}
   .cp-hero>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 30%;border-radius:inherit;}
   /* Top bar above the main image: back link on the left, like + share on the right */
@@ -313,24 +313,27 @@
   .cp-back svg{width:20px;height:20px;transition:transform .25s cubic-bezier(.16,1,.3,1);}
   .cp-back:hover{color:var(--grey-800);}
   .cp-back:hover svg{transform:translateX(-2px);}
-  .cp-actions{display:flex;gap:9px;align-items:center;}
+  .cp-actions{display:flex;gap:8px;align-items:center;}
+  .cp-hero .cp-actions{position:absolute;z-index:1;top:12px;right:12px;}
+  .cp-hero .cp-round{width:36px;height:36px;border:0;box-shadow:0 2px 6px rgba(0,0,0,.16);}
+  .cp-hero .cp-round:hover{background:var(--grey-100);}
   .cp-round{width:30px;height:30px;border-radius:75px;background:#fff;border:1px solid var(--grey-200);display:flex;align-items:center;justify-content:center;color:var(--grey-800);transition:background .2s ease,border-color .2s ease,transform .2s cubic-bezier(.16,1,.3,1);}
   .cp-round svg{width:20px;height:20px;}
   .cp-round:hover{background:var(--grey-100);border-color:var(--grey-400);}
   .cp-round:active{transform:scale(.94);}
-  .cp-details{display:flex;flex-direction:column;gap:9px;padding:50px 0 18px;}
+  .cp-details{display:flex;flex-direction:column;gap:8px;padding:52px 0 0;}
   .cp-title{font-size:22px;font-weight:600;line-height:26px;letter-spacing:-.02em;color:var(--grey-800);}
-  .cp-details>.cp-list{margin-top:9px;padding:6px 0 0;border-radius:0;}
-  .cp-joined{display:flex;gap:6px;align-items:center;}
+  .cp-details>.cp-list{margin-top:16px;padding:12px 16px;border:1px solid var(--grey-200);border-radius:15px;}
+  .cp-joined{display:flex;gap:6px;align-items:center;background:var(--grey-100);padding:3px 12px 3px 3px;border-radius:75px;}
   .cp-avatars{display:flex;}
   .cp-avatars img{width:22px;height:22px;border-radius:15px;border:1.5px solid var(--grey-50);object-fit:cover;margin-left:-6px;background:#ddd;}
   .cp-avatars img:first-child{margin-left:0;}
   .cp-joined .count{font-size:14px;font-weight:500;color:var(--grey-600);}
   .cp-infotags{padding:18px 8px;display:flex;flex-direction:column;gap:12px;align-items:center;}
   .cp-infotags h3{font-size:15px;font-weight:600;line-height:19px;color:var(--grey-800);text-align:center;}
-  .cp-tags{display:flex;flex-wrap:wrap;gap:6px;align-items:center;justify-content:center;}
-  .cp-tag{background:var(--grey-200);display:flex;gap:3px;align-items:center;justify-content:center;padding:5px 9px;border-radius:75px;}
-  .cp-tag svg{width:20px;height:20px;color:var(--grey-800);}
+  .cp-tags{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:center;}
+  .cp-tag{background:var(--grey-100);display:flex;gap:4px;align-items:center;justify-content:center;padding:6px 12px 6px 8px;border-radius:75px;}
+  .cp-tag svg{width:16px;height:16px;color:var(--grey-800);}
   .cp-tag span{font-size:12px;font-weight:500;line-height:12px;color:var(--grey-800);}
   .cp-event{display:flex;justify-content:center;padding:12px 18px;}
   .cp-event-card{display:flex;flex-direction:column;gap:9px;align-items:center;padding:12px 15px;}
@@ -347,58 +350,57 @@
   .cp-event-link .ext{width:16px;height:16px;color:var(--blue-300);}
   .cp-event-link .ext svg{width:16px;height:16px;}
   .cp-reqs{padding:24px 18px 12px;display:flex;flex-direction:column;gap:9px;}
-  .cp-reqs h3,.cp-createdby>h3{font-size:15px;font-weight:600;line-height:19px;color:#000;}
+  .cp-reqs h3,.cp-createdby>h3,.cp-main>div:not(.band)>.cp-infotags h3{font-size:16px;font-weight:600;line-height:22px;color:var(--grey-800);}
   .cp-reqs{gap:24px;}
-  .cp-sec{display:flex;flex-direction:column;gap:9px;}
-  .cp-reqs p{font-size:14px;line-height:20px;color:#000;max-width:480px;}
-  .cp-reqs h4{font-size:12px;font-weight:600;line-height:16px;letter-spacing:.06em;text-transform:uppercase;color:var(--grey-600);margin-top:9px;}
-  .cp-spec{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;}
-  .cp-spectile{background:var(--grey-100);border:1px solid var(--grey-200);border-radius:9px;padding:9px 12px;display:flex;flex-direction:column;gap:3px;}
-  .cp-spectile .k{font-size:12px;line-height:16px;color:var(--grey-600);}
+  .cp-sec{display:flex;flex-direction:column;gap:12px;}
+  .cp-reqs p{font-size:14px;line-height:20px;color:var(--grey-800);max-width:480px;}
+  .cp-reqs h4{font-size:14px;font-weight:600;line-height:20px;color:var(--grey-800);margin-top:12px;}
+  .cp-spec{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;}
+  .cp-spectile{background:#fff;border:1px solid var(--grey-200);border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:4px;}
+  .cp-spectile .k{font-size:12px;font-weight:500;line-height:16px;color:var(--grey-600);}
   .cp-spectile .v{font-size:14px;font-weight:600;line-height:20px;color:var(--grey-800);}
-  .cp-plats{display:flex;flex-wrap:wrap;gap:6px;}
-  .cp-plat{display:flex;gap:5px;align-items:center;padding:6px 11px;border-radius:75px;background:#fff;border:1px solid var(--grey-200);font-size:14px;font-weight:500;line-height:20px;color:var(--grey-800);}
-  .cp-plat svg{width:18px;height:18px;}
-  .cp-ctas{background:var(--blue-100);border-left:2px solid var(--blue-500);border-radius:0 9px 9px 0;padding:12px 15px;display:flex;flex-direction:column;gap:6px;}
+  .cp-plats{display:flex;flex-wrap:wrap;gap:8px;}
+  .cp-plat{display:flex;gap:6px;align-items:center;padding:6px 12px;border-radius:75px;background:#fff;border:1px solid var(--grey-200);font-size:14px;font-weight:500;line-height:20px;color:var(--grey-800);}
+  .cp-plat svg{width:16px;height:16px;}
+  .cp-ctas{background:var(--blue-100);border-left:2px solid var(--blue-500);border-radius:0 12px 12px 0;padding:12px 16px;display:flex;flex-direction:column;gap:8px;}
   .cp-ctas p{font-style:italic;color:var(--grey-800);}
   .cp-restrict{list-style:none;counter-reset:r;display:flex;flex-direction:column;gap:8px;}
-  .cp-restrict li{counter-increment:r;display:flex;gap:9px;align-items:center;font-size:14px;line-height:20px;color:var(--grey-800);}
+  .cp-restrict li{counter-increment:r;display:flex;gap:12px;align-items:center;font-size:14px;line-height:20px;color:var(--grey-800);}
   .cp-restrict li::before{content:counter(r);width:24px;height:24px;flex-shrink:0;border-radius:75px;background:var(--grey-100);border:1px solid var(--grey-200);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:500;color:var(--grey-600);}
   .cp-meta{display:flex;gap:8px 16px;align-items:center;flex-wrap:wrap;font-size:14px;font-weight:500;line-height:20px;color:var(--grey-600);}
   .cp-mi{display:flex;gap:8px;align-items:center;white-space:nowrap;}
   .cp-mi svg{width:16px;height:16px;}
-  .cp-mi .dot{width:4px;height:4px;border-radius:4px;background:var(--grey-800);flex-shrink:0;}
+  .cp-mi .dot{width:4px;height:4px;border-radius:4px;background:var(--grey-400);flex-shrink:0;}
   .cp-meta .vsep{width:1px;height:14px;background:var(--grey-400);flex-shrink:0;}
   .cp-budgetline{margin-top:8px;font-size:12px;line-height:16px;color:var(--grey-600);}
-  .cp-createdby{display:flex;flex-direction:column;gap:12px;padding:24px 0 8px;}
-  .cp-join{padding-top:18px;}
-  .cp-join .btn-primary{padding:12px 18px;font-size:15px;font-weight:600;line-height:23px;}
+  .cp-createdby{display:flex;flex-direction:column;gap:12px;padding:24px 0 0;}
+  .cp-join{padding-top:24px;}
+  .cp-join .btn-primary{padding:12px 16px;font-size:16px;font-weight:600;line-height:24px;}
   .cp-main>div:not(.band)>.cp-reqs{padding-left:0;padding-right:0;}
-  .cp-creatorcard{filter:none;border:1px solid #e2e2e2;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px;padding:6px 0 12px;}
-  .cp-creatorcard .col{display:flex;flex-direction:column;gap:12px;}
-  .cp-identity{display:flex;flex-direction:column;gap:12px;align-items:center;padding:12px 24px 3px;}
+  .cp-main>div:not(.band)>.cp-infotags{padding:24px 0 0;align-items:flex-start;}
+  .cp-main>div:not(.band)>.cp-infotags .cp-tags{justify-content:flex-start;}
+  .cp-main>div:not(.band)>.cp-reqs{padding-top:24px;padding-bottom:0;}
+  .cp-creatorcard{filter:none;border:1px solid var(--grey-200);display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px;padding:16px;}
+  .cp-creatorcard .col{display:flex;flex-direction:column;gap:16px;}
+  .cp-identity{display:flex;flex-direction:column;gap:12px;align-items:center;padding-top:8px;}
   .cp-identity .av{width:48px;height:48px;border-radius:75px;object-fit:cover;background:#fff;}
-  .cp-idtext{display:flex;flex-direction:column;gap:6px;align-items:center;}
-  .cp-identity .name{font-size:18px;font-weight:600;line-height:18px;color:var(--grey-800);}
+  .cp-idtext{display:flex;flex-direction:column;gap:4px;align-items:center;}
+  .cp-identity .name{font-size:16px;font-weight:600;line-height:22px;color:var(--grey-800);}
   .cp-identity .since{font-size:12px;line-height:16px;color:var(--grey-600);}
-  .cp-cdesc{padding:0 18px;font-size:14px;line-height:20px;color:#000;text-align:center;}
-  .cp-stats{display:flex;align-items:center;justify-content:center;padding:12px 18px;}
+  .cp-cdesc{font-size:14px;line-height:20px;color:var(--grey-800);text-align:center;}
+  .cp-stats{display:flex;align-items:center;justify-content:center;padding:8px 0;}
   .cp-stat{display:flex;flex-direction:column;align-items:center;flex:1;}
-  .cp-stat .big{font-size:18px;font-weight:600;color:var(--grey-800);}
-  .cp-stat .lbl{font-size:14px;font-weight:500;line-height:20px;color:var(--grey-600);}
-  .cp-stat-div{width:1px;height:29px;background:var(--grey-200);}
-  .cp-cmetrics{display:flex;flex-direction:column;gap:6px;padding:18px 18px 6px 6px;}
-  .cp-cmetrics .row{display:flex;align-items:center;justify-content:space-between;font-size:14px;line-height:20px;}
-  .cp-cmetrics .row .k{font-weight:400;color:var(--grey-600);}
-  .cp-cmetrics .row .v{font-weight:600;color:var(--grey-800);}
-  .cp-cmetrics .div{height:1px;background:var(--grey-100);margin:3px 0;}
+  .cp-stat .big{font-size:16px;font-weight:600;line-height:22px;color:var(--grey-800);}
+  .cp-stat .lbl{font-size:12px;font-weight:500;line-height:16px;color:var(--grey-600);}
+  .cp-stat-div{width:1px;height:32px;background:var(--grey-200);}
   .handles{display:flex;gap:12px;align-items:center;justify-content:center;flex-wrap:wrap;}
-  .handle{display:flex;flex-direction:column;gap:3px;align-items:center;padding:6px;position:relative;flex-shrink:0;}
+  .handle{display:flex;flex-direction:column;gap:4px;align-items:center;padding:4px;position:relative;flex-shrink:0;}
   .handle .pf{width:48px;height:48px;border-radius:75px;object-fit:cover;background:#fff;}
   .handle .badge{position:absolute;left:39px;top:0;background:#fff;padding:5px;border-radius:15px;display:flex;filter:drop-shadow(0 2px 1px rgba(0,0,0,.25));color:#121212;}
   .handle .badge svg{width:12px;height:12px;}
-  .handle .fc{font-size:14px;font-weight:500;line-height:20px;color:#121212;}
-  .cp-questions{padding:6px 18px 0 6px;}
+  .handle .fc{font-size:12px;font-weight:500;line-height:16px;color:var(--grey-800);}
+  .cp-questions{margin-top:auto;}
+  .cp-questions .btn-questions{border-radius:75px;box-shadow:none;}
 
   .cp-status{margin-top:18px;}
   /* Same frame as the brand web app's campaign dashboard: 296px left column (Explore more),
@@ -633,12 +635,12 @@
   .cd-back:hover{background:var(--grey-100);}
   .cd-back svg,.cd-open svg{width:22px;height:22px;}
   .cd-open{display:flex;align-items:center;gap:8px;padding:8px 12px;margin-right:-12px;border-radius:75px;font-size:14px;font-weight:600;line-height:20px;color:var(--blue-500);transition:background .2s ease;}
-  .cd-open:hover{background:var(--grey-50);}
+  .cd-open:hover{background:var(--grey-100);}
   .cd-body{flex:1;overflow-y:auto;overscroll-behavior:contain;}
   /* Details only (drawer and the "open in a new window" page): no Explore more column; the drawer also drops the back link */
   .cp.cp-solo{grid-template-columns:minmax(0,1fr);margin:0;}
   .cp-solo .cp-top{grid-column:1;padding-top:12px;}
-  .cd-body .cp-top{justify-content:flex-end;}
+  .cd-body .cp-main{padding-top:24px;}
   .cp-solo .cp-top,.cp-solo .cp-main{border:0;padding-left:24px;padding-right:24px;}
   .cp-solo .cp-main{padding-bottom:32px;}
   #view .cp.cp-solo{max-width:760px;margin:0 auto;}
@@ -663,7 +665,6 @@
     /* No Explore more column here, so drop the divider lines and their inset */
     .cp-top,.cp-main{border-left:0;border-right:0;padding-left:0;padding-right:0;}
     .cp-creatorcard{grid-template-columns:minmax(0,1fr);}
-    .cp-cmetrics,.cp-questions{padding-left:18px;}
     .pf-grid{grid-template-columns:repeat(3,minmax(0,1fr));}
   }
   @media (max-width:767px){
@@ -1050,7 +1051,6 @@ function viewCampaign(id,statusOverride,opt={}){
   const listRows=c.list.map(r=>`<div class="div"></div><div class="row"><span class="k">${r[0]}</span><span class="v">${r[1]}</span></div>`).join('');
   const list=`<div class="cp-list"><div class="row"><span class="k">Target platforms</span><span class="social">${c.platforms.map(p=>PLAT[p]).join('')}</span></div>${listRows}</div>`;
   const tags=c.tags.map(t=>`<div class="cp-tag">${CPICON[t[1]]}<span>${t[0]}</span></div>`).join('');
-  const metrics=c.metrics.map((m,i)=>(i?'<div class="div"></div>':'')+`<div class="row"><span class="k">${m[0]}</span><span class="v">${m[1]}</span></div>`).join('');
   const handles=c.handles.map(h=>`<div class="handle"><img class="pf" data-a="${c.logo}" data-label="${c.abbr}" alt=""><div class="badge">${PLAT[h[1]]}</div><span class="fc">${h[0]}</span></div>`).join('');
   const mid=c.event
     ? `<div class="cp-event"><div class="cp-event-card">
@@ -1078,14 +1078,14 @@ function viewCampaign(id,statusOverride,opt={}){
       <div class="sim-list">${similar.map(k=>cardHTML(k)).join('')}</div>
       <a class="sim-all" href="#/explore">See all campaigns</a></aside>`;
   const backTo=status==='open'?'Campaigns':'My work';
+  // Like + share sit on the hero, except on the "open in a new window" page where they stay beside the back link
+  const actions=`<div class="cp-actions"><button class="cp-round like-heart" type="button" aria-label="Like campaign">${CPICON.heart}</button><button class="cp-round" type="button" data-act="share" aria-label="Share campaign">${CPICON.share}</button></div>`,actionsInTop=opt.solo&&!opt.drawer;
   return `<div class="cp${opt.solo?' cp-solo':''}">
-    <div class="cp-top">
-      ${opt.drawer?'':`<a class="cp-back" data-back aria-label="Back to ${backTo}">${BACKARROW}<span>${backTo}</span></a>`}
-      <div class="cp-actions"><button class="cp-round like-heart" type="button" aria-label="Like campaign">${CPICON.heart}</button><button class="cp-round" type="button" data-act="share" aria-label="Share campaign">${CPICON.share}</button></div>
-    </div>
+    ${opt.drawer?'':`<div class="cp-top"><a class="cp-back" data-back aria-label="Back to ${backTo}">${BACKARROW}<span>${backTo}</span></a>${actionsInTop?actions:''}</div>`}
     ${opt.solo?'':simHTML}
     <div class="cp-main">
       <div class="cp-hero"><img data-a="${c.img}" data-label="${c.abbr}" alt="">
+        ${actionsInTop?'':actions}
         <div class="cp-brandpill"><img data-a="${c.logo}" data-label="${c.abbr}" alt="${c.brand}"></div>
       </div>
       <div class="cp-details">
@@ -1116,10 +1116,9 @@ function viewCampaign(id,statusOverride,opt={}){
           <div class="col">
             <div class="cp-identity"><img class="av" data-a="${c.logo}" data-label="${c.abbr}" alt=""><div class="cp-idtext"><p class="name">${c.brand}</p><p class="since">${c.since}</p></div></div>
             <p class="cp-cdesc">${c.brandDesc}</p>
-            <div class="cp-stats"><div class="cp-stat"><span class="big">${c.totalPaid}</span><span class="lbl">Total paid</span></div><div class="cp-stat-div"></div><div class="cp-stat"><span class="big">${c.campaigns}</span><span class="lbl">Campaigns</span></div></div>
           </div>
           <div class="col">
-            <div class="cp-cmetrics">${metrics}</div>
+            <div class="cp-stats"><div class="cp-stat"><span class="big">${c.totalPaid}</span><span class="lbl">Total paid</span></div><div class="cp-stat-div"></div><div class="cp-stat"><span class="big">${c.campaigns}</span><span class="lbl">Campaigns</span></div></div>
             <div class="handles">${handles}</div>
             <div class="cp-questions"><div class="btn-questions" data-act="soon">Any questions? Message the brand</div></div>
           </div>
