@@ -199,8 +199,29 @@
   .home .tags{margin-top:24px;gap:8px;}
   .tag:active{transform:scale(.96);}
 
-  .feedgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;margin-top:32px;}
-  .feedgrid>.cardwrap,.feedgrid>.sk-card{background:#fff;border:1px solid var(--grey-200);border-radius:32px;}
+  .feedgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin-top:24px;}
+  .feedgrid>.cardwrap,.feedgrid>.sk-card{background:#fff;border:1px solid var(--grey-200);border-radius:24px;}
+  /* Card sizes match the brand web app's explore cards */
+  .feedgrid .cardwrap{padding:9px;}
+  .feedgrid .card-img{height:180px;border-radius:15px;}
+  .feedgrid .card-logobar{padding:12px;}
+  .feedgrid .card-logobar .logo{width:27px;height:27px;}
+  .feedgrid .overlaybar{height:48px;padding:0 14px 0 17px;}
+  .feedgrid .overlaybar::before{border-radius:15px;-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);}
+  .feedgrid .details{gap:5px;}
+  .feedgrid .price-chip{padding:3px 6px;border-radius:15px;}
+  .feedgrid .view-btn{padding:9px 15px;box-shadow:2px 2px 9px rgba(0,0,0,.08);}
+  .feedgrid .pending-card{border-radius:15px;}
+  .feedgrid .card-content{gap:6px;padding:12px;}
+  .feedgrid .card-content .ctitle{font-size:15px;line-height:19px;}
+  .feedgrid .card-time{gap:8px;}
+  .feedgrid .progress-group{gap:3px;}
+  .feedgrid .card-foot .joined,.feedgrid .card-foot .money{gap:3px;}
+  .feedgrid>.sk-card{gap:6px;padding:9px;}
+  .feedgrid>.sk-card .img{height:180px;border-radius:15px;}
+  .feedgrid>.sk-card .l1{margin:12px 12px 0;}
+  .feedgrid>.sk-card .l2{margin:0 12px;}
+  .feedgrid>.sk-card .l3{margin:3px 12px 12px;}
   .feedgrid>.cardwrap{display:flex;flex-direction:column;transition:transform .45s cubic-bezier(.16,1,.3,1),box-shadow .45s cubic-bezier(.16,1,.3,1);animation:cardIn .6s cubic-bezier(.16,1,.3,1) backwards;animation-delay:calc(var(--i,0) * 60ms);}
   /* Cards in a row share one height: pin the progress bar and footer to the bottom so they line up */
   .feedgrid .card-content{flex:1;}
@@ -615,7 +636,7 @@
     .phone-note{display:flex;gap:12px;align-items:center;margin:16px var(--gutter) 0;padding:12px 16px;border-radius:20px;background:var(--grey-800);color:var(--grey-50);font-size:14px;line-height:20px;}
     .phone-note a{margin-left:auto;font-weight:600;color:var(--blue-200);white-space:nowrap;}
     .home-title{font-size:32px;line-height:40px;}
-    .feedgrid{grid-template-columns:minmax(0,1fr);gap:16px;margin-top:24px;}
+    .feedgrid{grid-template-columns:minmax(0,1fr);gap:12px;margin-top:18px;}
     .mw-list{grid-template-columns:minmax(0,1fr);}
     .cp-hero{height:320px;}
     .cp-spec{grid-template-columns:repeat(2,minmax(0,1fr));}
