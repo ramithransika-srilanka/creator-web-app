@@ -635,10 +635,13 @@
   .cd-open{display:flex;align-items:center;gap:8px;padding:8px 12px;margin-right:-12px;border-radius:75px;font-size:14px;font-weight:600;line-height:20px;color:var(--blue-500);transition:background .2s ease;}
   .cd-open:hover{background:var(--grey-50);}
   .cd-body{flex:1;overflow-y:auto;overscroll-behavior:contain;}
-  .cd-body .cp{grid-template-columns:minmax(0,1fr);margin:0;}
-  .cd-body .cp-top{grid-column:1;justify-content:flex-end;padding-top:12px;}
-  .cd-body .cp-top,.cd-body .cp-main{border:0;padding-left:24px;padding-right:24px;}
-  .cd-body .cp-main{padding-bottom:32px;}
+  /* Details only (drawer and the "open in a new window" page): no Explore more column, no back link */
+  .cp.cp-solo{grid-template-columns:minmax(0,1fr);margin:0;}
+  .cp-solo .cp-top{grid-column:1;justify-content:flex-end;padding-top:12px;}
+  .cp-solo .cp-top,.cp-solo .cp-main{border:0;padding-left:24px;padding-right:24px;}
+  .cp-solo .cp-main{padding-bottom:32px;}
+  #view .cp.cp-solo{max-width:760px;margin:0 auto;}
+  #view .cp-solo .cp-top,#view .cp-solo .cp-main{padding-left:0;padding-right:0;}
   body.cdrawer-open{overflow:hidden;}
   @media(prefers-reduced-motion:reduce){.cd-scrim,.cd-panel{transition:none;}}
 
@@ -980,7 +983,7 @@ function viewCampaign(id,statusOverride,opt={}){
       <div class="sim-list">${similar.map(k=>cardHTML(k)).join('')}</div>
       <a class="sim-all" href="#/explore">See all campaigns</a></aside>`;
   const backTo=status==='open'?'Campaigns':'My work';
-  return `<div class="cp">
+  return `<div class="cp${opt.drawer?' cp-solo':''}">
     <div class="cp-top">
       ${opt.drawer?'':`<a class="cp-back" data-back aria-label="Back to ${backTo}">${BACKARROW}<span>${backTo}</span></a>`}
       <div class="cp-actions"><button class="cp-round like-heart" type="button" aria-label="Like campaign">${CPICON.heart}</button><button class="cp-round" type="button" data-act="share" aria-label="Share campaign">${CPICON.share}</button></div>
@@ -1219,11 +1222,12 @@ function goBack(fallback){
 function route(){
   const h=location.hash.replace(/^#\/?/,'')||'explore';
   const [root,a,b]=h.split('/');
-  const known=['campaign','mywork','wallet','profile','settings','submit','notifications'];
+  const known=['view','campaign','mywork','wallet','profile','settings','submit','notifications'];
   const r=known.includes(root)?root:'explore';
   const tabSwitch=r==='mywork'&&prev.root==='mywork'&&(a||'all')!==(prev.a||'all');
   let html,title='Campaigns';
   if(r==='campaign'){html=viewCampaign(a,b);title=(C[a]||{}).title||'Campaign';}
+  else if(r==='view'){html=viewCampaign(a,null,{drawer:true});title=(C[a]||{}).title||'Campaign';}
   else if(r==='mywork'){html=viewMyWork(a);title='My work';}
   else if(r==='wallet'){html=viewWallet();title='My wallet';}
   else if(r==='profile'){html=viewProfile();title='My profile';}
@@ -1240,7 +1244,7 @@ function route(){
   if(r==='explore'&&state.searchOpen) setSearch(true); else document.getElementById('search-btn').classList.remove('on');
   if(r!=='explore') state.searchOpen=false;
   document.title=title+' — UGC Platform';
-  const navRoot=r==='campaign'?(b||(C[a]&&C[a].status)?'mywork':'explore'):r==='submit'?'explore':r;
+  const navRoot=r==='view'?'explore':r==='campaign'?(b||(C[a]&&C[a].status)?'mywork':'explore'):r==='submit'?'explore':r;
   document.querySelectorAll('#tnav a').forEach(n=>n.classList.toggle('active',n.dataset.root===navRoot));
   document.querySelectorAll('#drawer a').forEach(n=>n.classList.toggle('active',n.dataset.root===navRoot));
   const bell=document.getElementById('bell-btn');bell.classList.toggle('on',r==='notifications');
@@ -1273,7 +1277,7 @@ function openCampaignDrawer(id){
   cdReturn=document.activeElement;
   cdBody.innerHTML=viewCampaign(id,null,{drawer:true});
   bindAssets(cdBody);cdBody.scrollTop=0;
-  document.getElementById('cd-open').href=`#/campaign/${id}`;
+  document.getElementById('cd-open').href=`#/view/${id}`;
   cdPanel.setAttribute('aria-label',C[id].title);
   cdrawer.hidden=false;document.body.classList.add('cdrawer-open');
   void cdrawer.offsetWidth;cdrawer.classList.add('open');
