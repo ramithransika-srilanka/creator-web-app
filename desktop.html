@@ -640,7 +640,6 @@
   .cd-body .cp-top,.cd-body .cp-main{border:0;padding-left:24px;padding-right:24px;}
   .cd-body .cp-main{padding-bottom:32px;}
   body.cdrawer-open{overflow:hidden;}
-  @media (max-width:767px){.cd-panel{width:100%;}.cd-bar{padding:0 16px;}.cdrawer .cd-body .cp-top,.cdrawer .cd-body .cp-main{padding-left:16px;padding-right:16px;}}
   @media(prefers-reduced-motion:reduce){.cd-scrim,.cd-panel{transition:none;}}
 
   .toast{position:fixed;left:50%;bottom:24px;z-index:60;transform:translate(-50%,12px);opacity:0;pointer-events:none;background:var(--grey-800);color:var(--grey-50);
@@ -1424,7 +1423,8 @@ document.addEventListener('click',e=>{
   if(t.closest('[data-search]')){e.preventDefault();toggleSearch();return;}
   if(t.closest('[data-cdrawer-close]')){e.preventDefault();closeCampaignDrawer();return;}
   const cd=t.closest('[data-cdrawer]');
-  if(cd){openCampaignDrawer(cd.dataset.cdrawer);return;}
+  // Phones keep the full campaign page; the drawer is for wider screens only
+  if(cd){if(matchMedia('(max-width:767px)').matches) location.hash=`#/campaign/${cd.dataset.cdrawer}`; else openCampaignDrawer(cd.dataset.cdrawer);return;}
   if(t.closest('#menu-btn')){e.preventDefault();setDrawer(!drawer.classList.contains('open'));return;}
   if(t.closest('#drawer a')||t.id==='drawer-scrim') setDrawer(false);
   const cl=t.closest('[data-close]');
