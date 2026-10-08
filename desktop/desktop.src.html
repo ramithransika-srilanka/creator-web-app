@@ -257,12 +257,6 @@
   .mw-bud{display:flex;flex:1;flex-direction:column;gap:4px;color:var(--grey-50);}
   .mw-bud .lbl{font-size:14px;font-weight:500;line-height:20px;}
   .mw-bud .amt{font-size:24px;font-weight:600;line-height:32px;}
-  .mw-chip{grid-column:1/-1;display:flex;align-items:center;justify-content:center;background:var(--grey-200);border-radius:100px;padding:8px 16px;cursor:pointer;gap:10px;}
-  .mw-chip.dark{background:transparent;padding:8px 20px;justify-content:space-between;}
-  .mw-chip .chip-lbl{font-size:14px;font-weight:500;line-height:20px;color:var(--grey-800);white-space:nowrap;}
-  .mw-chip.dark .chip-lbl{color:var(--grey-50);}
-  .mw-chip .chip-more{font-size:14px;font-weight:600;line-height:20px;padding:4px 8px;color:var(--grey-800);}
-  .mw-chip.dark .chip-more{color:var(--grey-50);}
   .mw-tags{display:flex;gap:8px;flex-wrap:wrap;}
   /* My work — All: ongoing brands on top, then each section stacked below */
   .mw-ongoing{display:flex;flex-direction:column;gap:20px;padding-bottom:40px;border-bottom:1px solid var(--grey-200);}
@@ -278,7 +272,6 @@
   #mw-body .mw-bud .lbl{font-size:14px;line-height:20px;color:rgba(246,246,246,.75);}
   #mw-body .mw-bud .amt{font-size:28px;line-height:36px;letter-spacing:-.02em;font-variant-numeric:tabular-nums;}
   #mw-body .mw-join{font-size:14px;line-height:20px;}
-  #mw-body .mw-chip .chip-lbl,#mw-body .mw-chip .chip-more{font-size:14px;line-height:20px;}
   .pagehead{display:flex;flex-direction:column;align-items:flex-start;gap:16px;margin-bottom:32px;}
   .pagehead .page-title{padding-bottom:0;}
 
@@ -840,7 +833,6 @@ function mwCardHTML(id,badge,lbl,amt,cta,go,opt={}){
       <div class="mw-card-bot"><div class="mw-bud"><span class="lbl">${lbl}</span><span class="amt">${amt}</span></div><div class="mw-join">${cta}</div></div>
     </div></div>`;
 }
-const chip=(lbl,logos,go,more)=>`<a class="mw-chip" ${go?`href="${go}"`:''}><span class="chip-lbl">${lbl}</span><div class="chip-right">${logos.map(l=>`<img data-a="${l}" alt="">`).join('')}${more?`<span class="chip-more">${more}</span>`:''}</div></a>`;
 
 function walletStack(){
   return `<div class="w-stack">
@@ -983,12 +975,10 @@ function viewMyWork(filter){
   const head=(t,go)=>`<div class="sechead"><span class="h20">${t}</span>${go?`<a class="seeall" href="${go}">See all</a>`:''}</div>`;
   const today=`<div class="mw-list">
       ${mwCardHTML('eats','Today Event','Total budget','Rs. 1,000,000','Join now','#/campaign/eats',{img:'grid4'})}
-      ${mwCardHTML('hiru','Happening July 4','Total budget','Rs. 500,000','Join now','#/campaign/hiru')}
-      ${chip('Ending today',['pepsi','dominos'],'#/explore')}</div>`;
+      ${mwCardHTML('hiru','Happening July 4','Total budget','Rs. 500,000','Join now','#/campaign/hiru')}</div>`;
   const week=`<section class="mw-sec">${head('Coming up this week')}<div class="mw-list">
       ${mwCardHTML('burgerking','1d left','Remaining budget','Rs. 1,248,572','Join now','#/campaign/burgerking')}
-      ${mwCardHTML('shakira','Thursday','Total budget','Rs. 1,000,000','Join now','#/campaign/shakira',{img:'grid6'})}
-      ${chip('Ending this week',['pepsi','dominos'],'#/explore')}</div></section>`;
+      ${mwCardHTML('shakira','Thursday','Total budget','Rs. 1,000,000','Join now','#/campaign/shakira',{img:'grid6'})}</div></section>`;
   const completed=`<section class="mw-sec">${head('Completed campaigns','#/mywork/completed')}<div class="mw-list">
       ${COMPLETED.map(o=>mwCardHTML(o.id,o.ended,'You earned',o.earned,'View',`#/campaign/${o.id}/completed`,{liked:1})).join('')}</div></section>`;
   const ongoingLogos=`<div class="mw-logos">${[['starbucks','starbucks'],['pepsi','starbucks'],['logo2','eats'],['kfcLogo','kfc']].map(l=>`<a class="mw-logo72" href="#/campaign/${l[1]}/ongoing"><img data-a="${l[0]}" alt=""></a>`).join('')}</div>`;
@@ -1173,7 +1163,7 @@ window.addEventListener('hashchange',route);
 /* My work tag switch: tag pop + staggered 3D reveal, as on mobile */
 function staggerMyWork(){
   const t=view.querySelector('.mw-tags .tag.active'); if(t) t.classList.add('pop');
-  [...view.querySelectorAll('.sechead,.mw-logo72,.mw-card,.mw-chip,.cardwrap')].forEach((el,i)=>{
+  [...view.querySelectorAll('.sechead,.mw-logo72,.mw-card,.cardwrap')].forEach((el,i)=>{
     el.style.animationDelay=Math.min(i*55,440)+'ms'; el.classList.add('mw-stagger');
     el.addEventListener('animationend',()=>{el.classList.remove('mw-stagger');el.style.animationDelay='';},{once:true});
   });
