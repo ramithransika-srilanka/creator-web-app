@@ -263,8 +263,38 @@
   .mw-chip.dark .chip-lbl{color:var(--grey-50);}
   .mw-chip .chip-more{font-size:14px;font-weight:600;line-height:20px;padding:4px 8px;color:var(--grey-800);}
   .mw-chip.dark .chip-more{color:var(--grey-50);}
-  .mw-pending{padding:8px 16px;}
   .mw-tags{display:flex;gap:8px;flex-wrap:wrap;}
+  /* My work — All: ending-today feature column + ongoing earnings rail */
+  .mw-top{display:grid;grid-template-columns:minmax(0,1.75fr) minmax(300px,1fr);gap:24px;align-items:start;}
+  .mw-main{display:flex;flex-direction:column;}
+  .mw-today{display:flex;flex-direction:column;gap:20px;}
+  .mw-main .sechead,.mw-top~.mw-sec .sechead{padding:0 4px;}
+  .mw-main .mw-sec{padding:40px 0 0;gap:20px;}
+  .mw-top~.mw-sec{padding:48px 0 0;gap:20px;}
+  .mw-main .mw-list{grid-template-columns:repeat(2,minmax(0,1fr));}
+  .mw-ongoing{position:sticky;top:calc(var(--header) + 24px);}
+  .mw-ongoing{background:#fff;border:1px solid var(--grey-100);border-radius:28px;padding:20px 8px 8px;display:flex;flex-direction:column;gap:12px;box-shadow:0 20px 40px -24px rgba(18,18,18,.12);}
+  .mw-ongoing .sechead{padding:0 12px;}
+  .mw-orows{display:flex;flex-direction:column;}
+  .mw-orow{display:grid;grid-template-columns:44px minmax(0,1fr) auto;align-items:center;gap:12px;padding:12px;border-radius:16px;transition:background .25s ease,transform .2s cubic-bezier(.16,1,.3,1);}
+  .mw-orow+.mw-orow{box-shadow:inset 0 1px 0 var(--grey-100);}
+  .mw-orow:hover{background:var(--grey-50);box-shadow:none;}
+  .mw-orow:hover+.mw-orow{box-shadow:none;}
+  .mw-orow:active{transform:scale(.98);}
+  .mw-orow .logo{width:44px;height:44px;border-radius:100px;object-fit:cover;border:1px solid var(--grey-200);background:#fff;}
+  .mw-orow .nm{display:flex;flex-direction:column;gap:2px;min-width:0;}
+  .mw-orow .nm b{font-weight:600;font-size:14px;line-height:20px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .mw-orow .nm i{font-style:normal;font-size:12px;line-height:16px;color:var(--earn);display:flex;align-items:center;gap:6px;}
+  .mw-orow .nm i::before{content:"";width:6px;height:6px;border-radius:100px;background:var(--ongoing);animation:mwLive 2.4s ease-in-out infinite;}
+  @keyframes mwLive{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.35;transform:scale(.7);}}
+  .mw-orow .amt{font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap;}
+  .mw-ototal{display:flex;align-items:center;justify-content:space-between;margin-top:4px;padding:14px 16px;border-radius:20px;background:var(--grey-800);color:var(--grey-50);}
+  .mw-ototal span{font-size:13px;color:var(--grey-400);}
+  .mw-ototal b{font-size:18px;font-weight:600;letter-spacing:-.01em;font-variant-numeric:tabular-nums;}
+  @media (max-width:1023px){.mw-top{grid-template-columns:minmax(0,1fr);}}
+  @media (max-width:1023px){.mw-ongoing{position:static;order:-1;}}
+  @media (max-width:767px){.mw-main .mw-list{grid-template-columns:minmax(0,1fr);}}
+  @media(prefers-reduced-motion:reduce){.mw-orow .nm i::before{animation:none;}}
   .pagehead{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:24px;}
   .pagehead .page-title{padding-bottom:0;}
 
@@ -1068,18 +1098,19 @@ function viewMyWork(filter){
       ${chip('Ending this week',['pepsi','dominos'],'#/explore')}</div></section>`;
   const completed=`<section class="mw-sec">${head('Completed campaigns','#/mywork/completed')}<div class="mw-list">
       ${COMPLETED.map(o=>mwCardHTML(o.id,o.ended,'You earned',o.earned,'View',`#/campaign/${o.id}/completed`,{liked:1})).join('')}</div></section>`;
-  const ongoingLogos=`<div class="mw-logos">${[['starbucks','starbucks'],['pepsi','starbucks'],['logo2','eats'],['kfcLogo','kfc']].map(l=>`<a class="mw-logo72" href="#/campaign/${l[1]}/ongoing"><img data-a="${l[0]}" alt=""></a>`).join('')}</div>`;
+  const ongoingPanel=`<aside class="mw-ongoing" aria-label="Ongoing campaigns">${head('Ongoing','#/mywork/ongoing')}
+      <div class="mw-orows">${ONGOING.map(o=>{const c=C[o.id];return `<a class="mw-orow" href="#/campaign/${o.id}/ongoing">
+        <img class="logo" data-a="${c.logo}" data-label="${c.abbr}" alt=""><span class="nm"><b>${c.brand}</b><i>Live now</i></span><span class="amt">${o.earned}</span></a>`;}).join('')}</div>
+      <div class="mw-ototal"><span>Earned so far</span><b>Rs. 143,017</b></div></aside>`;
   const ongoingList=`<div class="mw-list">${ONGOING.map(o=>mwCardHTML(o.id,'Ongoing','You earned',o.earned,'View',`#/campaign/${o.id}/ongoing`,{ongoing:1,liked:1})).join('')}</div>`;
-  const pendingChip=`<div class="mw-pending">${chip('Pending approvals',['dominos','legoLogo','logo2'],'#/mywork/pending','+4').replace('mw-chip','mw-chip dark')}</div>`;
   let body;
   if(f==='pending'){
     body=`<div class="feedgrid">${PENDING.map(id=>cardHTML(id,{pending:1,go:`#/campaign/${id}/pending`})).join('')}</div>`;
   } else if(f==='all') body=`
-    <div class="band">
-      <div class="sheet-b mw-sheet">${head('Ongoing','#/mywork/ongoing')}${ongoingLogos}</div>
-      ${pendingChip}
-      <div class="sheet-t mw-sheet">${head('Ending Today','#/explore')}${today}</div>
-    </div>${week}${completed}`;
+    <div class="mw-top">
+      <div class="mw-main"><section class="mw-today">${head('Ending today','#/explore')}${today}</section>${week}</div>
+      ${ongoingPanel}
+    </div>${completed}`;
   else if(f==='ongoing') body=`<div class="mw-sheet" style="padding:0">${head('Ongoing')}${ongoingList}</div>`;
   else if(f==='saved') body=`<div class="mw-sheet" style="padding:0">${head('Ending Today','#/explore')}${today}</div>${week}`;
   else body=completed.replace('class="mw-sec"','class="mw-sec" style="padding-top:0"');
@@ -1254,7 +1285,7 @@ window.addEventListener('hashchange',route);
 /* My work tag switch: tag pop + staggered 3D reveal, as on mobile */
 function staggerMyWork(){
   const t=view.querySelector('.mw-tags .tag.active'); if(t) t.classList.add('pop');
-  [...view.querySelectorAll('.sechead,.mw-logo72,.mw-card,.mw-chip,.cardwrap')].forEach((el,i)=>{
+  [...view.querySelectorAll('.sechead,.mw-orow,.mw-card,.mw-chip,.cardwrap')].forEach((el,i)=>{
     el.style.animationDelay=Math.min(i*55,440)+'ms'; el.classList.add('mw-stagger');
     el.addEventListener('animationend',()=>{el.classList.remove('mw-stagger');el.style.animationDelay='';},{once:true});
   });
