@@ -81,7 +81,7 @@
   .content{width:100%;max-width:calc(var(--page) + var(--gutter) * 2);margin:0 auto;padding:18px var(--gutter) 60px;}
 
   /* ================= Shared (mobile components) ================= */
-  .page-title{font-size:22px;font-weight:600;line-height:30px;color:#000;padding:3px 0 12px;}
+  .page-title{font-size:48px;font-weight:600;line-height:56px;letter-spacing:-.025em;color:#000;padding:3px 0 12px;}
   .h20{font-size:18px;font-weight:600;line-height:22px;color:var(--grey-800);}
   .h16{font-size:15px;font-weight:600;line-height:19px;color:#000;}
   .sub{font-size:14px;line-height:20px;color:var(--grey-600);}
@@ -194,7 +194,7 @@
   /* ================= Home: Campaigns ================= */
   /* Vertical rhythm: 32px from the header, 16px between heading / search / tags, 32px to the grid */
   .home{padding-top:6px;}
-  .home-title{font-size:24px;font-weight:600;line-height:30px;letter-spacing:-.02em;color:#000;}
+  .home-title{font-size:48px;font-weight:600;line-height:56px;letter-spacing:-.025em;color:#000;}
   /* Search reveals under the heading (toggled from the header search icon) */
   .home-search{display:grid;grid-template-rows:0fr;transition:grid-template-rows .45s cubic-bezier(.16,1,.3,1),margin-top .45s cubic-bezier(.16,1,.3,1);}
   .home-search>div{overflow:hidden;min-height:0;}
@@ -256,22 +256,21 @@
   .wallet .w-recent{max-width:480px;}
 
   /* ================= My work ================= */
-  .mw-layout{display:flex;flex-direction:column;gap:36px;}
-  /* Dark only behind the lower half so the sheet's top corners stay clean */
-  .mw-rail{border-radius:21px;overflow:hidden;background:linear-gradient(transparent 50%,var(--grey-800) 50%);}
-  .mw-rail .sheet-b{border-radius:21px;}
-  .mw-rail .mw-sheet{padding:12px 0 18px;}  /* keeps 'Ongoing' in line with the section headings below */
-  .mw-main{display:flex;flex-direction:column;gap:36px;min-width:0;}
-  .mw-logos{display:grid;grid-template-columns:repeat(4,minmax(0,54px));gap:9px;padding:0 12px;}
+  /* Ongoing brand circles on top, then Ending today / This week / Completed stacked */
+  .mw-layout{display:flex;flex-direction:column;}
+  .mw-ongoing{display:flex;flex-direction:column;gap:18px;padding-bottom:36px;border-bottom:1px solid var(--grey-200);}
+  .mw-ongoing .mw-logos{padding:0;}
+  .mw-main{display:flex;flex-direction:column;gap:48px;min-width:0;padding-top:36px;}
+  .mw-main.solo{padding-top:0;}
+  .mw-logos{display:grid;grid-template-columns:repeat(4,72px);gap:12px;padding:0 12px;}
   .mw-logo72{width:100%;aspect-ratio:1;border-radius:75px;border:1px solid var(--grey-200);overflow:hidden;flex-shrink:0;cursor:pointer;background:#fff;transition:transform .3s cubic-bezier(.16,1,.3,1);}
   .mw-logo72:hover{transform:translateY(-2px);}
   .mw-logo72:active{transform:scale(.96);}
   .mw-logo72 img{width:100%;height:100%;object-fit:cover;}
   .mw-sheet{padding:12px 12px 18px;display:flex;flex-direction:column;gap:18px;}
   .mw-sec{display:flex;flex-direction:column;gap:18px;}
-  .mw-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;}
-  .mw-list.lead>.mw-card:first-child{grid-column:1/-1;}
-  .mw-card{position:relative;height:120px;border-radius:15px;overflow:hidden;width:100%;cursor:pointer;transition:transform .45s cubic-bezier(.16,1,.3,1);}
+  .mw-list{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;}  /* same grid as the Campaigns feed */
+  .mw-card{position:relative;height:180px;border-radius:15px;overflow:hidden;width:100%;cursor:pointer;transition:transform .45s cubic-bezier(.16,1,.3,1);}
   .mw-card:active{transform:scale(.98);}
   .mw-card .bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
   .mw-card-ov{position:absolute;inset:0;border-radius:15px;background:rgba(18,18,18,.6);-webkit-backdrop-filter:blur(9px);backdrop-filter:blur(9px);padding:12px;display:flex;flex-direction:column;justify-content:space-between;align-items:center;gap:8px;}
@@ -286,15 +285,18 @@
   .mw-bud{display:flex;flex:1;flex-direction:column;gap:3px;color:var(--grey-50);}
   .mw-bud .lbl{font-size:14px;font-weight:500;line-height:20px;}
   .mw-bud .amt{font-size:20px;font-weight:600;line-height:27px;}
-  .mw-chip{grid-column:1/-1;display:flex;align-items:center;justify-content:center;background:var(--grey-200);border-radius:75px;padding:6px 12px;cursor:pointer;gap:8px;}
-  .mw-chip.dark{background:transparent;padding:6px 15px;justify-content:space-between;}
-  .mw-chip .chip-lbl{font-size:14px;font-weight:500;line-height:20px;color:var(--grey-800);white-space:nowrap;}
-  .mw-chip.dark .chip-lbl{color:var(--grey-50);}
-  .mw-chip .chip-more{font-size:14px;font-weight:600;line-height:20px;padding:3px 6px;color:var(--grey-800);}
-  .mw-chip.dark .chip-more{color:var(--grey-50);}
-  .mw-pending{padding:6px 12px;}
   /* Heading + tags match the Campaigns (explore) heading */
-  .mw-home #mw-body{margin-top:24px;}
+  .mw-home #mw-body{margin-top:32px;}
+  /* My work type scale: 48 title → 24 section → 14 body/meta, card amounts 28 */
+  .mw-tags .tag{font-size:14px;line-height:20px;padding:8px 16px;border-radius:100px;}
+  #mw-body .sechead{padding:0;}
+  #mw-body .sechead .h20{font-size:24px;line-height:32px;letter-spacing:-.01em;}
+  #mw-body .seeall{font-size:14px;line-height:20px;}
+  #mw-body .mw-card-right .badge{font-size:14px;line-height:20px;font-weight:500;}
+  #mw-body .mw-bud{gap:2px;}
+  #mw-body .mw-bud .lbl{font-size:14px;line-height:20px;color:rgba(246,246,246,.75);}
+  #mw-body .mw-bud .amt{font-size:28px;line-height:36px;letter-spacing:-.02em;font-variant-numeric:tabular-nums;}
+  #mw-body .mw-join{font-size:14px;line-height:20px;}
 
   /* ================= Campaign page ================= */
   .cp{display:grid;grid-template-columns:minmax(0,1fr);column-gap:24px;row-gap:0;align-items:start;margin:-18px 0 -60px;}
@@ -662,7 +664,7 @@
 
   /* ================= Responsive ================= */
   @media (max-width:1279px){
-    .feedgrid{grid-template-columns:repeat(2,minmax(0,1fr));}
+    .feedgrid,.mw-list{grid-template-columns:repeat(2,minmax(0,1fr));}
   }
   @media (max-width:1023px){
     :root{--gutter:18px;}
@@ -700,7 +702,11 @@
     .feedgrid{grid-template-columns:minmax(0,1fr);gap:12px;margin-top:18px;}
     /* Card image sits on the 12px gutter: drop the invisible wrapper's side inset */
     .feedgrid>.cardwrap,.feedgrid>.sk-card{padding-left:0;padding-right:0;border-width:0;}
-    .mw-list{grid-template-columns:minmax(0,1fr);}
+    .mw-list{grid-template-columns:minmax(0,1fr);gap:12px;}
+    .home-title,.page-title{font-size:32px;line-height:40px;}
+    #mw-body .sechead .h20{font-size:20px;line-height:28px;}
+    #mw-body .mw-bud .amt{font-size:24px;line-height:32px;}
+    .mw-logos{grid-template-columns:repeat(4,minmax(0,72px));}
     /* Campaign page on phones: taller rounded hero; logo, title, time and joined pill centred */
     .cp-hero{height:auto;aspect-ratio:5/4;}
     /* Phones: back moves onto the hero's top-left corner, styled like like/share */
@@ -1027,7 +1033,6 @@ function mwCardHTML(id,badge,lbl,amt,cta,go,opt={}){
       <div class="mw-card-bot"><div class="mw-bud"><span class="lbl">${lbl}</span><span class="amt">${amt}</span></div><div class="mw-join">${cta}</div></div>
     </div></div>`;
 }
-const chip=(lbl,logos,go,more)=>`<a class="mw-chip" ${go?`href="${go}"`:''}><span class="chip-lbl">${lbl}</span><div class="chip-right">${logos.map(l=>`<img data-a="${l}" alt="">`).join('')}${more?`<span class="chip-more">${more}</span>`:''}</div></a>`;
 
 function walletStack(){
   return `<div class="w-stack">
@@ -1159,36 +1164,29 @@ function viewCampaign(id,statusOverride,opt={}){
 }
 
 /* ---------- My work ---------- */
-/* Layout: Ongoing + Pending approvals summary on top (same on every tag), tag-filtered sections below */
+/* Layout: Ongoing brand circles on top (All tag), then Ending today / This week / Completed stacked */
 function viewMyWork(filter){
   const f=filter||'all'; state.mw=f;
   const tabs=[['all','All'],['ongoing','Ongoing'],['saved','Saved'],['completed','Completed']];
   const head=(t,go)=>`<div class="sechead"><span class="h20">${t}</span>${go?`<a class="seeall" href="${go}">See all</a>`:''}</div>`;
-  /* Odd card counts lead with one full-width card so the 2-column grid never ends on an orphan */
-  const list=(cards,extra='')=>`<div class="mw-list${cards.length%2?' lead':''}">${cards.join('')}${extra}</div>`;
+  const list=cards=>`<div class="mw-list">${cards.join('')}</div>`;
   const sec=(t,go,inner)=>`<section class="mw-sec">${head(t,go)}${inner}</section>`;
   const today=sec('Ending today','#/explore',list([
       mwCardHTML('eats','Today Event','Total budget','Rs. 1,000,000','Join now','#/campaign/eats',{img:'grid4'}),
-      mwCardHTML('hiru','Happening July 4','Total budget','Rs. 500,000','Join now','#/campaign/hiru')],
-      chip('Ending today',['pepsi','dominos'],'#/explore')));
+      mwCardHTML('hiru','Happening July 4','Total budget','Rs. 500,000','Join now','#/campaign/hiru')]));
   const week=sec('Coming up this week','',list([
       mwCardHTML('burgerking','1d left','Remaining budget','Rs. 1,248,572','Join now','#/campaign/burgerking'),
-      mwCardHTML('shakira','Thursday','Total budget','Rs. 1,000,000','Join now','#/campaign/shakira',{img:'grid6'})],
-      chip('Ending this week',['pepsi','dominos'],'#/explore')));
+      mwCardHTML('shakira','Thursday','Total budget','Rs. 1,000,000','Join now','#/campaign/shakira',{img:'grid6'})]));
   const completed=sec('Completed campaigns',f==='completed'?'':'#/mywork/completed',
       list(COMPLETED.map(o=>mwCardHTML(o.id,o.ended,'You earned',o.earned,'View',`#/campaign/${o.id}/completed`,{liked:1}))));
   const ongoing=sec('Ongoing campaigns','',
       list(ONGOING.map(o=>mwCardHTML(o.id,'Ongoing','You earned',o.earned,'View',`#/campaign/${o.id}/ongoing`,{ongoing:1,liked:1}))));
   const ongoingLogos=`<div class="mw-logos">${[['starbucks','starbucks'],['pepsi','starbucks'],['logo2','eats'],['kfcLogo','kfc']].map(l=>`<a class="mw-logo72" href="#/campaign/${l[1]}/ongoing"><img data-a="${l[0]}" alt=""></a>`).join('')}</div>`;
-  const pendingChip=`<div class="mw-pending">${chip('Pending approvals',['dominos','legoLogo','logo2'],'#/mywork/pending','+4').replace('mw-chip','mw-chip dark')}</div>`;
-  const rail=`<aside class="mw-rail band">
-      <div class="sheet-b mw-sheet">${head('Ongoing',f==='ongoing'?'':'#/mywork/ongoing')}${ongoingLogos}</div>
-      ${pendingChip}
-    </aside>`;
+  const top=`<section class="mw-ongoing">${head('Ongoing',f==='ongoing'?'':'#/mywork/ongoing')}${ongoingLogos}</section>`;
   const main={all:today+week+completed,ongoing,saved:today+week,completed}[f];
   const body=f==='pending'
     ? `<div class="feedgrid">${PENDING.map(id=>cardHTML(id,{pending:1,go:`#/campaign/${id}/pending`})).join('')}</div>`
-    : `<div class="mw-layout">${rail}<div class="mw-main">${main}</div></div>`;
+    : `<div class="mw-layout">${f==='all'?top:''}<div class="mw-main${f==='all'?'':' solo'}">${main}</div></div>`;
   const title=f==='pending'?'Pending approvals':'My work';
   return `<div class="home mw-home">
     <h1 class="home-title">${title}</h1>
@@ -1396,7 +1394,7 @@ window.addEventListener('hashchange',route);
 /* My work tag switch: tag pop + staggered 3D reveal, as on mobile */
 function staggerMyWork(){
   const t=view.querySelector('.mw-tags .tag.active'); if(t) t.classList.add('tag-pop');
-  [...view.querySelectorAll('.sechead,.mw-logo72,.mw-card,.mw-chip,.cardwrap')].forEach((el,i)=>{
+  [...view.querySelectorAll('.sechead,.mw-logo72,.mw-card,.cardwrap')].forEach((el,i)=>{
     el.style.animationDelay=Math.min(i*55,440)+'ms'; el.classList.add('mw-stagger');
     el.addEventListener('animationend',()=>{el.classList.remove('mw-stagger');el.style.animationDelay='';},{once:true});
   });
