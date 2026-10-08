@@ -242,8 +242,8 @@
   .mw-logo72 img{width:100%;height:100%;object-fit:cover;}
   .mw-sheet{padding:16px;display:flex;flex-direction:column;gap:24px;}
   .mw-sec{display:flex;flex-direction:column;gap:24px;padding:32px 16px 0;}
-  .mw-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:8px;}
-  .mw-card{position:relative;height:160px;border-radius:20px;overflow:hidden;width:100%;cursor:pointer;}
+  .mw-list{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;}
+  .mw-card{position:relative;aspect-ratio:385/240;border-radius:20px;overflow:hidden;width:100%;cursor:pointer;}
   .mw-card .bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
   .mw-card-ov{position:absolute;inset:0;border-radius:20px;background:rgba(18,18,18,.6);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);padding:16px;display:flex;flex-direction:column;justify-content:space-between;align-items:center;gap:10px;}
   .mw-card-top{display:flex;align-items:flex-start;justify-content:space-between;width:100%;}
@@ -264,16 +264,11 @@
   .mw-chip .chip-more{font-size:14px;font-weight:600;line-height:20px;padding:4px 8px;color:var(--grey-800);}
   .mw-chip.dark .chip-more{color:var(--grey-50);}
   .mw-tags{display:flex;gap:8px;flex-wrap:wrap;}
-  /* My work — All: ongoing brands on top, then Ending today | This week side by side */
+  /* My work — All: ongoing brands on top, then each section stacked below */
   .mw-ongoing{display:flex;flex-direction:column;gap:20px;padding-bottom:40px;border-bottom:1px solid var(--grey-200);}
-  .mw-ongoing .sechead,.mw-top .sechead,.mw-top~.mw-sec .sechead{padding:0 4px;}
+  .mw-ongoing .sechead,.mw-ongoing~.mw-sec .sechead{padding:0 4px;}
   .mw-ongoing .mw-logos{padding:0 4px;}
-  .mw-top{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:32px;align-items:start;padding-top:40px;}
-  .mw-today{display:flex;flex-direction:column;gap:20px;}
-  .mw-top .mw-sec{padding:0;gap:20px;}
-  .mw-top .mw-list{grid-template-columns:minmax(0,1fr);}
-  .mw-top~.mw-sec{padding:48px 0 0;gap:20px;}
-  @media (max-width:1023px){.mw-top{grid-template-columns:minmax(0,1fr);gap:40px;}}
+  .mw-ongoing~.mw-sec{padding:40px 0 0;gap:20px;}
   .pagehead{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:24px;}
   .pagehead .page-title{padding-bottom:0;}
 
@@ -598,7 +593,7 @@
   @media (max-width:1279px){
     .cp,.submit{grid-template-columns:minmax(0,1fr);}
     .cp-side,.sc-summary{position:static;}
-    .feedgrid{grid-template-columns:repeat(2,minmax(0,1fr));}
+    .feedgrid,.mw-list{grid-template-columns:repeat(2,minmax(0,1fr));}
   }
   @media (max-width:1023px){
     :root{--gutter:24px;}
@@ -621,7 +616,8 @@
     .phone-note a{margin-left:auto;font-weight:600;color:var(--blue-200);white-space:nowrap;}
     .home-title{font-size:32px;line-height:40px;}
     .feedgrid{grid-template-columns:minmax(0,1fr);gap:16px;margin-top:24px;}
-    .mw-list{grid-template-columns:minmax(0,1fr);}
+    .mw-list{grid-template-columns:minmax(0,1fr);gap:16px;}
+    .mw-card{aspect-ratio:auto;height:240px;}
     .cp-hero{height:320px;}
     .cp-spec{grid-template-columns:repeat(2,minmax(0,1fr));}
     .sc-inputs{grid-template-columns:minmax(0,1fr);}
@@ -1084,7 +1080,7 @@ function viewMyWork(filter){
     body=`<div class="feedgrid">${PENDING.map(id=>cardHTML(id,{pending:1,go:`#/campaign/${id}/pending`})).join('')}</div>`;
   } else if(f==='all') body=`
     <section class="mw-ongoing">${head('Ongoing','#/mywork/ongoing')}${ongoingLogos}</section>
-    <div class="mw-top"><section class="mw-today">${head('Ending today','#/explore')}${today}</section>${week}</div>${completed}`;
+    <section class="mw-sec">${head('Ending today','#/explore')}${today}</section>${week}${completed}`;
   else if(f==='ongoing') body=`<div class="mw-sheet" style="padding:0">${head('Ongoing')}${ongoingList}</div>`;
   else if(f==='saved') body=`<div class="mw-sheet" style="padding:0">${head('Ending Today','#/explore')}${today}</div>${week}`;
   else body=completed.replace('class="mw-sec"','class="mw-sec" style="padding-top:0"');
