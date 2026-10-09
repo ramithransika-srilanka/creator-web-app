@@ -208,33 +208,85 @@
   @keyframes cardIn{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:none;}}
   @media(prefers-reduced-motion:reduce){.feedgrid>.cardwrap{animation:none;}}
 
-  /* ================= Wallet stack ================= */
-  .w-stack{background:var(--grey-800);display:flex;flex-direction:column;align-items:center;}
-  .w-today{background:var(--grey-50);width:100%;display:flex;gap:12px;align-items:center;justify-content:center;padding:8px 24px;border-bottom-left-radius:20px;border-bottom-right-radius:20px;}
-  .w-today-txt{display:flex;gap:4px;align-items:center;font-size:14px;color:#000;}
-  .w-today-txt b{font-weight:600;}
-  .w-big{padding:40px 0;text-align:center;color:#fff;}
-  .w-big .a{font-size:40px;font-weight:600;line-height:48px;}
-  .w-big .s{font-size:14px;font-weight:500;line-height:20px;margin-top:4px;}
-  .w-actions{background:var(--grey-50);width:100%;display:flex;gap:12px;padding:24px 16px 16px;border-top-left-radius:20px;border-top-right-radius:20px;}
-  .w-actions .btn-secondary{flex:1;width:auto;}
-  .w-recent{display:flex;flex-direction:column;gap:16px;}
-  .w-daybar{display:flex;align-items:center;justify-content:space-between;padding:0 16px;}
-  .w-daybar .day{font-size:14px;font-weight:600;line-height:16px;color:var(--grey-500);}
-  .w-daybar svg{width:24px;height:24px;}
-  .w-txn{display:flex;flex-direction:column;gap:12px;}
-  .w-txn .item{display:flex;gap:12px;align-items:flex-start;padding:0 16px;}
-  .w-txn .logo{width:32px;height:32px;border-radius:20px;object-fit:cover;flex-shrink:0;background:#fff;}
-  .w-txn .c{flex:1;display:flex;flex-direction:column;gap:8px;}
-  .w-txn .desc{font-size:14px;line-height:20px;color:var(--grey-800);}
-  .w-txn .desc b{font-weight:600;}
-  .w-txn .time{display:flex;gap:8px;align-items:center;}
-  .w-txn .time .ago{font-size:12px;line-height:16px;color:var(--grey-600);}
-  .w-txn .time svg{width:16px;height:16px;color:var(--earn);}
-  .w-divider{height:1px;background:var(--grey-100);margin:4px 12px;}
-  .wallet{display:grid;grid-template-columns:var(--rail) minmax(0,1fr);gap:48px;align-items:start;}
-  .wallet .w-stack{position:sticky;top:88px;}
-  .wallet .w-recent{max-width:640px;}
+  /* ================= Wallet ================= */
+  .wl-sub{font-size:14px;line-height:20px;color:var(--grey-600);margin-top:4px;}
+  .wl-headacts{display:flex;gap:12px;}
+  .wl-headacts .btn-secondary{width:auto;background:#fff;border-color:var(--grey-200);border-radius:100px;box-shadow:none;transition:background .25s ease,transform .2s cubic-bezier(.16,1,.3,1);}
+  .wl-headacts .btn-secondary:hover{background:var(--grey-100);}
+  .wl-headacts .btn-secondary:active{transform:scale(.97);}
+  .wl-top{display:grid;grid-template-columns:minmax(0,1.5fr) repeat(3,minmax(0,1fr));gap:16px;}
+  .wl-bal{position:relative;overflow:hidden;background:var(--grey-800);color:var(--grey-50);border-radius:28px;padding:24px 28px;display:flex;flex-direction:column;gap:20px;min-height:220px;}
+  .wl-bal::after{content:"";position:absolute;right:-80px;top:-80px;width:240px;height:240px;border-radius:50%;background:radial-gradient(circle,rgba(21,72,235,.55),rgba(21,72,235,0) 70%);pointer-events:none;}
+  .wl-bal-top{display:flex;align-items:center;justify-content:space-between;gap:12px;position:relative;z-index:1;}
+  .wl-lbl{font-size:14px;font-weight:500;line-height:20px;color:var(--grey-400);}
+  .wl-today{display:flex;align-items:center;gap:8px;padding:4px 10px 4px 4px;border-radius:100px;background:rgba(246,246,246,.1);font-size:12px;line-height:16px;font-weight:500;white-space:nowrap;}
+  .wl-today .logos img{border-color:var(--grey-800);}
+  .wl-today b{color:var(--badge-ongoing);font-weight:600;}
+  .wl-amt{font-size:44px;font-weight:600;line-height:52px;letter-spacing:-.02em;font-variant-numeric:tabular-nums;position:relative;z-index:1;}
+  .wl-amt small{font-size:24px;color:var(--grey-400);margin-right:6px;letter-spacing:0;}
+  .wl-bal-bot{margin-top:auto;display:flex;align-items:center;justify-content:space-between;gap:16px;position:relative;z-index:1;}
+  .wl-transfer{display:flex;align-items:center;gap:8px;background:var(--grey-50);color:var(--grey-800);padding:12px 22px;border-radius:100px;font-size:14px;font-weight:600;line-height:20px;cursor:pointer;transition:background .25s ease,transform .2s cubic-bezier(.16,1,.3,1);}
+  .wl-transfer:hover{background:#fff;}
+  .wl-transfer:active{transform:scale(.97);}
+  .wl-transfer svg{width:18px;height:18px;transform:rotate(180deg);}
+  .wl-next{font-size:12px;line-height:16px;color:var(--grey-400);text-align:right;}
+  .wl-next b{display:block;color:var(--grey-50);font-size:14px;line-height:20px;font-weight:500;}
+  .wl-stat{background:#fff;border:1px solid var(--grey-200);border-radius:28px;padding:24px;display:flex;flex-direction:column;gap:8px;min-width:0;}
+  .wl-stat .k{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:500;line-height:20px;color:var(--grey-600);}
+  .wl-stat .k i{width:8px;height:8px;border-radius:100px;background:var(--c,var(--grey-400));}
+  .wl-stat .v{font-size:28px;font-weight:600;line-height:36px;letter-spacing:-.01em;font-variant-numeric:tabular-nums;margin-top:auto;}
+  .wl-stat .n{font-size:12px;line-height:16px;color:var(--grey-600);}
+  .wl-stat .n.up{color:var(--earn);font-weight:500;}
+
+  .wl-main{display:grid;grid-template-columns:minmax(0,1fr) var(--rail);gap:24px;align-items:start;margin-top:24px;}
+  .wl-card{background:#fff;border:1px solid var(--grey-200);border-radius:28px;}
+  .wl-txhead{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:20px 24px;}
+  .wl-txhead .right{display:flex;align-items:center;gap:12px;}
+  .wl-filters{display:flex;gap:4px;padding:4px;background:var(--grey-100);border-radius:100px;}
+  .wl-filters a{padding:8px 14px;border-radius:100px;font-size:13px;font-weight:500;line-height:16px;color:var(--grey-600);transition:background .25s ease,color .25s ease;}
+  .wl-filters a:hover{color:var(--grey-800);}
+  .wl-filters a.active{background:#fff;color:var(--grey-800);box-shadow:0 1px 3px rgba(18,18,18,.12);}
+  .wl-txhead .hicon svg{width:20px;height:20px;}
+  .wl-day{display:flex;align-items:center;justify-content:space-between;padding:10px 24px;background:var(--grey-50);border-top:1px solid var(--grey-100);border-bottom:1px solid var(--grey-100);font-size:12px;font-weight:600;line-height:16px;color:var(--grey-600);}
+  .wl-day .t{font-weight:500;font-variant-numeric:tabular-nums;}
+  .wl-row{display:grid;grid-template-columns:40px minmax(0,1fr) 112px 80px 120px;gap:16px;align-items:center;padding:14px 24px;transition:background .2s ease;}
+  .wl-row+.wl-row{border-top:1px solid var(--grey-100);}
+  .wl-row:hover{background:var(--grey-50);}
+  .wl-row .logo{width:40px;height:40px;border-radius:100px;object-fit:cover;background:#fff;border:1px solid var(--grey-100);}
+  .wl-row .logo.bank{display:flex;align-items:center;justify-content:center;background:var(--grey-100);color:var(--grey-800);}
+  .wl-row .logo.bank svg{width:20px;height:20px;}
+  .wl-row .who{min-width:0;}
+  .wl-row .who b{display:block;font-size:14px;font-weight:600;line-height:20px;}
+  .wl-row .who span{display:block;font-size:13px;line-height:18px;color:var(--grey-600);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .wl-chip{justify-self:start;display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:100px;font-size:12px;font-weight:500;line-height:16px;background:var(--grey-100);color:var(--grey-700);}
+  .wl-chip::before{content:"";width:6px;height:6px;border-radius:100px;background:currentColor;}
+  .wl-chip.paid{background:rgba(46,139,61,.1);color:var(--earn);}
+  .wl-chip.proc{background:rgba(232,137,12,.12);color:#b56a06;}
+  .wl-row .when{font-size:13px;line-height:18px;color:var(--grey-600);font-variant-numeric:tabular-nums;}
+  .wl-row .amt{text-align:right;font-size:15px;font-weight:600;line-height:20px;font-variant-numeric:tabular-nums;white-space:nowrap;}
+  .wl-row .amt.in{color:var(--earn);}
+  .wl-empty{padding:48px 24px;text-align:center;color:var(--grey-600);}
+  .wl-more{display:flex;justify-content:center;padding:16px;border-top:1px solid var(--grey-100);}
+  .wl-more a{font-size:14px;font-weight:500;color:var(--blue-600);}
+
+  .wl-rail{position:sticky;top:96px;display:flex;flex-direction:column;gap:16px;}
+  .wl-rail .wl-card{padding:24px;display:flex;flex-direction:column;gap:16px;}
+  .wl-bank{display:flex;align-items:center;gap:12px;}
+  .wl-bank .ic{width:44px;height:44px;border-radius:14px;background:var(--grey-100);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .wl-bank .ic svg{width:22px;height:22px;}
+  .wl-bank b{display:block;font-size:14px;font-weight:600;line-height:20px;}
+  .wl-bank span{font-size:13px;line-height:18px;color:var(--grey-600);font-variant-numeric:tabular-nums;}
+  .wl-bank .ok{margin-left:auto;font-size:12px;font-weight:500;color:var(--earn);}
+  .wl-rail .btn-secondary{box-shadow:none;border-radius:100px;}
+  .wl-railhead{display:flex;align-items:baseline;justify-content:space-between;}
+  .wl-railhead .sub{font-size:12px;}
+  .wl-brands{display:flex;flex-direction:column;gap:14px;}
+  .wl-brand{display:grid;grid-template-columns:28px minmax(0,1fr) auto;gap:4px 10px;align-items:center;}
+  .wl-brand img{grid-row:span 2;width:28px;height:28px;border-radius:100px;object-fit:cover;background:#fff;border:1px solid var(--grey-100);}
+  .wl-brand .nm{font-size:13px;font-weight:500;line-height:16px;}
+  .wl-brand .v{font-size:13px;font-weight:600;line-height:16px;font-variant-numeric:tabular-nums;}
+  .wl-brand .bar{grid-column:2/-1;height:6px;border-radius:100px;background:var(--grey-100);overflow:hidden;}
+  .wl-brand .bar i{display:block;height:100%;border-radius:100px;background:var(--blue-500);}
 
   /* ================= My work ================= */
   .mw-logos{display:flex;gap:16px;align-items:center;flex-wrap:wrap;padding:4px 16px 0;}
@@ -590,11 +642,15 @@
     .cp,.submit{grid-template-columns:minmax(0,1fr);}
     .cp-side,.sc-summary{position:static;}
     .feedgrid{grid-template-columns:repeat(2,minmax(0,1fr));}
+    .wl-top{grid-template-columns:repeat(3,minmax(0,1fr));}
+    .wl-bal{grid-column:1/-1;min-height:0;}
+    .wl-row{grid-template-columns:40px minmax(0,1fr) 112px 110px;}
+    .wl-row .when{display:none;}
   }
   @media (max-width:1023px){
     :root{--gutter:24px;}
-    .wallet,.profile,.settings{grid-template-columns:minmax(0,1fr);}
-    .wallet .w-stack,.pf-left,.set-nav{position:static;}
+    .wl-main,.profile,.settings{grid-template-columns:minmax(0,1fr);}
+    .wl-rail,.pf-left,.set-nav{position:static;}
     .cp-creatorcard{grid-template-columns:minmax(0,1fr);}
     .cp-cmetrics,.cp-questions{padding-left:24px;}
     .pf-grid{grid-template-columns:repeat(3,minmax(0,1fr));}
@@ -613,6 +669,12 @@
     .home-title{font-size:32px;line-height:40px;}
     .feedgrid{grid-template-columns:minmax(0,1fr);gap:16px;margin-top:24px;}
     .mw-list{grid-template-columns:minmax(0,1fr);}
+    .wl-top{grid-template-columns:minmax(0,1fr);}
+    .wl-amt{font-size:36px;line-height:44px;}
+    .wl-headacts{display:none;}
+    .wl-row{grid-template-columns:40px minmax(0,1fr) auto;padding:14px 16px;}
+    .wl-row .wl-chip{display:none;}
+    .wl-txhead,.wl-day{padding-left:16px;padding-right:16px;}
     .cp-hero{height:320px;}
     .cp-spec{grid-template-columns:repeat(2,minmax(0,1fr));}
     .sc-inputs{grid-template-columns:minmax(0,1fr);}
@@ -887,10 +949,25 @@ const notifications=[
   {logo:'logo2',type:'approved',brand:'PickMe',time:'5 hrs ago'},
   {logo:'pickmeLogo',type:'approved',brand:'PickMe',time:'5 hrs ago'},
 ];
-const TX=[['Today',[['pickmeLogo','PickMe','Pi'],['uberLogo','Uber','Ub'],['legoLogo','LEGO','Le'],['legoLogo','LEGO','Le'],['pickmeLogo','PickMe','Pi']]],
-          ['Yesterday',[['starbucks','Starbucks','St'],['dominos','Domino’s','Do'],['pickmeLogo','PickMe','Pi']]]];
+/* Wallet data. Today's earnings add up to the "+Rs. 8,488 today" chip; October brands add up to "This month". */
+const BANK={name:'Commercial Bank',acct:'Savings •••• 4821'};
+const WTX=[
+  ['Today',[
+    {logo:'pickmeLogo',brand:'PickMe',lbl:'Pi',camp:'PickMe bike campaign · Colombo',time:'2:14 PM',amt:3568,st:'Paid'},
+    {logo:'uberLogo',brand:'Uber',lbl:'Ub',camp:'Uber Eats weekend reel · Colombo',time:'11:40 AM',amt:2400,st:'Paid'},
+    {logo:'legoLogo',brand:'LEGO',lbl:'Le',camp:'LEGO City unboxing · Kandy',time:'10:05 AM',amt:1520,st:'Paid'},
+    {logo:'legoLogo',brand:'LEGO',lbl:'Le',camp:'LEGO Friends story bonus',time:'9:30 AM',amt:1000,st:'Paid'}]],
+  ['Yesterday · Thu, 8 Oct',[
+    {bank:1,brand:'Transfer to bank',camp:BANK.name+' · '+BANK.acct,time:'6:12 PM',amt:-10000,st:'Processing'},
+    {logo:'starbucks',brand:'Starbucks',lbl:'St',camp:'Pumpkin spice launch · Colombo 7',time:'4:48 PM',amt:1800,st:'Paid'},
+    {logo:'dominos',brand:'Domino’s',lbl:'Do',camp:'Domino’s cheesy crust duet',time:'1:20 PM',amt:2200,st:'Paid'},
+    {logo:'pickmeLogo',brand:'PickMe',lbl:'Pi',camp:'PickMe bike campaign · Colombo',time:'9:02 AM',amt:3568,st:'Paid'}]],
+  ['Mon, 5 Oct',[
+    {logo:'uberLogo',brand:'Uber',lbl:'Ub',camp:'Uber airport ride review',time:'3:35 PM',amt:2400,st:'Paid'},
+    {bank:1,brand:'Transfer to bank',camp:BANK.name+' · '+BANK.acct,time:'10:00 AM',amt:-25000,st:'Completed'}]]];
+const WBRANDS=[['pickmeLogo','PickMe',18400],['uberLogo','Uber',12000],['legoLogo','LEGO',9120],['starbucks','Starbucks',5400],['dominos','Domino’s',3400]];
 
-const state={cat:'All',q:'',searchOpen:false,loaded:false,mw:'all',upload:null};
+const state={cat:'All',q:'',searchOpen:false,loaded:false,mw:'all',upload:null,wf:'all'};
 
 /* ================= Templates ================= */
 const timeHTML=c=>`<div class="card-time"><span>${c.time}</span>${c.right?`<span class="dot"></span><span>${c.right}</span>`:''}</div>`;
@@ -918,14 +995,6 @@ function mwCardHTML(id,badge,lbl,amt,cta,go,opt={}){
     </div></div>`;
 }
 const chip=(lbl,logos,go,more)=>`<a class="mw-chip" ${go?`href="${go}"`:''}><span class="chip-lbl">${lbl}</span><div class="chip-right">${logos.map(l=>`<img data-a="${l}" alt="">`).join('')}${more?`<span class="chip-more">${more}</span>`:''}</div></a>`;
-
-function walletStack(){
-  return `<div class="w-stack">
-    <div class="w-today"><div class="w-today-txt">Today total is <b>Rs. 8,488</b></div><div class="logos"><img data-a="legoLogo" alt=""><img data-a="uberLogo" alt=""><img data-a="pickmeLogo" alt=""></div></div>
-    <div class="w-big"><div class="a">Rs. 12,688</div><div class="s">Available balance</div></div>
-    <div class="w-actions"><a class="btn-dark" data-act="transfer">Transfer</a><a class="btn-secondary" data-act="soon">Manage bank details</a></div>
-  </div>`;
-}
 
 /* ---------- Explore ---------- */
 function viewExplore(){
@@ -1090,16 +1159,53 @@ function viewMyWork(filter){
 }
 
 /* ---------- Wallet ---------- */
+const rs=n=>'Rs. '+Math.abs(n).toLocaleString('en-US');
+function wlRows(){
+  const keep=t=>state.wf==='all'||(state.wf==='in'?t.amt>0:t.amt<0);
+  const groups=WTX.map(([day,rows])=>[day,rows.filter(keep)]).filter(g=>g[1].length);
+  if(!groups.length) return `<div class="wl-empty">No transactions to show.</div>`;
+  return groups.map(([day,rows])=>{
+    const earned=rows.filter(t=>t.amt>0).reduce((n,t)=>n+t.amt,0);
+    return `<div class="wl-day"><span>${day}</span>${earned?`<span class="t">Earned ${rs(earned)}</span>`:''}</div>
+    ${rows.map(t=>`<div class="wl-row">
+      ${t.bank?`<span class="logo bank">${MICON.bank}</span>`:`<img class="logo" data-a="${t.logo}" data-label="${t.lbl}" alt="">`}
+      <div class="who"><b>${t.brand}</b><span>${t.camp}</span></div>
+      <span class="wl-chip ${t.st==='Paid'?'paid':t.st==='Processing'?'proc':''}">${t.st}</span>
+      <span class="when">${t.time}</span>
+      <span class="amt ${t.amt>0?'in':''}">${t.amt>0?'+':'−'} ${rs(t.amt)}</span>
+    </div>`).join('')}`;}).join('');
+}
 function viewWallet(){
-  return `<div class="page-title">My wallet</div>
-  <div class="wallet">${walletStack()}
-    <div class="w-recent">
-      <h2 class="h20" style="padding:0 16px">Recent Transactions</h2>
-      ${TX.map(([day,rows],d)=>`<div class="w-daybar"><span class="day">${day}</span>${d?'':MICON.calendar}</div>
-        <div class="w-txn-list">${rows.map(t=>`<div class="w-txn"><div class="item"><img class="logo" data-a="${t[0]}" data-label="${t[2]}" alt="">
-          <div class="c"><div class="desc"><b>+ Rs. 3,568</b> from <b>${t[1]}</b>, PickMe bike campaign in Colombo</div><div class="time"><span class="ago">${d?'Yesterday':'5 hrs ago'}</span>${ICON.arrowdown}</div></div>
-          </div><div class="w-divider"></div></div>`).join('')}</div>`).join('')}
-    </div>
+  const max=Math.max(...WBRANDS.map(b=>b[2]));
+  return `<div class="pagehead"><div><div class="page-title">My wallet</div><p class="wl-sub">Campaign earnings land here once a brand approves your post.</p></div>
+    <div class="wl-headacts"><a class="btn-secondary" data-act="soon">Download statement</a></div></div>
+  <div class="wl-top">
+    <section class="wl-bal" aria-label="Available balance">
+      <div class="wl-bal-top"><span class="wl-lbl">Available balance</span>
+        <span class="wl-today"><span class="logos"><img data-a="legoLogo" alt=""><img data-a="uberLogo" alt=""><img data-a="pickmeLogo" alt=""></span><span><b>+ Rs. 8,488</b> today</span></span></div>
+      <div class="wl-amt"><small>Rs.</small>12,688</div>
+      <div class="wl-bal-bot"><a class="wl-transfer" data-act="transfer">${ICON.arrowdown}Transfer to bank</a>
+        <div class="wl-next">Next auto-payout<b>Thu, 15 Oct</b></div></div>
+    </section>
+    <div class="wl-stat" style="--c:var(--pending)"><span class="k"><i></i>Pending approval</span><span class="v">Rs. 21,400</span><span class="n">6 posts waiting on brands</span></div>
+    <div class="wl-stat" style="--c:var(--blue-500)"><span class="k"><i></i>Earned in October</span><span class="v">Rs. 48,320</span><span class="n up">↑ 18% vs September</span></div>
+    <div class="wl-stat" style="--c:var(--grey-800)"><span class="k"><i></i>Paid out to bank</span><span class="v">Rs. 120,000</span><span class="n">14 transfers since March</span></div>
+  </div>
+  <div class="wl-main">
+    <section class="wl-card" aria-label="Transactions">
+      <div class="wl-txhead"><h2 class="h20">Transactions</h2>
+        <div class="right"><nav class="wl-filters" aria-label="Filter transactions">${[['all','All'],['in','Earnings'],['out','Transfers']].map(f=>`<a data-wf="${f[0]}" class="${state.wf===f[0]?'active':''}">${f[1]}</a>`).join('')}</nav>
+        <a class="hicon" data-act="soon" aria-label="Pick dates">${MICON.calendar}</a></div></div>
+      <div id="wl-rows">${wlRows()}</div>
+      <div class="wl-more"><a data-act="soon">View all transactions</a></div>
+    </section>
+    <aside class="wl-rail">
+      <div class="wl-card"><div class="wl-railhead"><h3 class="h16">Payout account</h3></div>
+        <div class="wl-bank"><span class="ic">${MICON.bank}</span><div><b>${BANK.name}</b><span>${BANK.acct}</span></div><span class="ok">Verified</span></div>
+        <a class="btn-secondary" data-act="soon">Manage bank details</a></div>
+      <div class="wl-card"><div class="wl-railhead"><h3 class="h16">Top brands</h3><span class="sub">October</span></div>
+        <div class="wl-brands">${WBRANDS.map(([l,n,v])=>`<div class="wl-brand"><img data-a="${l}" data-label="${n}" alt=""><span class="nm">${n}</span><span class="v">${rs(v)}</span><span class="bar"><i style="width:${Math.round(v/max*100)}%"></i></span></div>`).join('')}</div></div>
+    </aside>
   </div>`;
 }
 
@@ -1302,6 +1408,8 @@ document.addEventListener('click',e=>{
   const sc=t.closest('[data-scroll]');
   if(sc){document.getElementById(sc.dataset.scroll).scrollIntoView({behavior:'smooth',block:'start'});return;}
   if(t.closest('[data-back]')){e.preventDefault();if(hist.length>1){hist.pop();location.hash=hist.pop();}else location.hash='#/explore';return;}
+  const wf=t.closest('[data-wf]');
+  if(wf){state.wf=wf.dataset.wf;document.querySelectorAll('[data-wf]').forEach(x=>x.classList.toggle('active',x===wf));const r=document.getElementById('wl-rows');r.innerHTML=wlRows();bindAssets(r);return;}
   const act=t.closest('[data-act]');
   if(act){e.preventDefault();return doAct(act.dataset.act,act);}
   const go=t.closest('[data-go]');
