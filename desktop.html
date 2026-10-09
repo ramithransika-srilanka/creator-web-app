@@ -231,10 +231,6 @@
   .wl-head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:12px;}
   .wl-head .page-title{padding-bottom:0;}
   .wl-sub{font-size:14px;line-height:20px;color:var(--grey-600);margin-top:4px;}
-  .wl-headacts{display:flex;gap:12px;}
-  .wl-headacts .btn-secondary{width:auto;padding:7px 14px;background:#fff;border-color:var(--grey-200);border-radius:100px;box-shadow:none;transition:background .25s ease,transform .2s cubic-bezier(.16,1,.3,1);}
-  .wl-headacts .btn-secondary:hover{background:var(--grey-100);}
-  .wl-headacts .btn-secondary:active{transform:scale(.97);}
   .wl-bal{position:relative;overflow:hidden;background:var(--grey-800);color:var(--grey-50);border-radius:22px;padding:20px;display:flex;flex-direction:column;gap:14px;}
   .wl-bal::after{content:"";position:absolute;right:-70px;top:-70px;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(21,72,235,.55),rgba(21,72,235,0) 70%);pointer-events:none;}
   .wl-lbl{font-size:14px;font-weight:500;line-height:20px;color:var(--grey-400);position:relative;z-index:1;}
@@ -757,8 +753,7 @@
     .feedgrid>.cardwrap,.feedgrid>.sk-card{padding-left:0;padding-right:0;border-width:0;}
     .mw-list{grid-template-columns:minmax(0,1fr);gap:12px;}
     .wl-amt{font-size:36px;line-height:44px;}
-    .wl-headacts{display:none;}
-    .wl-row{grid-template-columns:32px minmax(0,1fr) auto;padding:12px;}
+      .wl-row{grid-template-columns:32px minmax(0,1fr) auto;padding:12px;}
     .wl-row .wl-chip{display:none;}
     .wl-txhead,.wl-day{padding-left:12px;padding-right:12px;}
     #mw-body .sechead .h20{font-size:20px;line-height:28px;}
@@ -1278,8 +1273,7 @@ function wlRows(){
 }
 function viewWallet(){
   const max=Math.max(...WBRANDS.map(b=>b[2]));
-  return `<div class="wl-head"><div><div class="page-title">My wallet</div><p class="wl-sub">Campaign earnings land here once a brand approves your post.</p></div>
-    <div class="wl-headacts"><a class="btn-secondary" data-act="soon">Download statement</a></div></div>
+  return `<div class="wl-head"><div><div class="page-title">My wallet</div><p class="wl-sub">Campaign earnings land here once a brand approves your post.</p></div></div>
   <div class="wl-main">
     <section class="wl-card" aria-label="Transactions">
       <div class="wl-txhead"><h2 class="h20">Transactions</h2>
