@@ -228,9 +228,6 @@
   @media(prefers-reduced-motion:reduce){.feedgrid>.cardwrap{animation:none;}}
 
   /* ================= Wallet ================= */
-  .wl-head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:12px;}
-  .wl-head .page-title{padding-bottom:0;}
-  .wl-sub{font-size:14px;line-height:20px;color:var(--grey-600);margin-top:4px;}
   .wl-bal{position:relative;overflow:hidden;background:var(--grey-800);color:var(--grey-50);border-radius:12px;padding:20px;display:flex;flex-direction:column;gap:14px;}
   .wl-lbl{font-size:14px;font-weight:500;line-height:20px;color:var(--grey-400);position:relative;z-index:1;}
   .wl-today{align-self:flex-start;margin-top:-6px;position:relative;z-index:1;display:flex;align-items:center;gap:8px;padding:4px 10px 4px 4px;border-radius:100px;background:rgba(246,246,246,.1);font-size:12px;line-height:16px;font-weight:500;white-space:nowrap;}
@@ -1154,7 +1151,7 @@ function wlRows(){
     </div>`).join('')}`;}).join('');
 }
 function viewWallet(){
-  return `<div class="wl-head"><div><div class="page-title">My wallet</div><p class="wl-sub">Campaign earnings land here once a brand approves your post.</p></div></div>
+  return `<div class="page-title">My wallet</div>
   <div class="wl-main">
     <section class="wl-card" aria-label="Transactions">
       <div class="wl-txhead"><h2 class="h20">Transactions</h2>
