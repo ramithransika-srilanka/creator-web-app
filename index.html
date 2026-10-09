@@ -227,33 +227,58 @@
   @keyframes cardIn{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:none;}}
   @media(prefers-reduced-motion:reduce){.feedgrid>.cardwrap{animation:none;}}
 
-  /* ================= Wallet stack ================= */
-  .w-stack{background:var(--grey-800);display:flex;flex-direction:column;align-items:center;}
-  .w-today{background:var(--grey-50);width:100%;display:flex;gap:9px;align-items:center;justify-content:center;padding:6px 18px;border-bottom-left-radius:15px;border-bottom-right-radius:15px;}
-  .w-today-txt{display:flex;gap:3px;align-items:center;font-size:14px;color:#000;}
-  .w-today-txt b{font-weight:600;}
-  .w-big{padding:30px 0;text-align:center;color:#fff;}
-  .w-big .a{font-size:28px;font-weight:600;line-height:34px;}
-  .w-big .s{font-size:14px;font-weight:500;line-height:20px;margin-top:3px;}
-  .w-actions{background:var(--grey-50);width:100%;display:flex;gap:9px;padding:18px 12px 12px;border-top-left-radius:15px;border-top-right-radius:15px;}
-  .w-actions .btn-secondary{flex:1;width:auto;}
-  .w-recent{display:flex;flex-direction:column;gap:12px;}
-  .w-daybar{display:flex;align-items:center;justify-content:space-between;padding:0 12px;}
-  .w-daybar .day{font-size:14px;font-weight:600;line-height:16px;color:var(--grey-500);}
-  .w-daybar svg{width:24px;height:24px;}
-  .w-txn{display:flex;flex-direction:column;gap:9px;}
-  .w-txn .item{display:flex;gap:9px;align-items:flex-start;padding:0 12px;}
-  .w-txn .logo{width:24px;height:24px;border-radius:15px;object-fit:cover;flex-shrink:0;background:#fff;}
-  .w-txn .c{flex:1;display:flex;flex-direction:column;gap:6px;}
-  .w-txn .desc{font-size:14px;line-height:20px;color:var(--grey-800);}
-  .w-txn .desc b{font-weight:600;}
-  .w-txn .time{display:flex;gap:6px;align-items:center;}
-  .w-txn .time .ago{font-size:12px;line-height:16px;color:var(--grey-600);}
-  .w-txn .time svg{width:16px;height:16px;color:var(--earn);}
-  .w-divider{height:1px;background:var(--grey-100);margin:3px 9px;}
-  .wallet{display:grid;grid-template-columns:var(--rail) minmax(0,1fr);gap:36px;align-items:start;}
-  .wallet .w-stack{position:sticky;top:calc(var(--header) + 16px);}
-  .wallet .w-recent{max-width:480px;}
+  /* ================= Wallet ================= */
+  .wl-head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:12px;}
+  .wl-head .page-title{padding-bottom:0;}
+  .wl-sub{font-size:14px;line-height:20px;color:var(--grey-600);margin-top:4px;}
+  .wl-bal{position:relative;overflow:hidden;background:var(--grey-800);color:var(--grey-50);border-radius:12px;padding:20px;display:flex;flex-direction:column;gap:14px;}
+  .wl-lbl{font-size:14px;font-weight:500;line-height:20px;color:var(--grey-400);position:relative;z-index:1;}
+  .wl-today{align-self:flex-start;margin-top:-6px;position:relative;z-index:1;display:flex;align-items:center;gap:8px;padding:4px 10px 4px 4px;border-radius:100px;background:rgba(246,246,246,.1);font-size:12px;line-height:16px;font-weight:500;white-space:nowrap;}
+  .wl-today .logos img{border-color:var(--grey-800);}
+  .wl-today b{color:var(--badge-ongoing);font-weight:600;}
+  .wl-amt{font-size:36px;font-weight:600;line-height:44px;letter-spacing:-.02em;font-variant-numeric:tabular-nums;position:relative;z-index:1;}
+
+  .wl-main{display:grid;grid-template-columns:minmax(0,1fr) var(--rail);gap:18px;align-items:start;margin-top:6px;}
+  .wl-card{background:#fff;border:1px solid var(--grey-200);border-radius:12px;}
+  .wl-txhead{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:14px 18px;}
+  .wl-txhead .right{display:flex;align-items:center;gap:12px;}
+  .wl-filters{display:flex;gap:4px;padding:4px;background:var(--grey-100);border-radius:100px;}
+  .wl-filters a{padding:8px 14px;border-radius:100px;font-size:13px;font-weight:500;line-height:16px;color:var(--grey-600);transition:background .25s ease,color .25s ease;}
+  .wl-filters a:hover{color:var(--grey-800);}
+  .wl-filters a.active{background:#fff;color:var(--grey-800);box-shadow:0 1px 3px rgba(18,18,18,.12);}
+  .wl-txhead .hicon svg{width:20px;height:20px;}
+  .wl-day{display:flex;align-items:center;justify-content:space-between;padding:8px 18px;background:var(--grey-50);border-top:1px solid var(--grey-100);border-bottom:1px solid var(--grey-100);font-size:12px;font-weight:600;line-height:16px;color:var(--grey-600);}
+  .wl-day .t{font-weight:500;font-variant-numeric:tabular-nums;}
+  .wl-row{display:grid;grid-template-columns:32px minmax(0,1fr) 100px 72px 104px;gap:12px;align-items:center;padding:11px 18px;transition:background .2s ease;}
+  .wl-row+.wl-row{border-top:1px solid var(--grey-100);}
+  .wl-row:hover{background:var(--grey-50);}
+  .wl-row .logo{width:32px;height:32px;border-radius:100px;object-fit:cover;background:#fff;border:1px solid var(--grey-100);}
+  .wl-row .logo.bank{display:flex;align-items:center;justify-content:center;background:var(--grey-100);color:var(--grey-800);}
+  .wl-row .logo.bank svg{width:16px;height:16px;}
+  .wl-row .who{min-width:0;}
+  .wl-row .who b{display:block;font-size:14px;font-weight:600;line-height:20px;}
+  .wl-row .who span{display:block;font-size:13px;line-height:18px;color:var(--grey-600);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .wl-chip{justify-self:start;display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:100px;font-size:12px;font-weight:500;line-height:16px;background:var(--grey-100);color:var(--grey-700);}
+  .wl-chip::before{content:"";width:6px;height:6px;border-radius:100px;background:currentColor;}
+  .wl-chip.paid{background:rgba(46,139,61,.1);color:var(--earn);}
+  .wl-chip.proc{background:rgba(232,137,12,.12);color:#b56a06;}
+  .wl-row .when{font-size:13px;line-height:18px;color:var(--grey-600);font-variant-numeric:tabular-nums;}
+  .wl-row .amt{text-align:right;font-size:15px;font-weight:600;line-height:20px;font-variant-numeric:tabular-nums;white-space:nowrap;}
+  .wl-row .amt.in{color:var(--earn);}
+  .wl-empty{padding:48px 24px;text-align:center;color:var(--grey-600);}
+  .wl-more{display:flex;justify-content:center;padding:16px;border-top:1px solid var(--grey-100);}
+  .wl-more a{font-size:14px;font-weight:500;color:var(--blue-600);}
+
+  .wl-rail{position:sticky;top:calc(var(--header) + 16px);display:flex;flex-direction:column;gap:12px;}
+  .wl-rail>.wl-card{padding:18px;display:flex;flex-direction:column;gap:14px;}
+  .wl-bank{display:flex;align-items:center;gap:12px;}
+  .wl-bank .ic{width:36px;height:36px;border-radius:12px;background:var(--grey-100);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .wl-bank .ic svg{width:18px;height:18px;}
+  .wl-bank b{display:block;font-size:14px;font-weight:600;line-height:20px;}
+  .wl-bank span{font-size:13px;line-height:18px;color:var(--grey-600);font-variant-numeric:tabular-nums;}
+  .wl-bank .ok{margin-left:auto;font-size:12px;font-weight:500;color:var(--earn);}
+  .wl-rail .btn-secondary{box-shadow:none;border-radius:100px;}
+  .wl-railhead{display:flex;align-items:baseline;justify-content:space-between;}
 
   /* ================= My work ================= */
   /* Ongoing brand circles on top, then Ending today / This week / Completed stacked */
@@ -664,6 +689,8 @@
   /* ================= Responsive ================= */
   @media (max-width:1279px){
     .feedgrid,.mw-list{grid-template-columns:repeat(2,minmax(0,1fr));}
+    .wl-row{grid-template-columns:32px minmax(0,1fr) 100px 104px;}
+    .wl-row .when{display:none;}
   }
   @media (max-width:1023px){
     :root{--gutter:18px;}
@@ -671,8 +698,14 @@
     .cp-railed>.cp-rail{grid-column:1;grid-row:3;border-left:0;border-top:1px solid var(--grey-200);}
     #view .cp-solo .cp-top,#view .cp-solo .cp-main{padding-right:0;}
     #view .cp-railed>.cp-rail{padding-left:0;padding-right:0;}
-    .wallet,.profile,.settings{grid-template-columns:minmax(0,1fr);}
-    .wallet .w-stack,.pf-left,.set-nav{position:static;}
+    .profile,.settings{grid-template-columns:minmax(0,1fr);}
+    .pf-left,.set-nav{position:static;}
+    /* One column: balance first, then transactions, then the rail's other cards */
+    .wl-main{display:flex;flex-direction:column;align-items:stretch;gap:12px;}
+    .wl-rail{display:contents;}
+    .wl-bal{order:-1;}
+    .wl-main>.wl-card{order:0;}
+    .wl-rail>.wl-card{order:1;}
     .cp{margin-bottom:0;}
     .cp-main{padding-bottom:24px;}
     /* No Explore more column here, so drop the divider lines and their inset */
@@ -702,6 +735,10 @@
     /* Card image sits on the 12px gutter: drop the invisible wrapper's side inset */
     .feedgrid>.cardwrap,.feedgrid>.sk-card{padding-left:0;padding-right:0;border-width:0;}
     .mw-list{grid-template-columns:minmax(0,1fr);gap:12px;}
+    .wl-amt{font-size:36px;line-height:44px;}
+      .wl-row{grid-template-columns:32px minmax(0,1fr) auto;padding:12px;}
+    .wl-row .wl-chip{display:none;}
+    .wl-txhead,.wl-day{padding-left:12px;padding-right:12px;}
     #mw-body .sechead .h20{font-size:20px;line-height:28px;}
     #mw-body .mw-bud .amt{font-size:24px;line-height:32px;}
     .mw-logos{grid-template-columns:repeat(4,minmax(0,72px));}
@@ -1000,10 +1037,24 @@ const notifications=[
   {logo:'logo2',type:'approved',brand:'PickMe',time:'5 hrs ago'},
   {logo:'pickmeLogo',type:'approved',brand:'PickMe',time:'5 hrs ago'},
 ];
-const TX=[['Today',[['pickmeLogo','PickMe','Pi'],['uberLogo','Uber','Ub'],['legoLogo','LEGO','Le'],['legoLogo','LEGO','Le'],['pickmeLogo','PickMe','Pi']]],
-          ['Yesterday',[['starbucks','Starbucks','St'],['dominos','Domino’s','Do'],['pickmeLogo','PickMe','Pi']]]];
+/* Wallet data. Today's earnings add up to the "+Rs. 8,488 today" chip. */
+const BANK={name:'Commercial Bank',acct:'Savings •••• 4821'};
+const WTX=[
+  ['Today',[
+    {logo:'pickmeLogo',brand:'PickMe',lbl:'Pi',camp:'PickMe bike campaign · Colombo',time:'2:14 PM',amt:3568,st:'Paid'},
+    {logo:'uberLogo',brand:'Uber',lbl:'Ub',camp:'Uber Eats weekend reel · Colombo',time:'11:40 AM',amt:2400,st:'Paid'},
+    {logo:'legoLogo',brand:'LEGO',lbl:'Le',camp:'LEGO City unboxing · Kandy',time:'10:05 AM',amt:1520,st:'Paid'},
+    {logo:'legoLogo',brand:'LEGO',lbl:'Le',camp:'LEGO Friends story bonus',time:'9:30 AM',amt:1000,st:'Paid'}]],
+  ['Yesterday · Thu, 8 Oct',[
+    {bank:1,brand:'Transfer to bank',camp:BANK.name+' · '+BANK.acct,time:'6:12 PM',amt:-10000,st:'Processing'},
+    {logo:'starbucks',brand:'Starbucks',lbl:'St',camp:'Pumpkin spice launch · Colombo 7',time:'4:48 PM',amt:1800,st:'Paid'},
+    {logo:'dominos',brand:'Domino’s',lbl:'Do',camp:'Domino’s cheesy crust duet',time:'1:20 PM',amt:2200,st:'Paid'},
+    {logo:'pickmeLogo',brand:'PickMe',lbl:'Pi',camp:'PickMe bike campaign · Colombo',time:'9:02 AM',amt:3568,st:'Paid'}]],
+  ['Mon, 5 Oct',[
+    {logo:'uberLogo',brand:'Uber',lbl:'Ub',camp:'Uber airport ride review',time:'3:35 PM',amt:2400,st:'Paid'},
+    {bank:1,brand:'Transfer to bank',camp:BANK.name+' · '+BANK.acct,time:'10:00 AM',amt:-25000,st:'Completed'}]]];
 
-const state={cat:'All',q:'',searchOpen:false,loaded:false,mw:'all',upload:null};
+const state={cat:'All',q:'',searchOpen:false,loaded:false,mw:'all',upload:null,wf:'all'};
 
 /* ================= Templates ================= */
 const timeHTML=c=>`<div class="card-time"><span>${c.time}</span>${c.right?`<span class="dot"></span><span>${c.right}</span>`:''}</div>`;
@@ -1030,14 +1081,6 @@ function mwCardHTML(id,badge,lbl,amt,cta,go,opt={}){
       <div class="mw-card-top"><img class="logo" data-a="${c.logo}" data-label="${c.abbr}" alt=""><div class="mw-card-right"><span class="badge ${opt.ongoing?'ongoing':''}">${badge}</span><span class="mw-heart like-heart ${opt.liked?'liked':''}">${MWHEART}</span></div></div>
       <div class="mw-card-bot"><div class="mw-bud"><span class="lbl">${lbl}</span><span class="amt">${amt}</span></div><div class="mw-join">${cta}</div></div>
     </div></div>`;
-}
-
-function walletStack(){
-  return `<div class="w-stack">
-    <div class="w-today"><div class="w-today-txt">Today total is <b>Rs. 8,488</b></div><div class="logos"><img data-a="legoLogo" alt=""><img data-a="uberLogo" alt=""><img data-a="pickmeLogo" alt=""></div></div>
-    <div class="w-big"><div class="a">Rs. 12,688</div><div class="s">Available balance</div></div>
-    <div class="w-actions"><a class="btn-dark" data-act="transfer">Transfer</a><a class="btn-secondary" data-act="soon">Manage bank details</a></div>
-  </div>`;
 }
 
 /* ---------- Explore ---------- */
@@ -1194,16 +1237,42 @@ function viewMyWork(filter){
 }
 
 /* ---------- Wallet ---------- */
+const rs=n=>'Rs. '+Math.abs(n).toLocaleString('en-US');
+function wlRows(){
+  const keep=t=>state.wf==='all'||(state.wf==='in'?t.amt>0:t.amt<0);
+  const groups=WTX.map(([day,rows])=>[day,rows.filter(keep)]).filter(g=>g[1].length);
+  if(!groups.length) return `<div class="wl-empty">No transactions to show.</div>`;
+  return groups.map(([day,rows])=>{
+    const earned=rows.filter(t=>t.amt>0).reduce((n,t)=>n+t.amt,0);
+    return `<div class="wl-day"><span>${day}</span>${earned?`<span class="t">Earned ${rs(earned)}</span>`:''}</div>
+    ${rows.map(t=>`<div class="wl-row">
+      ${t.bank?`<span class="logo bank">${MICON.bank}</span>`:`<img class="logo" data-a="${t.logo}" data-label="${t.lbl}" alt="">`}
+      <div class="who"><b>${t.brand}</b><span>${t.camp}</span></div>
+      <span class="wl-chip ${t.st==='Paid'?'paid':t.st==='Processing'?'proc':''}">${t.st}</span>
+      <span class="when">${t.time}</span>
+      <span class="amt ${t.amt>0?'in':''}">${t.amt>0?'+':'−'} ${rs(t.amt)}</span>
+    </div>`).join('')}`;}).join('');
+}
 function viewWallet(){
-  return `<div class="page-title">My wallet</div>
-  <div class="wallet">${walletStack()}
-    <div class="w-recent">
-      <h2 class="h20" style="padding:0 12px">Recent Transactions</h2>
-      ${TX.map(([day,rows],d)=>`<div class="w-daybar"><span class="day">${day}</span>${d?'':MICON.calendar}</div>
-        <div class="w-txn-list">${rows.map(t=>`<div class="w-txn"><div class="item"><img class="logo" data-a="${t[0]}" data-label="${t[2]}" alt="">
-          <div class="c"><div class="desc"><b>+ Rs. 3,568</b> from <b>${t[1]}</b>, PickMe bike campaign in Colombo</div><div class="time"><span class="ago">${d?'Yesterday':'5 hrs ago'}</span>${ICON.arrowdown}</div></div>
-          </div><div class="w-divider"></div></div>`).join('')}</div>`).join('')}
-    </div>
+  return `<div class="wl-head"><div><div class="page-title">My wallet</div><p class="wl-sub">Campaign earnings land here once a brand approves your post.</p></div></div>
+  <div class="wl-main">
+    <section class="wl-card" aria-label="Transactions">
+      <div class="wl-txhead"><h2 class="h20">Transactions</h2>
+        <div class="right"><nav class="wl-filters" aria-label="Filter transactions">${[['all','All'],['in','Earnings'],['out','Transfers']].map(f=>`<a data-wf="${f[0]}" class="${state.wf===f[0]?'active':''}">${f[1]}</a>`).join('')}</nav>
+        <a class="hicon" data-act="soon" aria-label="Pick dates">${MICON.calendar}</a></div></div>
+      <div id="wl-rows">${wlRows()}</div>
+      <div class="wl-more"><a data-act="soon">View all transactions</a></div>
+    </section>
+    <aside class="wl-rail">
+      <section class="wl-bal" aria-label="Available balance">
+      <span class="wl-lbl">Available balance</span>
+      <div class="wl-amt">Rs. 12,688</div>
+      <span class="wl-today"><span class="logos"><img data-a="legoLogo" alt=""><img data-a="uberLogo" alt=""><img data-a="pickmeLogo" alt=""></span><span><b>+ Rs. 8,488</b> today</span></span>
+    </section>
+      <div class="wl-card"><div class="wl-railhead"><h3 class="h16">Payout account</h3></div>
+        <div class="wl-bank"><span class="ic">${MICON.bank}</span><div><b>${BANK.name}</b><span>${BANK.acct}</span></div><span class="ok">Verified</span></div>
+        <a class="btn-secondary" data-act="soon">Manage bank details</a></div>
+    </aside>
   </div>`;
 }
 
@@ -1482,6 +1551,8 @@ document.addEventListener('click',e=>{
   if(sc){document.getElementById(sc.dataset.scroll).scrollIntoView({behavior:'smooth',block:'start'});return;}
   const bk=t.closest('[data-back]');
   if(bk){e.preventDefault();goBack(bk.dataset.back);return;}
+  const wf=t.closest('[data-wf]');
+  if(wf){state.wf=wf.dataset.wf;document.querySelectorAll('[data-wf]').forEach(x=>x.classList.toggle('active',x===wf));const r=document.getElementById('wl-rows');r.innerHTML=wlRows();bindAssets(r);return;}
   const act=t.closest('[data-act]');
   if(act){e.preventDefault();return doAct(act.dataset.act,act);}
   const go=t.closest('[data-go]');
