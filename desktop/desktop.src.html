@@ -279,14 +279,6 @@
   .wl-bank .ok{margin-left:auto;font-size:12px;font-weight:500;color:var(--earn);}
   .wl-rail .btn-secondary{box-shadow:none;border-radius:100px;}
   .wl-railhead{display:flex;align-items:baseline;justify-content:space-between;}
-  .wl-railhead .sub{font-size:12px;}
-  .wl-brands{display:flex;flex-direction:column;gap:14px;}
-  .wl-brand{display:grid;grid-template-columns:28px minmax(0,1fr) auto;gap:4px 10px;align-items:center;}
-  .wl-brand img{grid-row:span 2;width:28px;height:28px;border-radius:100px;object-fit:cover;background:#fff;border:1px solid var(--grey-100);}
-  .wl-brand .nm{font-size:13px;font-weight:500;line-height:16px;}
-  .wl-brand .v{font-size:13px;font-weight:600;line-height:16px;font-variant-numeric:tabular-nums;}
-  .wl-brand .bar{grid-column:2/-1;height:6px;border-radius:100px;background:var(--grey-100);overflow:hidden;}
-  .wl-brand .bar i{display:block;height:100%;border-radius:100px;background:var(--blue-500);}
 
   /* ================= My work ================= */
   /* Ongoing brand circles on top, then Ending today / This week / Completed stacked */
@@ -951,7 +943,7 @@ const notifications=[
   {logo:'logo2',type:'approved',brand:'PickMe',time:'5 hrs ago'},
   {logo:'pickmeLogo',type:'approved',brand:'PickMe',time:'5 hrs ago'},
 ];
-/* Wallet data. Today's earnings add up to the "+Rs. 8,488 today" chip; October brands add up to "This month". */
+/* Wallet data. Today's earnings add up to the "+Rs. 8,488 today" chip. */
 const BANK={name:'Commercial Bank',acct:'Savings •••• 4821'};
 const WTX=[
   ['Today',[
@@ -967,7 +959,6 @@ const WTX=[
   ['Mon, 5 Oct',[
     {logo:'uberLogo',brand:'Uber',lbl:'Ub',camp:'Uber airport ride review',time:'3:35 PM',amt:2400,st:'Paid'},
     {bank:1,brand:'Transfer to bank',camp:BANK.name+' · '+BANK.acct,time:'10:00 AM',amt:-25000,st:'Completed'}]]];
-const WBRANDS=[['pickmeLogo','PickMe',18400],['uberLogo','Uber',12000],['legoLogo','LEGO',9120],['starbucks','Starbucks',5400],['dominos','Domino’s',3400]];
 
 const state={cat:'All',q:'',searchOpen:false,loaded:false,mw:'all',upload:null,wf:'all'};
 
@@ -1169,7 +1160,6 @@ function wlRows(){
     </div>`).join('')}`;}).join('');
 }
 function viewWallet(){
-  const max=Math.max(...WBRANDS.map(b=>b[2]));
   return `<div class="wl-head"><div><div class="page-title">My wallet</div><p class="wl-sub">Campaign earnings land here once a brand approves your post.</p></div></div>
   <div class="wl-main">
     <section class="wl-card" aria-label="Transactions">
@@ -1188,8 +1178,6 @@ function viewWallet(){
       <div class="wl-card"><div class="wl-railhead"><h3 class="h16">Payout account</h3></div>
         <div class="wl-bank"><span class="ic">${MICON.bank}</span><div><b>${BANK.name}</b><span>${BANK.acct}</span></div><span class="ok">Verified</span></div>
         <a class="btn-secondary" data-act="soon">Manage bank details</a></div>
-      <div class="wl-card"><div class="wl-railhead"><h3 class="h16">Top brands</h3><span class="sub">October</span></div>
-        <div class="wl-brands">${WBRANDS.map(([l,n,v])=>`<div class="wl-brand"><img data-a="${l}" data-label="${n}" alt=""><span class="nm">${n}</span><span class="v">${rs(v)}</span><span class="bar"><i style="width:${Math.round(v/max*100)}%"></i></span></div>`).join('')}</div></div>
     </aside>
   </div>`;
 }
