@@ -667,7 +667,7 @@
   .cp.cp-railed{grid-template-columns:minmax(0,1fr) 320px;}
   .cp-railed>.cp-rail{grid-column:2;grid-row:1 / span 2;align-self:stretch;border-left:1px solid var(--grey-200);padding:24px;display:flex;flex-direction:column;}
   /* Earnings & budget card at the top of the right column */
-  .cp-earnbox{background:#000;border-radius:20px;padding:20px 16px 24px;margin-top:24px;display:flex;flex-direction:column;align-items:center;text-align:center;}
+  .cp-earnbox{background:#000;border-radius:20px;padding:20px 16px 24px;display:flex;flex-direction:column;align-items:center;text-align:center;}
   .cp-earnbox .lbl{font-size:16px;font-weight:500;line-height:20px;color:var(--grey-50);}
   .cp-earnbox .amt{font-size:32px;font-weight:600;line-height:40px;color:#fff;letter-spacing:-.01em;font-variant-numeric:tabular-nums;}
   .cp-earnbox .sep{width:80%;max-width:280px;height:1px;background:var(--grey-500);margin:14px 0 18px;}
@@ -1075,7 +1075,7 @@ function viewCampaign(id,statusOverride,opt={}){
         <div class="l"><span class="w">${c.spent}</span><span class="coin" aria-hidden="true"></span><span class="w">was spent</span><span>on</span></div>
         <div class="l"><span>creators</span><span class="avs">${AVSET}</span><span>up to now.</span></div></div>`;
   const aside=`
-      ${earnBox}
+      ${opt.solo?earnBox:''}
       <div class="cp-createdby"><h3>Campaign created by</h3>
         <div class="wcard cp-creatorcard">
           <div class="col">
