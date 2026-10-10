@@ -685,6 +685,7 @@
   .cp-earnbox .avs img{width:16px;height:16px;border-radius:20px;object-fit:cover;margin-left:-4px;background:#ddd;}
   .cp-earnbox .avs img:first-child{margin-left:0;}
   .cp-rail .cp-earnbox{margin:0 0 24px;}
+  .cp-earnbox-m{display:none;}
   .cp-rail .cp-createdby{padding-top:0;}
   .cp-rail .cp-creatorcard{display:flex;flex-direction:column;gap:16px;}
   .cp-rail .cp-creatorcard .col{display:contents;}
@@ -767,6 +768,10 @@
     .cp-details>.cp-list{align-self:stretch;text-align:left;}
     .cp-meta{flex-direction:column;gap:12px;justify-content:center;}
     .cp-meta .vsep{display:none;}
+    /* Phones: black earnings card sits above the details list; Join goes to the very bottom */
+    .cp-earnbox-m{display:flex;align-self:stretch;margin-top:16px;}
+    .cp-rail .cp-earnbox{display:none;}
+    .cp-rail .cp-join{order:9;margin-top:0;padding:24px 0 0;}
     .cp-spec{grid-template-columns:repeat(2,minmax(0,1fr));}
   }
 </style>
@@ -1077,9 +1082,10 @@ function viewCampaign(id,statusOverride,opt={}){
         <div class="l">available to spend.</div>
         <div class="l"><span class="w">${c.spent}</span><span class="coin" aria-hidden="true"></span><span class="w">was spent</span><span>on</span></div>
         <div class="l"><span>creators</span><span class="avs">${AVSET}</span><span>up to now.</span></div></div>`;
+  const join=status==='open'?`<div class="cp-join"><a class="btn-primary" href="#/submit/${id}">Join Campaign</a></div>`:'';
   const aside=`
       ${opt.solo?earnBox:''}
-      ${status==='open'?`<div class="cp-join"><a class="btn-primary" href="#/submit/${id}">Join Campaign</a></div>`:''}
+      ${opt.solo?join:''}
       <div class="cp-createdby"><h3>Campaign created by</h3>
         <div class="wcard cp-creatorcard">
           <div class="col">
@@ -1092,7 +1098,8 @@ function viewCampaign(id,statusOverride,opt={}){
             <div class="cp-questions"><div class="btn-questions" data-act="soon">${opt.solo?'Any questions?':'Any questions? Message the brand'}</div></div>
           </div>
         </div></div>
-      ${side?`<div class="cp-status">${side}</div>`:''}`;
+      ${side?`<div class="cp-status">${side}</div>`:''}
+      ${opt.solo?'':join}`;
   return `<div class="cp${opt.solo?' cp-solo cp-railed':''}">
     ${opt.drawer?'':`<div class="cp-top">${backHTML(parentOf(location.hash))}${actionsInTop?actions:''}</div>`}
     ${opt.solo?'':simHTML}
@@ -1108,6 +1115,7 @@ function viewCampaign(id,statusOverride,opt={}){
           <span class="cp-mi">${c.event?CPICON.calendar:''}${c.time}${c.right?`<span class="dot" aria-hidden="true"></span>${c.right}`:''}</span>
           <span class="vsep" aria-hidden="true"></span>
           <div class="cp-joined"><div class="cp-avatars">${AVSET}</div><span class="count">${c.joinedShort} joined</span></div></div>
+        ${earnBox.replace('cp-earnbox','cp-earnbox cp-earnbox-m')}
         ${list}
       </div>
       <div class="${c.event?'band':''}">
