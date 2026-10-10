@@ -666,6 +666,22 @@
   /* Drawer and new-window page: details on the left, a right column (creator card + Join) set off by a grey rule; both scroll together */
   .cp.cp-railed{grid-template-columns:minmax(0,1fr) 320px;}
   .cp-railed>.cp-rail{grid-column:2;grid-row:1 / span 2;align-self:stretch;border-left:1px solid var(--grey-200);padding:24px;display:flex;flex-direction:column;}
+  /* Earnings & budget card at the top of the right column */
+  .cp-earnbox{background:#000;border-radius:20px;padding:20px 16px 24px;display:flex;flex-direction:column;align-items:center;text-align:center;}
+  .cp-earnbox .lbl{font-size:16px;font-weight:500;line-height:20px;color:var(--grey-50);}
+  .cp-earnbox .amt{font-size:32px;font-weight:600;line-height:40px;color:#fff;letter-spacing:-.01em;font-variant-numeric:tabular-nums;}
+  .cp-earnbox .sep{width:80%;max-width:280px;height:1px;background:var(--grey-500);margin:14px 0 18px;}
+  .cp-earnbox .l{display:flex;flex-wrap:wrap;gap:6px;align-items:center;justify-content:center;font-size:16px;font-weight:600;line-height:22px;color:var(--grey-500);}
+  .cp-earnbox .w{color:#fff;}
+  .cp-earnbox .mini{width:54px;height:16px;background:var(--blue-200);border-radius:20px;position:relative;overflow:hidden;}
+  .cp-earnbox .mini::before,.cp-earnbox .mini i{content:'';position:absolute;left:9px;top:6px;height:4px;border-radius:20px;}
+  .cp-earnbox .mini::before{width:36px;background:var(--grey-50);}
+  .cp-earnbox .mini i{background:var(--blue-500);}
+  .cp-earnbox .coin{width:16px;height:16px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#ffe08a,#e0952b);}
+  .cp-earnbox .avs{display:flex;}
+  .cp-earnbox .avs img{width:16px;height:16px;border-radius:20px;object-fit:cover;margin-left:-4px;background:#ddd;}
+  .cp-earnbox .avs img:first-child{margin-left:0;}
+  .cp-rail .cp-earnbox{margin:0 0 24px;}
   .cp-rail .cp-createdby{padding-top:0;}
   .cp-rail .cp-creatorcard{display:flex;flex-direction:column;gap:16px;}
   .cp-rail .cp-creatorcard .col{display:contents;}
@@ -1145,7 +1161,15 @@ function viewCampaign(id,statusOverride,opt={}){
   // Like + share sit on the hero, except on the "open in a new window" page where they stay beside the back link
   const actions=`<div class="cp-actions"><button class="cp-round like-heart" type="button" aria-label="Like campaign">${CPICON.heart}</button><button class="cp-round" type="button" data-act="share" aria-label="Share campaign">${CPICON.share}</button></div>`,actionsInTop=opt.solo&&!opt.drawer;
   // Creator card, status and Join: below the details, or in the drawer's right column
+  // Earnings & budget card: max earning per content, budget still available (pill = share spent) and spent on creators
+  const num=v=>+String(v).replace(/[^0-9]/g,''),spentPct=num(c.spent)/(num(c.spent)+num(c.available));
+  const earnBox=`<div class="cp-earnbox"><span class="lbl">Earn up to</span><span class="amt">${c.list[1][1]}</span><div class="sep"></div>
+        <div class="l"><span class="w">${c.available}</span><span class="mini" aria-hidden="true"><i style="width:${(36*spentPct).toFixed(1)}px"></i></span><span>is</span></div>
+        <div class="l">available to spend.</div>
+        <div class="l"><span class="w">${c.spent}</span><span class="coin" aria-hidden="true"></span><span class="w">was spent</span><span>on</span></div>
+        <div class="l"><span>creators</span><span class="avs">${AVSET}</span><span>up to now.</span></div></div>`;
   const aside=`
+      ${opt.solo?earnBox:''}
       <div class="cp-createdby"><h3>Campaign created by</h3>
         <div class="wcard cp-creatorcard">
           <div class="col">
