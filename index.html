@@ -691,7 +691,7 @@
   .cp-rail .cp-questions{margin-top:0;align-self:stretch;}
   .cp-rail .btn-questions{padding:9px 16px;text-align:center;}
   .cp-rail .cp-status{margin-top:16px;}
-  .cp-rail .cp-join{padding-top:16px;}
+  .cp-rail .cp-join{margin-top:-8px;padding:0 0 24px;}
   body.cdrawer-open{overflow:hidden;}
   @media(prefers-reduced-motion:reduce){.cd-scrim,.cd-panel{transition:none;}}
 
@@ -1173,6 +1173,7 @@ function viewCampaign(id,statusOverride,opt={}){
         <div class="l"><span>creators</span><span class="avs">${AVSET}</span><span>up to now.</span></div></div>`;
   const aside=`
       ${opt.solo?earnBox:''}
+      ${status==='open'?`<div class="cp-join"><a class="btn-primary" href="#/submit/${id}">Join Campaign</a></div>`:''}
       <div class="cp-createdby"><h3>Campaign created by</h3>
         <div class="wcard cp-creatorcard">
           <div class="col">
@@ -1185,8 +1186,7 @@ function viewCampaign(id,statusOverride,opt={}){
             <div class="cp-questions"><div class="btn-questions" data-act="soon">${opt.solo?'Any questions?':'Any questions? Message the brand'}</div></div>
           </div>
         </div></div>
-      ${side?`<div class="cp-status">${side}</div>`:''}
-      ${status==='open'?`<div class="cp-join"><a class="btn-primary" href="#/submit/${id}">Join Campaign</a></div>`:''}`;
+      ${side?`<div class="cp-status">${side}</div>`:''}`;
   return `<div class="cp${opt.solo?' cp-solo cp-railed':''}">
     ${opt.drawer?'':`<div class="cp-top">${backHTML(parentOf(location.hash))}${actionsInTop?actions:''}</div>`}
     ${opt.solo?'':simHTML}
