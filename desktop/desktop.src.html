@@ -667,10 +667,10 @@
   .cp.cp-railed{grid-template-columns:minmax(0,1fr) 320px;}
   .cp-railed>.cp-rail{grid-column:2;grid-row:1 / span 2;align-self:stretch;border-left:1px solid var(--grey-200);padding:24px;display:flex;flex-direction:column;}
   /* Earnings & budget card at the top of the right column */
-  .cp-earnbox{background:#000;border-radius:20px;padding:20px 16px 24px;margin-bottom:24px;display:flex;flex-direction:column;align-items:center;text-align:center;}
+  .cp-earnbox{background:#000;border-radius:20px;padding:20px 16px 24px;margin-top:24px;display:flex;flex-direction:column;align-items:center;text-align:center;}
   .cp-earnbox .lbl{font-size:16px;font-weight:500;line-height:20px;color:var(--grey-50);}
   .cp-earnbox .amt{font-size:32px;font-weight:600;line-height:40px;color:#fff;letter-spacing:-.01em;font-variant-numeric:tabular-nums;}
-  .cp-earnbox .sep{width:80%;height:1px;background:var(--grey-500);margin:14px 0 18px;}
+  .cp-earnbox .sep{width:80%;max-width:280px;height:1px;background:var(--grey-500);margin:14px 0 18px;}
   .cp-earnbox .l{display:flex;flex-wrap:wrap;gap:6px;align-items:center;justify-content:center;font-size:16px;font-weight:600;line-height:22px;color:var(--grey-500);}
   .cp-earnbox .w{color:#fff;}
   .cp-earnbox .mini{width:54px;height:16px;background:var(--blue-200);border-radius:20px;position:relative;overflow:hidden;}
@@ -681,6 +681,7 @@
   .cp-earnbox .avs{display:flex;}
   .cp-earnbox .avs img{width:16px;height:16px;border-radius:20px;object-fit:cover;margin-left:-4px;background:#ddd;}
   .cp-earnbox .avs img:first-child{margin-left:0;}
+  .cp-rail .cp-earnbox{margin:0 0 24px;}
   .cp-rail .cp-createdby{padding-top:0;}
   .cp-rail .cp-creatorcard{display:flex;flex-direction:column;gap:16px;}
   .cp-rail .cp-creatorcard .col{display:contents;}
@@ -1074,7 +1075,7 @@ function viewCampaign(id,statusOverride,opt={}){
         <div class="l"><span class="w">${c.spent}</span><span class="coin" aria-hidden="true"></span><span class="w">was spent</span><span>on</span></div>
         <div class="l"><span>creators</span><span class="avs">${AVSET}</span><span>up to now.</span></div></div>`;
   const aside=`
-      ${opt.solo?earnBox:''}
+      ${earnBox}
       <div class="cp-createdby"><h3>Campaign created by</h3>
         <div class="wcard cp-creatorcard">
           <div class="col">
