@@ -427,6 +427,7 @@
   /* ================= Profile ================= */
   .profile{display:grid;grid-template-columns:var(--rail) minmax(0,1fr);gap:48px;align-items:start;}
   .pf-left{display:flex;flex-direction:column;gap:12px;position:sticky;top:88px;}
+  .pf-card{display:flex;flex-direction:column;}
   .pf-handle{display:flex;gap:4px;align-items:center;justify-content:center;padding:4px 0 8px;}
   .pf-handle span{font-size:16px;font-weight:600;color:#000;}
   .pf-handle svg{width:24px;height:24px;color:#121212;}
@@ -450,6 +451,7 @@
   .pf-cright img{width:20px;height:20px;border-radius:100px;object-fit:cover;background:#fff;}
   .pf-more{font-size:14px;font-weight:600;line-height:20px;color:var(--grey-600);padding:4px 8px;}
   .pf-divider{height:1px;background:var(--grey-200);margin:0 12px;}
+  .pf-div-handles{display:none;}
   .pf-links{display:flex;flex-direction:column;gap:4px;padding:4px 0 8px;font-size:14px;font-weight:500;}
   .pf-links a{display:flex;align-items:center;gap:12px;padding:14px 12px;border-radius:16px;color:#121212;}
   .pf-links a:hover{background:var(--grey-100);}
@@ -460,8 +462,9 @@
   .pf-links a .chev svg{width:20px;height:20px;}
   .pf-links a.logout,.pf-links a.logout .ic{color:var(--pink-500);}
   .pf-right{display:flex;flex-direction:column;gap:24px;min-width:0;padding-top:4px;}
-  .pf-sec{display:flex;flex-direction:column;gap:12px;}
-  .pf-sectitle{font-size:16px;font-weight:600;line-height:20px;color:#000;}
+  .pf-right .pf-divider{margin:0;}
+  .pf-sec{display:flex;flex-direction:column;gap:12px;min-width:0;}
+  .pf-sectitle{margin:0;font-size:16px;font-weight:600;line-height:20px;color:#000;}
   .pf-smhandles{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
   .addhandle{display:flex;flex-direction:column;gap:4px;align-items:center;padding:8px;flex-shrink:0;cursor:pointer;}
   .addhandle .circle{width:64px;height:64px;border-radius:100px;background:#fff;border:1px dashed var(--grey-500);display:flex;align-items:center;justify-content:center;color:var(--grey-500);}
@@ -597,7 +600,21 @@
     .wallet .w-stack,.pf-left,.set-nav{position:static;}
     .cp-creatorcard{grid-template-columns:minmax(0,1fr);}
     .cp-cmetrics,.cp-questions{padding-left:24px;}
-    .pf-grid{grid-template-columns:repeat(3,minmax(0,1fr));}
+    /* Profile: one column in the mobile app's order */
+    .profile{display:flex;flex-direction:column;align-items:stretch;gap:12px;}
+    .pf-left,.pf-right{display:contents;}
+    .pf-card{order:1;}
+    .pf-campaigns{order:2;}
+    .pf-div-handles{display:block;order:3;}
+    .pf-sec-handles{order:4;}
+    .pf-div-content{order:5;}
+    .pf-sec-content{order:6;}
+    .pf-div-links{order:7;}
+    .pf-links{order:8;}
+    .pf-divider,.pf-right .pf-divider{margin:4px 12px;}
+    .pf-sec{gap:8px;}
+    .pf-smhandles{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin:0 calc(var(--gutter) * -1);padding:0 var(--gutter);}
+    .pf-smhandles::-webkit-scrollbar{display:none;}
   }
   @media (max-width:767px){
     :root{--gutter:16px;}
@@ -617,6 +634,12 @@
     .cp-spec{grid-template-columns:repeat(2,minmax(0,1fr));}
     .sc-inputs{grid-template-columns:minmax(0,1fr);}
     .nt-list{padding:20px 16px;}
+    /* Profile: edge-to-edge band and 3-up content grid, as on mobile */
+    .pf-card .band{margin:0 calc(var(--gutter) * -1);}
+    .pf-metrics{padding:16px 82px;}
+    .pf-grid{grid-template-columns:repeat(3,minmax(0,1fr));}
+    .pf-grid img:nth-child(n+7){display:none;}
+    .pf-links{padding:4px 4px 8px;}
   }
 </style>
 </head>
@@ -1104,22 +1127,27 @@ function viewWallet(){
 }
 
 /* ---------- Profile ---------- */
+/* Desktop: identity, campaigns and links in the left rail; handles and content on the right.
+   Below 1024px both columns dissolve into one list in the mobile app's order (see .pf-* `order`). */
 function viewProfile(){
   const crow=(lbl,logos,more,go)=>`<a class="pf-crow" href="${go}"><span>${lbl}</span><div class="pf-cright">${logos.map(l=>`<img data-a="${l}" data-label="X" alt="">`).join('')}<span class="pf-more">${more}</span></div></a>`;
-  return `<div class="profile">
+  return `<div class="page-title">My profile</div>
+  <div class="profile">
     <div class="pf-left">
-      <div class="pf-handle"><span>ramith_h</span>${MICON.handleChev}</div>
-      <div class="band">
-        <div class="sheet-b pf-identity"><img class="pf-av" data-a="pfAvatar" data-label="R" alt=""><div class="pf-idtext"><span class="name">Ramith</span><span class="shield">${MICON.shield}</span></div></div>
-        <div class="pf-lifetime"><span class="lbl">Lifetime earnings</span><span class="amt">Rs. 568,472</span></div>
-        <div class="sheet-t pf-metrics"><div class="pf-stat"><span class="big">4.6 M</span><span class="lbl">Views</span></div><div class="pf-stat-div"></div><div class="pf-stat"><span class="big">48</span><span class="lbl">Campaigns</span></div></div>
+      <div class="pf-card">
+        <div class="pf-handle"><span>ramith_h</span>${MICON.handleChev}</div>
+        <div class="band">
+          <div class="sheet-b pf-identity"><img class="pf-av" data-a="pfAvatar" data-label="R" alt=""><div class="pf-idtext"><span class="name">Ramith</span><span class="shield">${MICON.shield}</span></div></div>
+          <div class="pf-lifetime"><span class="lbl">Lifetime earnings</span><span class="amt">Rs. 568,472</span></div>
+          <div class="sheet-t pf-metrics"><div class="pf-stat"><span class="big">4.6 M</span><span class="lbl">Views</span></div><div class="pf-stat-div"></div><div class="pf-stat"><span class="big">48</span><span class="lbl">Campaigns</span></div></div>
+        </div>
       </div>
       <div class="pf-campaigns">
         ${crow('Ongoing campaigns',['pickmeLogo','legoLogo','pepsi'],'+4','#/mywork/ongoing')}
         ${crow('Pending approvals',['dominos','legoLogo','kfcLogo'],'+4','#/mywork/pending')}
         ${crow('Completed campaigns',['kfcLogo','facebook','uberLogo'],'+45','#/mywork/completed')}
       </div>
-      <div class="pf-divider"></div>
+      <div class="pf-divider pf-div-links"></div>
       <div class="pf-links">
         <a href="#/settings"><span class="ic">${MICON.settings}</span><span class="lbl">Account settings</span><span class="chev">${ICON.chevron}</span></a>
         <a href="https://ugc.example.com/privacy-policy" target="_blank" rel="noopener"><span class="ic">${MICON.privacy}</span><span class="lbl">Privacy policy</span><span class="chev">${CPICON.extlink}</span></a>
@@ -1127,12 +1155,13 @@ function viewProfile(){
       </div>
     </div>
     <div class="pf-right">
-      <div class="pf-sec"><div class="pf-sectitle">Social media handles</div>
+      <div class="pf-divider pf-div-handles"></div>
+      <section class="pf-sec pf-sec-handles"><h2 class="pf-sectitle">Social media handles</h2>
         <div class="pf-smhandles"><div class="addhandle" data-act="soon"><div class="circle">${MICON.plus}</div><span>Add</span></div><div class="vline"></div>
-          ${[['av1','insta'],['av2','tiktok'],['av3','insta'],['av4','tiktok']].map(h=>`<div class="handle"><img class="pf" data-a="${h[0]}" data-label="U" alt=""><div class="badge">${PLAT[h[1]]}</div><span class="fc">10K</span></div>`).join('')}</div></div>
-      <div class="pf-divider" style="margin:0"></div>
-      <div class="pf-sec"><div class="pf-sectitle">Recently added content</div>
-        <div class="pf-grid">${['grid1','grid2','grid3','grid4','grid5','grid6','sbContent1','sbContent2'].map(g=>`<img data-a="${g}" data-label="C" alt="">`).join('')}</div></div>
+          ${[['av1','insta'],['av2','tiktok'],['av3','insta'],['av4','tiktok']].map(h=>`<div class="handle"><img class="pf" data-a="${h[0]}" data-label="U" alt=""><div class="badge">${PLAT[h[1]]}</div><span class="fc">10K</span></div>`).join('')}</div></section>
+      <div class="pf-divider pf-div-content"></div>
+      <section class="pf-sec pf-sec-content"><h2 class="pf-sectitle">Recently added content</h2>
+        <div class="pf-grid">${['grid1','grid2','grid3','grid4','grid5','grid6','sbContent1','sbContent2'].map(g=>`<img data-a="${g}" data-label="C" alt="">`).join('')}</div></section>
     </div>
   </div>`;
 }
