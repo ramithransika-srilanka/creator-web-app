@@ -178,6 +178,7 @@
   .price-chip{background:var(--grey-100-20);padding:3px 6px;border-radius:15px;font-size:12px;font-weight:500;color:#fff;line-height:12px;}
   .pending-card{background:var(--pending-card);border-radius:15px;width:100%;display:flex;flex-direction:column;overflow:hidden;}
   .pending-card .heart path{fill:var(--liked);stroke:#fff;}
+  .foryou-label{display:none;}
   .pending-earned{text-align:center;padding:5px 0;font-size:14px;font-weight:500;line-height:16px;color:var(--grey-50);}
   .card-content{display:flex;flex-direction:column;gap:6px;padding:12px;}
   .card-content .ctitle{font-size:15px;font-weight:600;line-height:19px;color:#000;cursor:pointer;}
@@ -748,6 +749,14 @@
     .feedgrid{grid-template-columns:minmax(0,1fr);gap:12px;margin-top:18px;}
     /* Card image sits on the 12px gutter: drop the invisible wrapper's side inset */
     .feedgrid>.cardwrap,.feedgrid>.sk-card{padding-left:0;padding-right:0;border-width:0;}
+    /* One campaign carries a pink "For you" strip under its image */
+    .foryou-card{background:var(--pink-500);border-radius:15px;width:100%;display:flex;flex-direction:column;overflow:hidden;}
+    .foryou-label{display:block;text-align:center;padding:6px 0;font-size:14px;font-weight:500;line-height:16px;color:#fff;}
+    /* Save heart sits in a white circle */
+    .card-logobar [data-save]{width:36px;height:36px;border-radius:50%;background:#fff;align-items:center;justify-content:center;box-shadow:0 1px 3px rgba(0,0,0,.16);}
+    .card-logobar [data-save] .heart{width:20px;height:20px;color:var(--grey-800);}
+    .card-logobar [data-save] .heart path{fill:none;}
+    .card-logobar [data-save].liked .heart path{fill:var(--liked);stroke:var(--liked);}
     .mw-list{grid-template-columns:minmax(0,1fr);gap:12px;}
     .wl-amt{font-size:36px;line-height:44px;}
       .wl-row{grid-template-columns:32px minmax(0,1fr) auto;padding:12px;}
@@ -938,7 +947,7 @@ const SPEC=[['Format','Vertical 9:16'],['Duration','30–45 seconds'],['Quality'
 const RESTRICT=['No AI generated content','Face must be visible in the content','No competitor brands in the frame','Caption must tag the brand handle','Use only licensed or original audio','Keep the post live for at least 30 days'];
 
 const C={
-  uber:{img:'card1',logo:'logo1',abbr:'Ub',cat:'Mobility',
+  uber:{img:'card1',logo:'logo1',abbr:'Ub',cat:'Mobility',forYou:true,
     title:'Uber Moto UGC campaign in Colombo Book festival',time:'5 hrs ago',right:'10 d left',progress:40,joined:'412 joined',joinedShort:'400+',
     money:'<span>Rs. 284,536 /</span><b>Rs. 1,000,000</b>',spent:'Rs. 284,536',available:'Rs. 715,464',budget:'Rs. 1,000,000',budgetN:1000000,
     list:[['Base price per content','Rs. 6488'],['Max earning per content','Rs. 100,000'],['Performance pricing','Rs. 2000 / 1K views'],['Total budget','Rs. 1,000,000']],
@@ -1072,7 +1081,8 @@ const WTX=[
     {logo:'uberLogo',brand:'Uber',lbl:'Ub',camp:'Uber airport ride review',time:'3:35 PM',amt:2400,st:'Paid'},
     {bank:1,brand:'Transfer to bank',camp:BANK.name+' · '+BANK.acct,time:'10:00 AM',amt:-25000,st:'Completed'}]]];
 
-const state={cat:'All',q:'',searchOpen:false,loaded:false,mw:'all',upload:null};
+const PHONE=matchMedia('(max-width:767px)');
+const state={saved:new Set(),cat:'All',q:'',searchOpen:false,loaded:false,mw:'all',upload:null};
 
 /* ================= Templates ================= */
 const timeHTML=c=>`<div class="card-time"><span>${c.time}</span>${c.right?`<span class="dot"></span><span>${c.right}</span>`:''}</div>`;
@@ -1080,11 +1090,13 @@ const timeHTML=c=>`<div class="card-time"><span>${c.time}</span>${c.right?`<span
 function cardHTML(id,opt={}){
   const c=C[id], pending=opt.pending||c.status==='pending', go=opt.go||`#/campaign/${id}`;
   const open=opt.drawer?`data-cdrawer="${id}"`:`data-go="${go}"`;
-  return `<div class="cardwrap">${pending?'<div class="pending-card">':''}<div class="card-img" ${open}>
+  const forYou=opt.forYou&&c.forYou&&!pending;
+  const heart=opt.forYou?`<span class="like-heart${state.saved.has(id)?' liked':''}" data-save="${id}">${ICON.heart}</span>`:ICON.heart;
+  return `<div class="cardwrap">${pending?'<div class="pending-card">':forYou?'<div class="foryou-card">':''}<div class="card-img" ${open}>
       <img class="photo" data-a="${c.img}" data-label="${c.abbr}" alt="">
-      <div class="card-logobar"><img class="logo" data-a="${c.logo}" data-label="${c.abbr}" alt="">${ICON.heart}</div>
+      <div class="card-logobar"><img class="logo" data-a="${c.logo}" data-label="${c.abbr}" alt="">${heart}</div>
       <div class="overlaybar"><div class="details">${ICON.tiktok}${ICON.insta}<span class="price-chip">${c.list[2][1].replace(/Rs\. (\d+) \/ 1K views/,'Rs.$1/1K')}</span></div><div class="view-btn">View</div></div>
-    </div>${pending?'<div class="pending-earned">Pending for approval</div></div>':''}
+    </div>${pending?'<div class="pending-earned">Pending for approval</div></div>':forYou?'<div class="foryou-label">For you</div></div>':''}
     <div class="card-content">
       <div class="ctitle" ${open}>${c.title}</div>${timeHTML(c)}
       <div class="progress-group"><div class="progress"><div class="fill" style="width:${c.progress}%"></div></div>
@@ -1103,7 +1115,7 @@ function mwCardHTML(id,badge,lbl,amt,cta,go,opt={}){
 
 /* ---------- Explore ---------- */
 function viewExplore(){
-  const cats=['All','Price','Mobility','Food','Entertainment','Lifestyle'];
+  const cats=PHONE.matches?['All','For you','Saved','Past']:['All','Price','Mobility','Food','Entertainment','Lifestyle'];
   return `<div class="home">
     <h1 class="home-title">Campaigns</h1>
     <div class="home-search${state.searchOpen?' open':''}" id="home-search"><div>
@@ -1121,11 +1133,14 @@ function renderFeed(){
   }
   const q=state.q.trim().toLowerCase();
   let ids=EXPLORE.filter(id=>{const c=C[id];
-    if(!['All','Price'].includes(state.cat)&&c.cat!==state.cat) return false;
+    if(state.cat==='For you'&&!c.forYou) return false;
+    if(state.cat==='Saved'&&!state.saved.has(id)) return false;
+    if(state.cat==='Past'&&c.status!=='ended') return false;
+    if(!['All','Price','For you','Saved','Past'].includes(state.cat)&&c.cat!==state.cat) return false;
     return !q||(c.title+' '+c.brand).toLowerCase().includes(q);});
   if(state.cat==='Price') ids=[...ids].sort((a,b)=>C[b].budgetN-C[a].budgetN);
-  f.innerHTML=ids.length?ids.map((id,i)=>cardHTML(id,{drawer:true}).replace('class="cardwrap"',`class="cardwrap" style="--i:${i}"`)).join('')
-    :`<div class="ph"><div class="tag2">No campaigns</div><h2>Nothing matches “${esc(state.q||state.cat)}”</h2><p>Try another brand name or clear the search to see every open campaign.</p><div class="tag" data-act="clear">Clear filters</div></div>`;
+  f.innerHTML=ids.length?ids.map((id,i)=>cardHTML(id,{drawer:true,forYou:true}).replace('class="cardwrap"',`class="cardwrap" style="--i:${i}"`)).join('')
+    :`<div class="ph"><div class="tag2">No campaigns</div><h2>${state.q?`Nothing matches “${esc(state.q)}”`:({'Saved':'No saved campaigns yet','Past':'No past campaigns','For you':'Nothing picked for you yet'}[state.cat]||`Nothing matches “${esc(state.cat)}”`)}</h2><p>${state.cat==='Saved'&&!state.q?'Tap the heart on a campaign to save it here.':'Try another brand name or clear the search to see every open campaign.'}</p><div class="tag" data-act="clear">Clear filters</div></div>`;
   bindAssets(f);
 }
 const esc=s=>String(s).replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
@@ -1482,6 +1497,7 @@ function route(){
   if(r==='explore'&&known_&&st.cd) openCampaignDrawer(st.cd);
 }
 window.addEventListener('hashchange',route);
+PHONE.addEventListener('change',()=>{state.cat='All';if(document.getElementById('feed'))route();});
 
 /* My work tag switch: tag pop + staggered 3D reveal, as on mobile */
 function staggerMyWork(){
@@ -1555,6 +1571,9 @@ function viewNotifications(){
 
 document.addEventListener('click',e=>{
   const t=e.target;
+  const save=t.closest('[data-save]');
+  if(save&&PHONE.matches){const heart=save;e.preventDefault();e.stopPropagation();const on=heart.classList.toggle('liked');
+    heart.querySelector('svg').classList.remove('liked');on?state.saved.add(heart.dataset.save):state.saved.delete(heart.dataset.save);if(state.cat==='Saved')renderFeed();return;}
   const heart=t.closest('.like-heart');
   if(heart){e.preventDefault();e.stopPropagation();heart.classList.toggle('liked');return;}
   if(t.closest('[data-search]')){e.preventDefault();toggleSearch();return;}
